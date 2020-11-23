@@ -14,7 +14,7 @@
             Owners are typically nuget.org identities that allow gallery
             users to easily find other packages by the same owners.  
         -->
-		<owners></owners>
+		<owners>Quicken Loans</owners>
 
 		<!-- Project URL provides a link for the gallery -->
 		<projectUrl>https://git.rockfin.com/DataServices/Aether</projectUrl>
@@ -38,10 +38,10 @@
 		<description>Shared library with common extensions, classes, etc.</description>
 
 		<!-- Copyright information -->
-		<copyright></copyright>
+		<copyright>Copyright 2020 (c) Quicken Loans Corporation. All rights reserved.</copyright>
 
 		<!-- Tags appear in the gallery and can be used for tag searches -->
-		<tags></tags>
+		<tags>PBMC</tags>
 
 		<!-- Dependencies are automatically installed when the package is installed -->
 		<dependencies>

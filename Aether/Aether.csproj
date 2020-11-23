@@ -2,6 +2,32 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Quicken Loans</Authors>
+    <Company>Quicken Loans</Company>
+    <PackageProjectUrl>https://git.rockfin.com/DataServices/Aether</PackageProjectUrl>
+    <Description>Shared library with common extensions, classes, etc.</Description>
+    <PackageIcon>Aether.png</PackageIcon>
+    <Copyright>Copyright 2020(c) Quicken Loans Corporation. All rights reserved.</Copyright>
+    <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
+    <Product>DataServices.Aether</Product>
+    <PackageId>DataServices.Aether</PackageId>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+    <PackageReference Include="Rocklib.CCE.APILogger" Version="3.1.0" />
+    <PackageReference Include="RockLib.OAuth" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Aether.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
