@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using APILogger.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using RockLib.Logging;
 
 namespace Aether.Middleware
 {
-    [ExcludeFromCodeCoverage]
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ILogger _logger;
+        private readonly IApiLogger _logger;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public ErrorHandlingMiddleware(ILogger logger, RequestDelegate next)
+        public ErrorHandlingMiddleware(IApiLogger logger, RequestDelegate next)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _next = next ?? throw new ArgumentNullException(nameof(next));
-            _logger.Debug("Exception handling middleware initialized");
+            _logger.LogDebug("Exception handling middleware initialized");
         }
 
         /// <summary>
@@ -41,18 +39,17 @@ namespace Aether.Middleware
             {
                 if (context.Response.HasStarted)
                 {
-                    _logger.Warn($"Error returning response: Response already started", e);
+                    _logger.LogWarning($"Error returning response: Response already started", null, e);
                     throw;
                 }
                 else
                 {
-                    _logger.Error($"Error in the Mnemosyne API: {e.Message}", e);
+                    _logger.LogError($"Error in the API: {e.Message}", null, e);
                     context.Response.StatusCode = 500;
                 }
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(GenerateErrorMessage(e.Message, e.Source, e.StackTrace)));
             }
-
         }
 
         private static Dictionary<string, string> GenerateErrorMessage(string message, string source, string stackTrace)

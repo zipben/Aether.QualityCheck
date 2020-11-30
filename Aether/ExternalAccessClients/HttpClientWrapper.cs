@@ -9,7 +9,7 @@ using Polly.Extensions.Http;
 using Polly.Retry;
 using RockLib.OAuth;
 
-namespace Aether.ExternalAccessClients.Implementations
+namespace Aether.ExternalAccessClients
 {
     public class HttpClientWrapper : IHttpClientWrapper
     {
@@ -31,21 +31,20 @@ namespace Aether.ExternalAccessClients.Implementations
         public async Task<HttpResponseMessage> GetAsync(string requestUri) =>
             await _policy.ExecuteAsync(() => _httpClient.GetAsync(requestUri)).ConfigureAwait(false);
 
-        public async Task<HttpResponseMessage> GetAsync(Auth0AuthParams auth0Auth, string requestUri) =>
+        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri) =>
             await _policy.ExecuteAsync(() => _httpClient.GetAsync(auth0Auth, requestUri)).ConfigureAwait(false);
+
+        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Patch, endPoint) { Content = content };
+            return await _httpClient.SendAsync(authParams, request);
+        }
 
         public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
             await _httpClient.PostAsync(authParams, endPoint, content);
 
         public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
             await _httpClient.PutAsync(authParams, endPoint, content);
-
-        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content)
-        {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Patch, endPoint) { Content = content };
-
-            return await _httpClient.SendAsync(authParams, request);
-        }
 
         public void SetContentType(string contentType) =>
             _httpClient.DefaultRequestHeaders
