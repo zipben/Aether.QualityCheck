@@ -17,10 +17,13 @@ namespace Aether.ExternalAccessClients
         private readonly IApiLogger _logger;
         private readonly AsyncRetryPolicy<HttpResponseMessage> _policy;
 
-        public HttpClientWrapper(HttpClient httpClient, IApiLogger logger)
+        public HttpClientWrapper(HttpClient httpClient, IApiLogger logger = null)
         {
             _httpClient = httpClient;
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            if (logger != null)
+            {
+                _logger = logger;
+            }
             _policy = HttpPolicyExtensions.HandleTransientHttpError()
                                           .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
