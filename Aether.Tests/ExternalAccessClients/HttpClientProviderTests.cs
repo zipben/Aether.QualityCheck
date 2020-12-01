@@ -69,7 +69,7 @@ namespace Aether.Tests.ExternalAccessClients
                 UseBasicAuthentication = true,
                 BaseUrl = "http://url.uri/",
                 ClientId = Guid.NewGuid().ToString(),
-                GrantType = GrantTypeEnum.Client_Credentials,
+                GrantType = GrantType.Client_Credentials,
                 Password = Guid.NewGuid().ToString(),
                 UserName = Guid.NewGuid().ToString()
             };
