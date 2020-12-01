@@ -89,8 +89,10 @@ jobs:
           command: |
             cd Aether
             versionNum="${CIRCLE_TAG:1}"
-            echo $versionNum
-            dotnet build -c Release -p:Version=$versionNum
+            echo versionNum
+            dotnet build -c Release \
+                         --no-restore 
+#                         -p:Version=$versionNum \
       - *persist_workspace_step
 
 #  publish_build_to_quget_gallery:
