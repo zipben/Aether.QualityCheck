@@ -78,21 +78,14 @@ jobs:
           name: Restore packages
           command: |
             cd Aether 
-            dotnet restore \
-               --source "https://api.nuget.org/v3/index.json" \
-               --source "https://qugetgal.rockfin.com/api/v2" \
-      - save_cache:
-          paths:
-              - ~/.nuget/packages
-          key: nuget-packages-{{ epoch }}
+            dotnet restore
+#      - save_cache:
+#          paths:
+#              - ~/.nuget/packages
+#          key: nuget-packages-{{ epoch }}
       - run:
           name: 'Build Nuget Package'
           command: |
-            echo pwd
-            for entry in "$search_dir"/*
-            do
-              echo "$entry"
-            done
             cd Aether
             versionNum="${CIRCLE_TAG:1}"
             dotnet build -c Release -p:Version=$versionNum
