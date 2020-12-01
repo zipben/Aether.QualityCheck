@@ -99,8 +99,8 @@ workflows:
     jobs:
       - sonar-scanner-and-unit-tests
 
-      - build-nuget
-          #requires: [ sonar-scanner-and-unit-tests ]
+      - build-nuget:
+          requires: [ sonar-scanner-and-unit-tests ]
 
       - publish_build_to_qugetgal:
           requires: [ build-nuget ]
