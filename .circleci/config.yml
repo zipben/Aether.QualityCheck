@@ -77,7 +77,7 @@ jobs:
       - run:
           name: Restore packages
           command: |
-            cd Eris 
+            cd Aether 
             dotnet restore \
                --source "https://api.nuget.org/v3/index.json" \
                --source "https://qugetgal.rockfin.com/api/v2" \
