@@ -71,7 +71,7 @@ jobs:
           name: 'Build Nuget Package'
           command: |
             versionNum="${CIRCLE_TAG:1}"
-            cd Aether && dotnet build -c Release -p:Version=$versionNum
+            cd ./Aether && dotnet build -c Release -p:Version=$versionNum
       - *persist_workspace_step
 
   # Jobs - Continuous Delivery
@@ -83,9 +83,9 @@ jobs:
       - run: 
           name: 'Updating QuGetGal'
           command: |
-            cd Aether/bin/Release
+            cd ./Aether/bin/Release
             versionNum="${CIRCLE_TAG:1}"
-            dotnet nuget push ./Aether.$versionNum.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
+            dotnet nuget push ./DataServices.Aether.$versionNum.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
 
 
 #############################################################
@@ -99,8 +99,8 @@ workflows:
     jobs:
       - sonar-scanner-and-unit-tests
 
-      - build-nuget:
-          requires: [ sonar-scanner-and-unit-tests ]
+      - build-nuget
+          #requires: [ sonar-scanner-and-unit-tests ]
 
       - publish_build_to_qugetgal:
           requires: [ build-nuget ]
