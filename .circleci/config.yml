@@ -70,8 +70,10 @@ jobs:
       - run:
           name: 'Build Nuget Package'
           command: |
+            ls
+            cd Aether
             versionNum="${CIRCLE_TAG:1}"
-            cd Aether && dotnet build -c Release -p:Version=$versionNum
+            dotnet build -c Release -p:Version=$versionNum
       - *persist_workspace_step
 
 #  publish_build_to_quget_gallery:
