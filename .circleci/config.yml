@@ -81,9 +81,9 @@ jobs:
     steps:
       - *attach_workspace_step
       - run: 
-          name: 'Updating QuGetGal'
+          name: 'Updating Quget Gallery'
           command: |
-            cd ./Aether/bin/Release
+            cd bin/Release
             versionNum="${CIRCLE_TAG:1}"
             dotnet nuget push ./DataServices.Aether.$versionNum.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
 
