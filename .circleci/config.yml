@@ -39,33 +39,6 @@ persist_workspace_step: &persist_workspace_step
     paths: 
       - ./*
 
-#############################################################
-# Define your workflow
-#############################################################
-
-workflows:
-  version: 2
-
-  pipeline:
-    jobs:
-      - sonar-scanner-and-unit-tests:
-          filters:
-            tags:
-              only: /.*/
-      - build-nuget:
-          #requires: [ sonar-scanner-and-unit-tests ]
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-      - publish_build_to_qugetgal:
-          requires: [ build-nuget ]
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
 
 #############################################################
 # Define your jobs
@@ -78,7 +51,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run sonar scanner
+          name: Run Sonar Scanner
           command: |
               run-sonar begin
               dotnet test ./Aether.Tests/Aether.Tests.csproj \
@@ -95,7 +68,7 @@ jobs:
       - *attach_workspace_step
       - *enterprise_setup_step
       - run:
-          name: 'Build nuget package'
+          name: 'Build Nuget Package'
           command: |
             versionNum="${CIRCLE_TAG:1}"
             cd Aether && dotnet build -c Release -p:Version=$versionNum
@@ -113,4 +86,21 @@ jobs:
             cd Aether/bin/Release
             versionNum="${CIRCLE_TAG:1}"
             dotnet nuget push ./Aether.$versionNum.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
-            
+
+
+#############################################################
+# Define your workflow
+#############################################################
+
+workflows:
+  version: 2
+
+  pipeline:
+    jobs:
+      - sonar-scanner-and-unit-tests:
+
+      - build-nuget:
+          #requires: [ sonar-scanner-and-unit-tests ]
+
+      - publish_build_to_qugetgal:
+          requires: [ build-nuget ]
