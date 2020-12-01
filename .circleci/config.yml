@@ -97,9 +97,9 @@ workflows:
 
   pipeline:
     jobs:
-      - sonar-scanner-and-unit-tests:
+      - sonar-scanner-and-unit-tests
 
-      - build-nuget:
+      - build-nuget
           #requires: [ sonar-scanner-and-unit-tests ]
 
       - publish_build_to_qugetgal:
