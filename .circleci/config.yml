@@ -70,6 +70,8 @@ jobs:
       - run:
           name: 'Build Nuget Package'
           command: |
+            echo pwd
+            cd Aether
             versionNum="${CIRCLE_TAG:1}"
             dotnet build -c Release -p:Version=$versionNum
       - *persist_workspace_step
