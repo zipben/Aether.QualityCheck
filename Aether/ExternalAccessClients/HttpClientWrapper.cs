@@ -13,7 +13,7 @@ namespace Aether.ExternalAccessClients
 {
     public class HttpClientWrapper : IHttpClientWrapper
     {
-        private HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
         private readonly IApiLogger _logger;
         private readonly AsyncRetryPolicy<HttpResponseMessage> _policy;
 

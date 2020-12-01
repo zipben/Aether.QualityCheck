@@ -1,6 +1,6 @@
 ﻿namespace Aether.Enums
 {
-    public enum IdentifierTypeEnum
+    public enum IdentifierType
     {
         GCID = 1,
         LoanNumber = 2,

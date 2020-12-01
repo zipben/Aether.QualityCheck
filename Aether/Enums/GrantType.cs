@@ -1,6 +1,6 @@
 ﻿namespace Aether.Enums
 {
-    public enum GrantTypeEnum
+    public enum GrantType
     {
         Authorization_Code = 0,
         Password = 1,
