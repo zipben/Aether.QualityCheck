@@ -67,10 +67,32 @@ jobs:
     steps:
       - *attach_workspace_step
       - *enterprise_setup_step
+      - checkout
+      - run:
+          name: Install SSL certs
+          command: |
+            curl -sL https://tools.circleci.foc.zone/install-certs | bash -
+      - restore_cache:
+          key: nuget-packages
+      - run:
+          name: Restore packages
+          command: |
+            cd Eris 
+            dotnet restore \
+               --source "https://api.nuget.org/v3/index.json" \
+               --source "https://qugetgal.rockfin.com/api/v2" \
+      - save_cache:
+          paths:
+              - ~/.nuget/packages
+          key: nuget-packages-{{ epoch }}
       - run:
           name: 'Build Nuget Package'
           command: |
-            ls
+            echo pwd
+            for entry in "$search_dir"/*
+            do
+              echo "$entry"
+            done
             cd Aether
             versionNum="${CIRCLE_TAG:1}"
             dotnet build -c Release -p:Version=$versionNum
@@ -81,7 +103,6 @@ jobs:
 #    docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sdk-openjdk'}]
 #    steps:
 #      - *attach_workspace_step
-#      - *enterprise_setup_step
 #      - run: 
 #          name: 'Updating Quget Gallery'
 #          command: |
