@@ -71,7 +71,10 @@ jobs:
           name: 'Build Nuget Package'
           command: |
             echo pwd
-            echo *
+            for entry in "$search_dir"/*
+            do
+              echo "$entry"
+            done
             cd Aether
             versionNum="${CIRCLE_TAG:1}"
             dotnet build -c Release -p:Version=$versionNum
