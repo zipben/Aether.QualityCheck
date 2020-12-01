@@ -102,5 +102,5 @@ workflows:
       - build-nuget-package
           #requires: [ sonar-scanner-and-unit-tests ]
 
-      - publish_build_to_quget_gallery:
-          requires: [ build-nuget-package ]
+      - #publish_build_to_quget_gallery:
+          #requires: [ build-nuget-package ]
