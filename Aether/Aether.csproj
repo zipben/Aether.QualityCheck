@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Quicken Loans</Authors>
+    <Authors>PBMC</Authors>
     <Company>Quicken Loans</Company>
     <PackageProjectUrl>https://git.rockfin.com/DataServices/Aether</PackageProjectUrl>
     <Description>Shared library with common extensions, classes, etc.</Description>
@@ -12,10 +12,16 @@
     <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
     <Product>DataServices.Aether</Product>
     <PackageId>DataServices.Aether</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove=".circleci\**" />
+    <EmbeddedResource Remove=".circleci\**" />
+    <None Remove=".circleci\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />

@@ -9,7 +9,6 @@ using APILogger.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Moq.Protected;
-using RockLib.OAuth;
 
 namespace Aether.Tests.ExternalAccessClients
 {
@@ -116,7 +115,8 @@ namespace Aether.Tests.ExternalAccessClients
             _mockHttpMessageHandler.Protected()
                                    .Verify("SendAsync",
                                            Times.Exactly(1),
-                                           ItExpr.Is<HttpRequestMessage>(req => req.Method == method && req.Content == _testHttpContent ),
+                                           ItExpr.Is<HttpRequestMessage>(req => req.Method == method 
+                                                                             && req.Content == _testHttpContent ),
                                            ItExpr.IsAny<CancellationToken>());
         }
 
