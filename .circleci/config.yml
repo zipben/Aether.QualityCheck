@@ -62,12 +62,9 @@ jobs:
       - *persist_workspace_step
 
   build-nuget-package:
-#    <<: *global_environment
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
-#      - *attach_workspace_step
-#      - *enterprise_setup_step
       - checkout
       - run:
           name: Install SSL certs
@@ -103,9 +100,7 @@ jobs:
           name: 'Updating Quget Gallery'
           command: |
             cd Aether/bin/Release
-            versionNum="${CIRCLE_TAG:1}"
             dotnet nuget push ./DataServices.Aether.*.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
-#            dotnet nuget push ./DataServices.Aether.$versionNum.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
 
 
 #############################################################
@@ -119,8 +114,8 @@ workflows:
     jobs:
       - sonar-scanner-and-unit-tests
 
-      - build-nuget-package
-#            requires: [ sonar-scanner-and-unit-tests ]
+      - build-nuget-package:
+            requires: [ sonar-scanner-and-unit-tests ]
 
       - publish_build_to_quget_gallery:
             requires: [ build-nuget-package ]
