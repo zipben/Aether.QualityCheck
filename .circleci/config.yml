@@ -67,6 +67,7 @@ jobs:
     steps:
       - *attach_workspace_step
       - *enterprise_setup_step
+      - checkout
       - run:
           name: 'Build Nuget Package'
           command: |
