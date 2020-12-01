@@ -98,7 +98,7 @@ jobs:
           name: 'Build nuget package'
           command: |
             versionNum="${CIRCLE_TAG:1}"
-            dotnet build -c Release -p:Version=$versionNum
+            cd ./Aether && dotnet build -c Release -p:Version=$versionNum
       - *persist_workspace_step
 
   # Jobs - Continuous Delivery
@@ -110,7 +110,7 @@ jobs:
       - run: 
           name: 'Updating QuGetGal'
           command: |
-            cd bin/Release
+            cd ./Aether/bin/Release
             versionNum="${CIRCLE_TAG:1}"
             dotnet nuget push ./Aether.$versionNum.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY
             
