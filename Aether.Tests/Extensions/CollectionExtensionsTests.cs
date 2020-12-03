@@ -77,5 +77,21 @@ namespace Aether.Tests.Extensions
 
             Assert.IsFalse(list.Any());
         }
+
+        public static IEnumerable<object[]> IsNotEmptyTestData()
+        {
+            yield return new object[] { null, false };
+            yield return new object[] { new List<string>(), false };
+            yield return new object[] { new List<string>() { "OneItem" }, true };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(IsNotEmptyTestData), DynamicDataSourceType.Method)]
+        public void IsNotEmptyTest(List<string> list, bool expectedResult)
+        {
+            var actualResult = list.IsNotEmpty();
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
     }
 }
