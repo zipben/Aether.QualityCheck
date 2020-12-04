@@ -113,6 +113,8 @@ workflows:
   pipeline:
     jobs:
       - sonar-scanner-and-unit-tests
+            context:
+                "DSNonProd"
 
       - build-nuget-package:
             requires: [ sonar-scanner-and-unit-tests ]
