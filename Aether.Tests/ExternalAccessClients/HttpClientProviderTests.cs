@@ -110,6 +110,19 @@ namespace Aether.Tests.ExternalAccessClients
         }
 
         [TestMethod]
+        public async Task GetTokenTest_Cached()
+        {
+            var actualToken1 = await _target.GetToken(_testServiceSettings, _testScope);
+            var actualToken2 = await _target.GetToken(_testServiceSettings, _testScope);
+
+            Assert.AreEqual(_testToken, actualToken1);
+            Assert.AreEqual(_testToken, actualToken2);
+
+            _mockHttpMessageHandler.Protected().Verify("SendAsync", Times.Once(), ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post),
+                                                                                  ItExpr.IsAny<CancellationToken>());
+        }
+
+        [TestMethod]
         public void CreateHttpRequestMessageTest_Url()
         {
             var actualMessage = _target.CreateHttpRequestMessage(_testServiceSettings.BaseUrl, HttpMethod.Post, _testHeaders, _testAuthenticationHeaderValue, _mockHttpContent.Object);

@@ -48,6 +48,12 @@ namespace Aether.Tests.Middleware
         }
 
         [TestMethod]
+        public void ArgumentNullExceptionTest()
+        {
+            Assert.ThrowsException< ArgumentNullException>(() => _target = new ErrorHandlingMiddleware(null, null));
+        }
+
+        [TestMethod]
         public async Task InvokeTest()
         {
             await _target.Invoke(_mockHttpContext.Object);
@@ -56,23 +62,29 @@ namespace Aether.Tests.Middleware
         }
 
         [TestMethod]
-        public async Task InvokeTest_Exception_RequestStarted()
+        [DataRow(true, true, true)]
+        [DataRow(true, false, true)]
+        [DataRow(false, true, false)]
+        [DataRow(false, false, false)]
+        public async Task InvokeTest_Exception(bool requestStarted, bool prod, bool exceptionExpected)
         {
-            SetupMocks(true, true);
+            if (prod)
+            {
+                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
+            }
 
-            await Assert.ThrowsExceptionAsync<Exception>(() => _target.Invoke(_mockHttpContext.Object));
+            SetupMocks(true, requestStarted);
 
-            _mockLogger.Verify(x => x.LogWarning(It.IsAny<string>(), null, It.IsAny<Exception>()), Times.Once);
-        }
-
-        [TestMethod]
-        public async Task InvokeTest_Exception_RequestNotStarted()
-        {
-            SetupMocks(true, false);
-
-            await _target.Invoke(_mockHttpContext.Object);
-
-            _mockLogger.Verify(x => x.LogError(It.IsAny<string>(), null, It.IsAny<Exception>()), Times.Once);
+            if (exceptionExpected)
+            {
+                await Assert.ThrowsExceptionAsync<Exception>(() => _target.Invoke(_mockHttpContext.Object));
+                _mockLogger.Verify(x => x.LogWarning(It.IsAny<string>(), null, It.IsAny<Exception>()), Times.Once);
+            }
+            else
+            {
+                await _target.Invoke(_mockHttpContext.Object);
+                _mockLogger.Verify(x => x.LogError(It.IsAny<string>(), null, It.IsAny<Exception>()), Times.Once);
+            }
         }
     }
 }
