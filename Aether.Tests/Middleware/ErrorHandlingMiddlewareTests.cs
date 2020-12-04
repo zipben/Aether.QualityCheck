@@ -64,11 +64,14 @@ namespace Aether.Tests.Middleware
         [TestMethod]
         [DataRow(true, true, true)]
         [DataRow(true, false, true)]
+        [DataRow(true, null, true)]
         [DataRow(false, true, false)]
         [DataRow(false, false, false)]
-        public async Task InvokeTest_Exception(bool requestStarted, bool prod, bool exceptionExpected)
+        [DataRow(false, null, false)]
+        public async Task InvokeTest_Exception(bool requestStarted, bool? prodEnvironment, bool exceptionExpected)
         {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", prod ? "Production" : "NotProd");
+            if (prodEnvironment.HasValue)
+                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", prodEnvironment.Value ? "Production" : "NotProd");
 
             SetupMocks(true, requestStarted);
 

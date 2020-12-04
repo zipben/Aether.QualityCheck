@@ -44,6 +44,7 @@ namespace Aether.Tests.ExternalAccessClients
         private string _testScope;
         private string _testToken;
         private HttpResponseMessage _testTokenHttpResponseMessage;
+        private HttpResponseMessage _testTokenHttpResponseMessageFailure;
         private List<KeyValuePair<string, string>> _testHeaders;
         private AuthenticationHeaderValue _testAuthenticationHeaderValue;
         private Mock<HttpContent> _mockHttpContent;
@@ -83,6 +84,11 @@ namespace Aether.Tests.ExternalAccessClients
                 Content = new StringContent(JsonConvert.SerializeObject(new { access_token = _testToken }))
             };
 
+            _testTokenHttpResponseMessageFailure = new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.InternalServerError
+            };
+
             _testHeaders = new List<KeyValuePair<string, string>>();
             for (var i = 0; i < 10; i++)
             {
@@ -92,13 +98,13 @@ namespace Aether.Tests.ExternalAccessClients
             _testAuthenticationHeaderValue = new AuthenticationHeaderValue("Scheme");
         }
 
-        private void SetupMocks()
+        private void SetupMocks(bool shouldFail = false)
         {
             _mockHttpMessageHandler.Protected()
                                    .Setup<Task<HttpResponseMessage>>("SendAsync",
                                                                      ItExpr.Is<HttpRequestMessage>(req => req.Method == HttpMethod.Post),
                                                                      ItExpr.IsAny<CancellationToken>())
-                                   .ReturnsAsync(_testTokenHttpResponseMessage);
+                                   .ReturnsAsync(shouldFail ? _testTokenHttpResponseMessageFailure : _testTokenHttpResponseMessage);
         }
 
         [TestMethod]
@@ -107,6 +113,16 @@ namespace Aether.Tests.ExternalAccessClients
             var actualToken = await _target.GetToken(_testServiceSettings, _testScope);
 
             Assert.AreEqual(_testToken, actualToken);
+        }
+
+        [TestMethod]
+        public async Task GetTokenTest_Failure()
+        {
+            SetupMocks(true);
+
+            var actualToken = await _target.GetToken(_testServiceSettings, _testScope);
+
+            Assert.IsNull(actualToken);
         }
 
         [TestMethod]
@@ -122,16 +138,36 @@ namespace Aether.Tests.ExternalAccessClients
                                                                                   ItExpr.IsAny<CancellationToken>());
         }
 
-        [TestMethod]
-        public void CreateHttpRequestMessageTest_Url()
+        public static IEnumerable<object[]> CreateHttpRequestMessageTestData()
         {
+            for (var p1 = 0; p1 < 1; p1++)
+            for (var p2 = 0; p2 < 1; p2++)
+            foreach (var p3 in Enum.GetValues(typeof(GrantType)))
+            {
+                yield return new object[] { p1 == 0, p2 == 0, p3 };
+            }
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(CreateHttpRequestMessageTestData), DynamicDataSourceType.Method)]
+        public void CreateHttpRequestMessageTest_Url(bool useBasicAuthentication, bool sendParametersInQueryString, GrantType grantType)
+        {
+            _testServiceSettings.UseBasicAuthentication = useBasicAuthentication;
+            _testServiceSettings.SendParametersInQueryString = sendParametersInQueryString;
+            _testServiceSettings.GrantType = grantType;
+
             var actualMessage = _target.CreateHttpRequestMessage(_testServiceSettings.BaseUrl, HttpMethod.Post, _testHeaders, _testAuthenticationHeaderValue, _mockHttpContent.Object);
             ValidateCreateHttpRequestMessageTest(actualMessage);
         }
 
         [TestMethod]
-        public void CreateHttpRequestMessageTest_Uri()
+        [DynamicData(nameof(CreateHttpRequestMessageTestData), DynamicDataSourceType.Method)]
+        public void CreateHttpRequestMessageTest_Uri(bool useBasicAuthentication, bool sendParametersInQueryString, GrantType grantType)
         {
+            _testServiceSettings.UseBasicAuthentication = useBasicAuthentication;
+            _testServiceSettings.SendParametersInQueryString = sendParametersInQueryString;
+            _testServiceSettings.GrantType = grantType;
+
             var actualMessage = _target.CreateHttpRequestMessage(new Uri(_testServiceSettings.BaseUrl), HttpMethod.Post, _testHeaders, _testAuthenticationHeaderValue, _mockHttpContent.Object);
             ValidateCreateHttpRequestMessageTest(actualMessage);
         }
