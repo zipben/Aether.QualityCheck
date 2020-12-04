@@ -10,22 +10,17 @@ namespace Aether.SecretManager.Tests
     public class SecretManagerTests
     {
         [TestMethod()]
-        public void PopulateSecretsToEnvironmentTest_GetAllSecrets()
-        {
-            SecretManager.PopulateSecretsToEnvironment("us-east-2", null);
-        }
-
-        [TestMethod()]
-        public void PopulateSecretsToEnvironmentTest_WithFilters()
+        public void PopulateSecretsToEnvironmentTest_WithEnvironmentFilters_EnvironmentShouldHaveVariables()
         {
 
             Dictionary<string, string> tagFilters = new Dictionary<string, string>()
             {
-                {"app-id", "206980"},
                 {"environment", "test"}
             };
 
             SecretManager.PopulateSecretsToEnvironment("us-east-2", tagFilters);
+
+            Assert.IsTrue(Environment.GetEnvironmentVariables().Count > 0);
         }
     }
 }

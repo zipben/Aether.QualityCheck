@@ -119,6 +119,10 @@ workflows:
 
       - build-nuget-package:
             requires: [ sonar-scanner-and-unit-tests ]
+            filters:
+                branches: { only: [master]}
 
       - publish_build_to_quget_gallery:
             requires: [ build-nuget-package ]
+            filters:
+                branches: { only: [master]}

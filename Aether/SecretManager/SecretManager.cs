@@ -26,16 +26,6 @@ namespace Aether.SecretManager
             CopyToEnvironment(secretValues);
         }
 
-        private static List<SecretListEntry> GenerateDummySecretListEntries(List<string> secretNames)
-        {
-            return secretNames.Select(n => new SecretListEntry() { Name = n }).ToList();
-        }
-
-        private static List<SecretListEntry> FilterSecretsByTag(string tagKey, string tagValue, List<SecretListEntry> allSecrets)
-        {
-            return allSecrets.FindAll(s => s.Tags.Any(t => t.Key.Like(tagKey) && t.Value.Like(tagValue)));
-        }
-
         private static void CopyToEnvironment(List<GetSecretValueResponse> secretValues)
         {
             foreach (var secret in secretValues)
