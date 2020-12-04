@@ -12,6 +12,11 @@ namespace Aether.SecretManager
 {
     public class SecretManager
     {
+        /// <summary>
+        /// Inserts all the secrets from secret manager that match the tags and region provided
+        /// </summary>
+        /// <param name="region">The region you want to retrieve secrets from</param>
+        /// <param name="tagFilters">key:Tag Key, Value:The tag value you would like to filter down to</param>
         public static void PopulateSecretsToEnvironment(string region, Dictionary<string, string> tagFilters)
         {
             
