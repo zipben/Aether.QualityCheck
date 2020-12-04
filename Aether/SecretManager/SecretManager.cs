@@ -20,7 +20,7 @@ namespace Aether.SecretManager
         public static void PopulateSecretsToEnvironment(string region, Dictionary<string, string> tagFilters)
         {
             
-            IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
+            using IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
 
             List<SecretListEntry> secrets;
 
