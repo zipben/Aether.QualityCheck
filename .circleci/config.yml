@@ -112,7 +112,8 @@ workflows:
 
   pipeline:
     jobs:
-      - sonar-scanner-and-unit-tests
+
+      - sonar-scanner-and-unit-tests:
             context:
                 "DSNonProd"
 
