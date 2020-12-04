@@ -30,38 +30,52 @@ namespace Aether.Tests.Extensions
         }
 
         [TestMethod]
-        public async Task ToListAsyncTest()
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(TEST_LIST_COUNT)]
+        public async Task ToListAsyncTest(int count)
         {
-            var testAsyncEnum = GetTestData();
+            var testAsyncEnum = GetTestData(count);
 
             var actualList = await testAsyncEnum.ToListAsync();
 
-            ValidateResults(actualList);
+            ValidateResults(actualList, count);
         }
 
         [TestMethod]
-        public void ToEnumerableTest()
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        [DataRow(TEST_LIST_COUNT)]
+        public void ToEnumerableTest(int count)
         {
-            var testAsyncEnum = GetTestData();
+            var testAsyncEnum = GetTestData(count);
 
             var actualList = testAsyncEnum.ToEnumerable().ToList();
 
-            ValidateResults(actualList);
+            ValidateResults(actualList, count);
         }
 
-        private async IAsyncEnumerable<string> GetTestData()
+        private async IAsyncEnumerable<string> GetTestData(int maxCount)
         {
+            var count = 0;
             foreach (var item in _testList)
             {
+                if (count == maxCount)
+                {
+                    yield break;
+                }
                 await Task.CompletedTask;
                 yield return item;
+                count++;
             }
         }
 
-        private void ValidateResults(List<string> actualList)
+        private void ValidateResults(List<string> actualList, int count)
         {
             Assert.IsNotNull(actualList);
-            Assert.AreEqual(_testList.Count, actualList.Count);
+            Assert.AreEqual(count, actualList.Count);
             foreach (var item in actualList)
             {
                 Assert.IsTrue(_testList.Contains(item));
