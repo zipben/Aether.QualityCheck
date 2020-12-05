@@ -19,12 +19,9 @@ namespace Aether.SecretManager
         /// <param name="tagFilters">key:Tag Key, Value:The tag value you would like to filter down to</param>
         public static void PopulateSecretsToEnvironment(string region, Dictionary<string, string> tagFilters)
         {
-            
             using IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
 
-            List<SecretListEntry> secrets;
-
-            secrets = GetAllSecretListEntriesFromRemote(client, tagFilters);
+            List<SecretListEntry> secrets = GetAllSecretListEntriesFromRemote(client, tagFilters);
             
             List<GetSecretValueResponse> secretValues = GetSecretValues(client, secrets);
 
@@ -51,11 +48,9 @@ namespace Aether.SecretManager
                 GetSecretValueRequest request = new GetSecretValueRequest();
                 request.SecretId = secret.Name;
 
-                var response = client.GetSecretValueAsync(request);
+                var response = client.GetSecretValueAsync(request).Result;
 
-                Task.WaitAll(response);
-
-                ret.Add(response.Result);
+                ret.Add(response);
             }
 
             return ret;
@@ -72,16 +67,14 @@ namespace Aether.SecretManager
                 listRequest = AddFiltersToRequest(listRequest, tagFilters);
             }
 
-            var response = client.ListSecretsAsync(listRequest);
+            var response = client.ListSecretsAsync(listRequest).Result;
 
-            Task.WaitAll(response);
-
-            if (response.Result.NextToken != null)
+            if (response.NextToken != null)
             {
-                response.Result.SecretList.AddRange(GetAllSecretListEntriesFromRemote(client, tagFilters, response.Result.NextToken));
+                response.SecretList.AddRange(GetAllSecretListEntriesFromRemote(client, tagFilters, response.NextToken));
             }
 
-            return response.Result.SecretList;
+            return response.SecretList;
         }
 
         private static ListSecretsRequest AddFiltersToRequest(ListSecretsRequest listRequest, Dictionary<string, string> tagFilters)
@@ -92,20 +85,8 @@ namespace Aether.SecretManager
             //Thats totally reasonable, but buckle up, cause you need to add both as seperate filters.  I hope you were hankering for the cartesian product of your filters. 
             foreach(var kvp in tagFilters)
             {
-                var newTagKeyFilter = new Filter()
-                {
-                    Key = FilterNameStringType.TagKey,
-                    Values = kvp.Key.CreateList()
-                };
-
-                var newTagValueFilter = new Filter()
-                {
-                    Key = FilterNameStringType.TagValue,
-                    Values = kvp.Value.CreateList()
-                };
-
-                filters.Add(newTagKeyFilter);
-                filters.Add(newTagValueFilter);
+                listRequest.AddFilter(FilterNameStringType.TagKey, kvp.Key.CreateList());
+                listRequest.AddFilter(FilterNameStringType.TagValue, kvp.Value.CreateList());
             }
 
             listRequest.Filters.AddRange(filters);
