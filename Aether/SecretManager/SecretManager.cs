@@ -13,6 +13,23 @@ namespace Aether.SecretManager
     public class SecretManager
     {
         /// <summary>
+        /// Inserts all the secrets from secret manager for a particular app in a particular environment and region.  
+        /// </summary>
+        /// <param name="appId"></param>
+        /// <param name="environment"></param>
+        /// <param name="region"></param>
+        public static void PopulateAllAppSecrets(string appId, string environment, string region)
+        {
+            Dictionary<string, string> tagFilters = new Dictionary<string, string>()
+            {
+                {"app-id", appId},
+                {"environment", environment}
+            };
+
+            PopulateSecretsToEnvironment(region, tagFilters);
+        }
+
+        /// <summary>
         /// Inserts all the secrets from secret manager that match the tags and region provided
         /// </summary>
         /// <param name="region">The region you want to retrieve secrets from</param>
