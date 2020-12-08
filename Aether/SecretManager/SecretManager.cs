@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Aether.SecretManager
 {
-    public class SecretManager
+    public static class SecretManager
     {
         /// <summary>
         /// Inserts all the secrets from secret manager for a particular app in a particular environment and region.  
