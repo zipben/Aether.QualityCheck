@@ -13,16 +13,27 @@ version: 2
 ############################################################
 # Shared jobs and configuration
 ############################################################
-global-environment-vars: &global-env-vars
+global-environment-vars_aether: &global-env-vars_aether
   CORE_ID: '207965'
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   NAME: 'Aether'
   SONAR_URL: 'https://sonarqube.rockfin.com'
 
-global_environment: &global_environment
+global-environment-vars_aether_testutils: &global-env-vars_aether_testutils
+  CORE_ID: '208062'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  NAME: 'Aether.TestUtils'
+  SONAR_URL: 'https://sonarqube.rockfin.com'
+
+global_environment_aether: &global_environment_aether
   working_directory: '~/project'
   environment:
-    <<: *global-env-vars
+    <<: *global-env-vars_aether
+
+global_environment_aether_testutils: &global_environment_aether_testutils
+  working_directory: '~/project'
+  environment:
+    <<: *global-env-vars_aether_testutils
 
 enterprise_setup_step: &enterprise_setup_step
   run:
@@ -45,8 +56,8 @@ persist_workspace_step: &persist_workspace_step
 #############################################################
 
 jobs:
-  sonar-scanner-and-unit-tests:
-    <<: *global_environment  
+  aether-sonar-scanner-and-unit-tests:
+    <<: *global_environment_aether
     docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sonarqube'}]
     steps:
       - checkout
@@ -61,7 +72,23 @@ jobs:
               run-sonar end
       - *persist_workspace_step
 
-  build-nuget-package:
+  aether-testutils-sonar-scanner-and-unit-tests:
+    <<: *global_environment_aether_testutils
+    docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sonarqube'}]
+    steps:
+      - checkout
+      - run:
+          name: Run Sonar Scanner
+          command: |
+              run-sonar begin
+              dotnet test ./Aether.TestUtils.Tests/Aether.TestUtils.Tests.csproj \
+                --logger "trx" \
+                /p:CollectCoverage=true \
+                /p:CoverletOutputFormat=opencover
+              run-sonar end
+      - *persist_workspace_step
+
+  build-nuget-packages:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:3.1
     steps:
@@ -91,8 +118,8 @@ jobs:
                          --no-restore 
       - *persist_workspace_step
 
-  publish_build_to_quget_gallery:
-    <<: *global_environment
+  aether-publish_build_to_quget_gallery:
+    <<: *global_environment_aether
     docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sdk-openjdk'}]
     steps:
       - *attach_workspace_step
@@ -101,6 +128,17 @@ jobs:
           command: |
             cd Aether/bin/Release
             dotnet nuget push ./DataServices.Aether.*.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY --skip-duplicate
+
+  aether-testutils-publish_build_to_quget_gallery:
+    <<: *global_environment_aether_testutils
+    docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sdk-openjdk'}]
+    steps:
+      - *attach_workspace_step
+      - run: 
+          name: 'Updating Quget Gallery'
+          command: |
+            cd Aether/bin/Release
+            dotnet nuget push ./DataServices.Aether.TestUtils.*.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY --skip-duplicate
 
 
 #############################################################
@@ -113,16 +151,26 @@ workflows:
   pipeline:
     jobs:
 
-      - sonar-scanner-and-unit-tests:
+      - aether-sonar-scanner-and-unit-tests:
             context:
                 "DSNonProd"
 
-      - build-nuget-package:
-            requires: [ sonar-scanner-and-unit-tests ]
+      - aether-testutils-sonar-scanner-and-unit-tests:
+            context:
+                "DSNonProd"
+
+      - build-nuget-packages:
+            requires: [ aether-sonar-scanner-and-unit-tests,
+                        aether-testutils-sonar-scanner-and-unit-tests]
             filters:
                 branches: { only: [master]}
 
-      - publish_build_to_quget_gallery:
-            requires: [ build-nuget-package ]
+      - aether-publish_build_to_quget_gallery:
+            requires: [ build-nuget-packages ]
+            filters:
+                branches: { only: [master]}
+
+      - aether-testutils-publish_build_to_quget_gallery:
+            requires: [ build-nuget-packages ]
             filters:
                 branches: { only: [master]}

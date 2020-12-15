@@ -1,14 +1,13 @@
-﻿using Aether.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Aether.Extensions;
+using Aether.TestUtils.Extensions;
 using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Aether.SecretManager
+namespace Aether.TestUtils.Helpers
 {
     public static class SecretManager
     {
@@ -79,7 +78,7 @@ namespace Aether.SecretManager
             listRequest.MaxResults = 100;
             listRequest.NextToken = nextToken;
 
-            if(tagFilters.IsNotEmpty())
+            if (tagFilters.IsNotEmpty())
             {
                 listRequest = AddFiltersToRequest(listRequest, tagFilters);
             }
@@ -100,7 +99,7 @@ namespace Aether.SecretManager
 
             //You can thank AWS for this super awesome readable query structure.  I know what you are thinking, "yo, I probably want to filter by both the tag type, and the value"
             //Thats totally reasonable, but buckle up, cause you need to add both as seperate filters.  I hope you were hankering for the cartesian product of your filters. 
-            foreach(var kvp in tagFilters)
+            foreach (var kvp in tagFilters)
             {
                 listRequest.AddFilter(FilterNameStringType.TagKey, kvp.Key.CreateList());
                 listRequest.AddFilter(FilterNameStringType.TagValue, kvp.Value.CreateList());
