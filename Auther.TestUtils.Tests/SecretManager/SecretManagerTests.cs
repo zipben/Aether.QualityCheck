@@ -1,24 +1,23 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.SecretManager;
+using Aether.TestUtils.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aether.SecretManager.Tests
+namespace Aether.TestUtiles.Tests.SecretManager
 {
-    [TestClass()]
+    [TestClass]
     public class SecretManagerTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void PopulateSecretsToEnvironmentTest_WithEnvironmentFilters_EnvironmentShouldHaveVariables()
         {
-
             Dictionary<string, string> tagFilters = new Dictionary<string, string>()
             {
                 {"environment", "test"}
             };
 
-            SecretManager.PopulateSecretsToEnvironment("us-east-2", tagFilters);
+            TestUtils.Helpers.SecretManager.PopulateSecretsToEnvironment("us-east-2", tagFilters);
 
             Assert.IsTrue(Environment.GetEnvironmentVariables().Count > 0);
         }

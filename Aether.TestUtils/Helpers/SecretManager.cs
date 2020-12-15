@@ -1,16 +1,15 @@
-﻿using Aether.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Aether.Extensions;
+using Aether.TestUtils.Extensions;
 using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Aether.SecretManager
+namespace Aether.TestUtils.Helpers
 {
-    public class SecretManager
+    public static class SecretManager
     {
         /// <summary>
         /// Inserts all the secrets from secret manager for a particular app in a particular environment and region.  

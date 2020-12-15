@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aether.Extensions
+namespace Aether.TestUtils.Extensions
 {
     internal static class SecretManagerHelperExtensions
     {
-        internal static void AddFilter(this ListSecretsRequest listRequest, FilterNameStringType key, List<string> values) =>
+        public static void AddFilter(this ListSecretsRequest listRequest, FilterNameStringType key, List<string> values) =>
             listRequest.Filters.Add(new Filter { Key = key, Values = values });
     }
 }
