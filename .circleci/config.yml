@@ -13,16 +13,27 @@ version: 2
 ############################################################
 # Shared jobs and configuration
 ############################################################
-global-environment-vars: &global-env-vars
+global-environment-vars_aether: &global-env-vars_aether
   CORE_ID: '207965'
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   NAME: 'Aether'
   SONAR_URL: 'https://sonarqube.rockfin.com'
 
-global_environment: &global_environment
+global-environment-vars_aether_testutils: &global-env-vars_aether_testutils
+  CORE_ID: '208062'
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  NAME: 'Aether.TestUtils'
+  SONAR_URL: 'https://sonarqube.rockfin.com'
+
+global_environment_aether: &global_environment_aether
   working_directory: '~/project'
   environment:
-    <<: *global-env-vars
+    <<: *global-env-vars_aether
+
+global_environment_aether_testutils: &global_environment_aether_testutils
+  working_directory: '~/project'
+  environment:
+    <<: *global-env-vars_aether_testutils
 
 enterprise_setup_step: &enterprise_setup_step
   run:
@@ -46,7 +57,7 @@ persist_workspace_step: &persist_workspace_step
 
 jobs:
   aether-sonar-scanner-and-unit-tests:
-    <<: *global_environment  
+    <<: *global_environment_aether
     docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sonarqube'}]
     steps:
       - checkout
@@ -62,7 +73,7 @@ jobs:
       - *persist_workspace_step
 
   aether-testutils-sonar-scanner-and-unit-tests:
-    <<: *global_environment  
+    <<: *global_environment_aether_testutils
     docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sonarqube'}]
     steps:
       - checkout
