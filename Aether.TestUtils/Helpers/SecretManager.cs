@@ -19,7 +19,7 @@ namespace Aether.TestUtils.Helpers
         /// <param name="region"></param>
         public static void PopulateAllAppSecrets(string appId, string environment, string region)
         {
-            Dictionary<string, string> tagFilters = new Dictionary<string, string>()
+            var tagFilters = new Dictionary<string, string>()
             {
                 {"app-id", appId},
                 {"environment", environment}
@@ -72,11 +72,13 @@ namespace Aether.TestUtils.Helpers
             return ret;
         }
 
-        private static List<SecretListEntry> GetAllSecretListEntriesFromRemote(IAmazonSecretsManager client, Dictionary<string,string> tagFilters, string nextToken = null)
+        private static List<SecretListEntry> GetAllSecretListEntriesFromRemote(IAmazonSecretsManager client, Dictionary<string, string> tagFilters, string nextToken = null)
         {
-            ListSecretsRequest listRequest = new ListSecretsRequest();
-            listRequest.MaxResults = 100;
-            listRequest.NextToken = nextToken;
+            var listRequest = new ListSecretsRequest
+            {
+                MaxResults = 100,
+                NextToken = nextToken
+            };
 
             if (tagFilters.IsNotEmpty())
             {

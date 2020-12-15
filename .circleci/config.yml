@@ -195,7 +195,7 @@ workflows:
                 branches: { only: [master]}
 
       - aether_testutils_build-nuget-package:
-            requires: [ aether-testutils-sonar-scanner-and-unit-tests]
+            requires: [ aether-testutils-sonar-scanner-and-unit-tests ]
             filters:
                 branches: { only: [master]}
 
