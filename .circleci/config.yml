@@ -118,7 +118,7 @@ jobs:
             cd Aether/bin/Release
             dotnet nuget push ./DataServices.Aether.*.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY --skip-duplicate
 
-  aether-testutils--publish_build_to_quget_gallery:
+  aether-testutils-publish_build_to_quget_gallery:
     <<: *global_environment
     docker: [{image: 'qldockerdtr.rockfin.com/jcherry/dotnet:3.1-sdk-openjdk'}]
     steps:
