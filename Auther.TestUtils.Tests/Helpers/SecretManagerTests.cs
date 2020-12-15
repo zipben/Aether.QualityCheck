@@ -1,18 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.TestUtils.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Aether.TestUtiles.Tests.SecretManager
+namespace Aether.TestUtiles.Tests.Helpers
 {
     [TestClass]
     public class SecretManagerTests
     {
         [TestMethod]
-        public void PopulateSecretsToEnvironmentTest_WithEnvironmentFilters_EnvironmentShouldHaveVariables()
+        public void PopulateSecretsToEnvironmentTest()
         {
-            Dictionary<string, string> tagFilters = new Dictionary<string, string>()
+            var tagFilters = new Dictionary<string, string>()
             {
                 {"environment", "test"}
             };

@@ -78,7 +78,7 @@ namespace Aether.TestUtils.Helpers
             listRequest.MaxResults = 100;
             listRequest.NextToken = nextToken;
 
-            if(tagFilters.IsNotEmpty())
+            if (tagFilters.IsNotEmpty())
             {
                 listRequest = AddFiltersToRequest(listRequest, tagFilters);
             }
@@ -99,7 +99,7 @@ namespace Aether.TestUtils.Helpers
 
             //You can thank AWS for this super awesome readable query structure.  I know what you are thinking, "yo, I probably want to filter by both the tag type, and the value"
             //Thats totally reasonable, but buckle up, cause you need to add both as seperate filters.  I hope you were hankering for the cartesian product of your filters. 
-            foreach(var kvp in tagFilters)
+            foreach (var kvp in tagFilters)
             {
                 listRequest.AddFilter(FilterNameStringType.TagKey, kvp.Key.CreateList());
                 listRequest.AddFilter(FilterNameStringType.TagValue, kvp.Value.CreateList());
