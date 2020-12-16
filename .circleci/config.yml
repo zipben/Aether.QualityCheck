@@ -100,7 +100,7 @@ jobs:
           name: 'Updating Quget Gallery'
           command: |
             cd Aether/bin/Release
-            dotnet nuget push ./DataServices.Aether.*.nupkg -s https://qugetgal.rockfin.com -k $AETHER_QUGET_KEY --skip-duplicate
+            dotnet nuget push ./DataServices.Aether.*.nupkg -s https://qugetgal.rockfin.com -k $QUGET_KEY --skip-duplicate
 
 #############################################################
 # Define your workflow
