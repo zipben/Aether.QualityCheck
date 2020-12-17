@@ -15,7 +15,7 @@ namespace Aether.Tests.Helpers
                 {"environment", "test"}
             };
 
-            TestUtils.Helpers.SecretManagerHelper.PopulateSecretsToEnvironment("us-east-2", tagFilters);
+            Aether.Helpers.SecretManagerHelper.PopulateSecretsToEnvironment("us-east-2", tagFilters);
 
             Assert.IsTrue(Environment.GetEnvironmentVariables().Count > 0);
         }

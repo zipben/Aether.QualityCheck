@@ -6,7 +6,7 @@ using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 
-namespace Aether.TestUtils.Helpers
+namespace Aether.Helpers
 {
     public static class SecretManagerHelper
     {
