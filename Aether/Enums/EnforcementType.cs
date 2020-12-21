@@ -1,5 +1,8 @@
-﻿namespace Aether.Enums
+﻿using System.Text.Json.Serialization;
+
+namespace Aether.Enums
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum EnforcementType
     {
         RightToKnow = 1,
