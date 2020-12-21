@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Aether.Enums;
 
-namespace Aether.Models
+namespace Aether.Interfaces
 {
-    public class LedgerEntry
+    public interface ILedgerEntry
     {
         public string DataEnforcementRequestId { get; set; }
 
