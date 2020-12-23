@@ -9,7 +9,7 @@ namespace Aether.Interfaces
 
         public string Entity { get; set; }
 
-        public EnforcementType RequestType { get; set; }
+        public EnforcementType? RequestType { get; set; }
 
         public Dictionary<string, List<string>> PersonalData { get; set; }
 
