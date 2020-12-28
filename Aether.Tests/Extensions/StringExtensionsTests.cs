@@ -25,5 +25,16 @@ namespace Aether.Tests.Extensions
         {
             Assert.AreEqual(expectedResult, str.Exists());
         }
+
+        [TestMethod]
+        [DataRow("abcdef", "abcdef")]
+        [DataRow("ThisIsACamel", "This Is A Camel")]
+        [DataRow("THIIISSSSIsACamel", "THIIISSSS Is A Camel")]
+        [DataRow("PartyInTheUSA", "Party In The USA")]
+        [DataRow("IAmnotAProperlyConstructedSentence", "I Amnot A Properly Constructed Sentence")]
+        public void SplitCameCaseTest(string str, string expectedResult)
+        {
+            Assert.AreEqual(expectedResult, str.SplitCamelCase());
+        }
     }
 }
