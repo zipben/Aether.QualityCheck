@@ -25,5 +25,7 @@ namespace Aether.Interfaces
         public long ExpirationDate { get; set; }
 
         public long? CompletionDate { get; set; }
+
+        public bool? IsTest { get; set; }
     }
 }
