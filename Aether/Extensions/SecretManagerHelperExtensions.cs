@@ -2,7 +2,7 @@
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 
-namespace Aether.TestUtils.Extensions
+namespace Aether.Extensions
 {
     public static class SecretManagerHelperExtensions
     {
