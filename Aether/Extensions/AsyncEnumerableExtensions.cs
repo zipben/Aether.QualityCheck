@@ -8,6 +8,11 @@ namespace Aether.Extensions
     {
         public static async Task<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> items)
         {
+            if (items is null)
+            {
+                return null;
+            }
+
             var results = new List<T>();
             await foreach (var item in items)
             { 
