@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Aether.Enums;
+using Aether.Interfaces;
 
 namespace Aether.Models
 {
-    public class EnforcementRequest
+    public class EnforcementRequest : IEnforcementMessage
     {
         public string EnforcementRequestId { get; set; }
 

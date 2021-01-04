@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Aether.Interfaces;
 using Newtonsoft.Json;
 
 namespace Aether.Models
 {
-    public class EnforcementResponse
+    public class EnforcementResponse : IEnforcementMessage
     {
         public string EnforcementRequestId { get; set; }
 
