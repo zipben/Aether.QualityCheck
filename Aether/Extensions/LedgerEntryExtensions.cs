@@ -1,4 +1,5 @@
-﻿using Aether.Interfaces;
+﻿using System.Collections.Generic;
+using Aether.Interfaces;
 
 namespace Aether.Extensions
 {
@@ -16,5 +17,15 @@ namespace Aether.Extensions
                 ledgerEntry.Confirmed,
                 ledgerEntry.ConfirmationDate
             };
+
+        public static object MakeObjectToLog(this IEnumerable<ILedgerEntry> ledgerEntryList)
+        {
+            var list = new List<object>();
+            foreach (var item in ledgerEntryList)
+            {
+                list.Add(item.MakeObjectToLog());
+            }
+            return list;
+        }
     }
 }
