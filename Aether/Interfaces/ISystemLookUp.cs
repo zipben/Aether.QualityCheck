@@ -6,9 +6,10 @@ namespace Aether.Interfaces
 {
     public interface ISystemLookup
     {
-        string SystemName { get; set; }
-        string EmailAddress { get; set; }
-        long CreatedDate { get; set; }
-        long LastUpdatedDate { get; set; }
+        public string SystemId { get; set; }
+        public string SystemName { get; set; }
+        public string EmailAddress { get; set; }
+        public long CreatedDate { get; set; }
+        public long LastUpdatedDate { get; set; }
     }
 }
