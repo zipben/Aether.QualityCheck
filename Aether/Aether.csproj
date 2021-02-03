@@ -8,13 +8,13 @@
     <PackageProjectUrl>https://git.rockfin.com/DataServices/Aether</PackageProjectUrl>
     <Description>Shared library with common extensions, classes, etc.</Description>
     <PackageIcon>Aether.png</PackageIcon>
-    <Copyright>Copyright 2020(c) Quicken Loans Corporation. All rights reserved.</Copyright>
+    <Copyright>Copyright 2021(c) Quicken Loans Corporation. All rights reserved.</Copyright>
     <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
     <Product>DataServices.Aether</Product>
     <PackageId>DataServices.Aether</PackageId>
-    <Version>1.0.37</Version>
-    <AssemblyVersion>1.0.37.0</AssemblyVersion>
-    <FileVersion>1.0.37.0</FileVersion>
+    <Version>1.0.39</Version>
+    <AssemblyVersion>1.0.39.0</AssemblyVersion>
+    <FileVersion>1.0.39.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
