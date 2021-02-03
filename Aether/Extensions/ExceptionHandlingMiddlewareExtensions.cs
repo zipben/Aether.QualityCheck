@@ -12,5 +12,7 @@ namespace Aether.Extensions
         /// <returns></returns>
         public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder) =>
             builder.UseMiddleware<ErrorHandlingMiddleware>();
+        public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder) =>
+            builder.UseMiddleware<GrafanaControllersMiddleware>();
     }
 }
