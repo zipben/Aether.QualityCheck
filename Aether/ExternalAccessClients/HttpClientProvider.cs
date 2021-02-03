@@ -15,7 +15,6 @@ namespace Aether.ExternalAccessClients
     {
         private const string ACCESS_TOKEN = "access_token";
         protected readonly HttpClient _httpClient;
-        private static readonly List<CachedToken> _tokenCache = new List<CachedToken>();
 
         protected HttpClientProvider(HttpClient httpClient)
         {
@@ -24,20 +23,9 @@ namespace Aether.ExternalAccessClients
 
         protected async Task<string> GetToken(ServiceSettings serviceSettings, string scope)
         {
-            var cachedToken = GetTokenFromCache(serviceSettings, scope);
-            if (!string.IsNullOrWhiteSpace(cachedToken))
-            {
-                return cachedToken;
-            }
-
             using var httpResponse = await GetHttpResponse(serviceSettings, scope);
 
             var token = await GetTokenFromHttpResponse(httpResponse);
-
-            if (!string.IsNullOrWhiteSpace(token))
-            {
-                AddToCache(token, serviceSettings, scope);
-            }
 
             return token;
         }
@@ -67,47 +55,6 @@ namespace Aether.ExternalAccessClients
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
             var json = (JObject)JsonConvert.DeserializeObject(content);
             return json[ACCESS_TOKEN].Value<string>();
-        }
-
-        private string GetTokenFromCache(ServiceSettings serviceSettings, string scope)
-        {
-            RemoveExpiredTokens();
-
-            var cachedToken = _tokenCache.FirstOrDefault(x => !string.IsNullOrEmpty(x.Token)
-                && x.AuthorizationUrl == serviceSettings.AuthorizerUrl
-                && x.User == serviceSettings.UserName
-                && x.Aud == serviceSettings.BaseUrl
-                && x.Scope == scope
-                && DateTime.Now.Subtract(x.DateCached).TotalMinutes <= 1);
-
-            return cachedToken?.Token;
-        }
-
-        private void AddToCache(string token, ServiceSettings serviceSettings, string scope)
-        {
-            RemoveExpiredTokens();
-
-            _tokenCache.Add(new CachedToken
-            {
-                Aud = serviceSettings.BaseUrl,
-                AuthorizationUrl = serviceSettings.AuthorizerUrl,
-                DateCached = DateTime.Now,
-                Scope = scope,
-                Token = token,
-                User = serviceSettings.UserName
-            });
-        }
-
-        private void RemoveExpiredTokens()
-        {
-            for (var i = _tokenCache.Count - 1; i >= 0; i--)
-            {
-                var token = _tokenCache[i];
-                if (DateTime.Now.Subtract(token.DateCached).TotalMinutes > 1)
-                {
-                    _tokenCache.RemoveAt(i);
-                }
-            }
         }
 
         #endregion GetToken Helper Methods
