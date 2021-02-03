@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Aether.Extensions
 {
-    public static class ExceptionHandlingMiddlewareExtensions
+    public static class MiddlewareExtensions
     {
         /// <summary>
         /// 
