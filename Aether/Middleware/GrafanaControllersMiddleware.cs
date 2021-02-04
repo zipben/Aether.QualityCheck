@@ -65,4 +65,5 @@ namespace Aether.Middleware
         }
 
         private bool IsInFilter(HttpContext context) => _filterList.Contains(context.Request.Path);
+    }
 }
