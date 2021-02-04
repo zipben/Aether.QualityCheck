@@ -14,6 +14,9 @@ namespace Aether.Middleware
         private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
         private readonly IApiLogger _logger;
+        private static readonly List<string> _filterList = new List<string>{
+            "/api/heartbeat"
+        };
 
         /// <summary>
         /// Constructor for GrafanaControllersMiddleware
@@ -35,7 +38,7 @@ namespace Aether.Middleware
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            if (isInFilter(context))
+            if (IsInFilter(context))
             {
                 try
                 {
@@ -61,9 +64,5 @@ namespace Aether.Middleware
             }
         }
 
-        private bool isInFilter(HttpContext context)
-        {
-            return context.Request.Path == "/api/heartbeat";
-        }
-    }
+        private bool IsInFilter(HttpContext context) => _filterList.Contains(context.Request.Path);
 }
