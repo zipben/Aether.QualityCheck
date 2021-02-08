@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Oya_UI.Extensions
+namespace Aether.Extensions
 {
     public static class LongDateExtensions
     {
