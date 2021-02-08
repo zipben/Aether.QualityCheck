@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Aether.Extensions;
-using Aether.TestUtils.Extensions;
 using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 
-namespace Aether.TestUtils.Helpers
+namespace Aether.Helpers
 {
-    public static class SecretManager
+    public static class SecretManagerHelper
     {
         /// <summary>
         /// Inserts all the secrets from secret manager for a particular app in a particular environment and region.  
@@ -19,7 +18,7 @@ namespace Aether.TestUtils.Helpers
         /// <param name="region"></param>
         public static void PopulateAllAppSecrets(string appId, string environment, string region)
         {
-            Dictionary<string, string> tagFilters = new Dictionary<string, string>()
+            var tagFilters = new Dictionary<string, string>()
             {
                 {"app-id", appId},
                 {"environment", environment}
@@ -72,11 +71,13 @@ namespace Aether.TestUtils.Helpers
             return ret;
         }
 
-        private static List<SecretListEntry> GetAllSecretListEntriesFromRemote(IAmazonSecretsManager client, Dictionary<string,string> tagFilters, string nextToken = null)
+        private static List<SecretListEntry> GetAllSecretListEntriesFromRemote(IAmazonSecretsManager client, Dictionary<string, string> tagFilters, string nextToken = null)
         {
-            ListSecretsRequest listRequest = new ListSecretsRequest();
-            listRequest.MaxResults = 100;
-            listRequest.NextToken = nextToken;
+            var listRequest = new ListSecretsRequest
+            {
+                MaxResults = 100,
+                NextToken = nextToken
+            };
 
             if (tagFilters.IsNotEmpty())
             {

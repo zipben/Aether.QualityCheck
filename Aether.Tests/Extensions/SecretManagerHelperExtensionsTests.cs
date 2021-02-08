@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Aether.Extensions;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.TestUtils.Extensions;
 
-namespace Auther.TestUtils.Tests.Extensions
+namespace Auther.Tests.Extensions
 {
     [TestClass]
     public class SecretManagerHelperExtensionsTests

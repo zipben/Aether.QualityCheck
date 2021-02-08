@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Aether.Extensions
 {
@@ -22,5 +23,21 @@ namespace Aether.Extensions
         /// <returns></returns>
         public static bool Exists(this string str) =>
             !string.IsNullOrWhiteSpace(str);
+
+        /// <summary>
+        /// Splits a Camel case string on Capitals.  Should ignore uppercase abbreviates like CSV, USA etc. 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="delimeter"></param>
+        /// <returns></returns>
+        public static string SplitCamelCase(this string val, string delimeter = " ")
+        {
+            var r = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                 (?<=[^A-Z])(?=[A-Z]) |
+                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+
+            return r.Replace(val, delimeter);
+        }
     }
 }
