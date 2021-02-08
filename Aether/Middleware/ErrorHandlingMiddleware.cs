@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using APILogger.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using RockLib.Logging;
 
 namespace Aether.Middleware
 {

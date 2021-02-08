@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace Aether.Extensions
 {
-    public static class ExceptionHandlingMiddlewareExtensions
+    public static class ApplicationBuilderExtensions
     {
         /// <summary>
         /// 
@@ -12,5 +12,7 @@ namespace Aether.Extensions
         /// <returns></returns>
         public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder) =>
             builder.UseMiddleware<ErrorHandlingMiddleware>();
+        public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder) =>
+            builder.UseMiddleware<GrafanaControllersMiddleware>();
     }
 }

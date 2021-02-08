@@ -93,5 +93,21 @@ namespace Aether.Tests.Extensions
 
             Assert.AreEqual(expectedResult, actualResult);
         }
+
+        public static IEnumerable<object[]> IsNullOrEmptyTestData()
+        {
+            yield return new object[] { null, true };
+            yield return new object[] { new List<string>(), true };
+            yield return new object[] { new List<string>() { "OneItem" }, false };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(IsNullOrEmptyTestData), DynamicDataSourceType.Method)]
+        public void IsNullOrEmptyTest(List<string> list, bool expectedResult)
+        {
+            var actualResult = list.IsNullOrEmpty();
+
+            Assert.AreEqual(expectedResult, actualResult);
+        }
     }
 }

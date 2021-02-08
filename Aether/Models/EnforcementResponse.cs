@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Aether.Enums;
+using Aether.Interfaces;
 using Newtonsoft.Json;
 
 namespace Aether.Models
 {
-    public class EnforcementResponse
+    public class EnforcementResponse : IEnforcementMessage
     {
         public string EnforcementRequestId { get; set; }
 
@@ -13,5 +15,6 @@ namespace Aether.Models
 
         // Indicates we patch to the test endpoint
         public bool IsTestMessage { get; set; }
+        public EnforcementType? EnforcementType { get; set; }
     }
 }

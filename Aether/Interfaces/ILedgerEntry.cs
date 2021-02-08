@@ -27,5 +27,7 @@ namespace Aether.Interfaces
         public long? CompletionDate { get; set; }
 
         public bool? IsTest { get; set; }
+
+        public EnforcementActionType? ActionType { get; set; }
     }
 }

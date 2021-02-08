@@ -63,5 +63,14 @@ namespace Aether.Extensions
         /// <returns></returns>
         public static bool IsNotEmpty<T>(this ICollection<T> list) =>
             list != null && list.Any();
+
+        /// <summary>
+        /// True if the list is not null and has at least one item
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static bool IsNullOrEmpty<T>(this ICollection<T> list) =>
+            list is null || !list.Any();
     }
 }
