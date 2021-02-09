@@ -60,6 +60,14 @@ namespace Aether.Tests.ExternalAccessClients
         }
 
         [TestMethod]
+        public void GetBaseURITest()
+        {
+            _target.SetBaseURI(_testUri.ToString());
+
+            Assert.AreEqual(_testUri, _target.GetBaseURI());
+        }
+
+        [TestMethod]
         public void SetBaseURITest()
         {
             _target.SetBaseURI(_testUri.ToString());
