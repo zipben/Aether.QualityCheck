@@ -11,10 +11,8 @@ namespace Aether.Extensions
         /// <param name="str"></param>
         /// <param name="comparisonValue"></param>
         /// <returns></returns>
-        public static bool Like(this string str, string comparisonValue)
-        {
-            return str.Equals(comparisonValue, StringComparison.CurrentCultureIgnoreCase);
-        }
+        public static bool Like(this string str, string comparisonValue) =>
+            str.Equals(comparisonValue, StringComparison.CurrentCultureIgnoreCase);
 
         /// <summary>
         /// String is not null nor whitespace

@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using RockLib.OAuth;
 
@@ -6,6 +7,7 @@ namespace Aether.ExternalAccessClients.Interfaces
 {
     public interface IHttpClientWrapper
     {
+        Uri GetBaseURI();
         void SetBaseURI(string endpoint);
         Task<HttpResponseMessage> GetAsync(string requestUri);
         Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri);
