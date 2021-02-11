@@ -5,8 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RockLib.Metrics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -84,6 +82,23 @@ namespace Aether.Tests.Middleware
 
             _mockNext.Verify(x => x(_mockHttpContext.Object), Times.Once);
             _mockMetricFactory.Verify(mf => mf.CreateWhitebox(It.IsAny<Operation>()), Times.Never);
+        }
+
+        [TestMethod]
+        public async Task InvokeTest_FilterFound_CallsQueryCondition()
+        {
+            var request = new Mock<HttpRequest>();
+
+            var queryString = QueryString.Create("person", "John");
+
+            request.Setup(r => r.Path).Returns(() => "/api/something");
+            request.Setup(r => r.QueryString).Returns(queryString);
+            _mockHttpContext.Setup(hc => hc.Request).Returns(request.Object);
+
+            await _target.Invoke(_mockHttpContext.Object);
+
+            _mockNext.Verify(x => x(_mockHttpContext.Object), Times.Once);
+            _mockMetricFactory.Verify(mmf => mmf.CreateWhitebox(It.Is<Operation>(o => o.Name.Contains("John"))));
         }
     }
 }

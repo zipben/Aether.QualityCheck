@@ -51,7 +51,17 @@ namespace Aether.Middleware
             }
             else
             {
-                using var metric = _metricFactory.CreateWhitebox(new Operation(MetricCategory.Http, context.Request.Path, context.Request.Method, "1.0"));
+                Operation operation;
+                if(context.Request.QueryString.HasValue)
+                {
+                    var metricName = $"{context.Request.Path}{context.Request.QueryString.Value}";
+                    operation = new Operation(MetricCategory.Http, metricName, context.Request.Method, "1.0");
+                }
+                else
+                {
+                    operation = new Operation(MetricCategory.Http, context.Request.Path, context.Request.Method, "1.0");
+                }
+                using var metric = _metricFactory.CreateWhitebox(operation);
                 try
                 {
                     await _next(context);
