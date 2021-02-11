@@ -28,6 +28,9 @@ namespace Aether.ExternalAccessClients
                                           .WaitAndRetryAsync(6, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         }
 
+        public Uri GetBaseURI() =>
+            _httpClient.BaseAddress;
+
         public void SetBaseURI(string endpoint) =>
             _httpClient.BaseAddress = new Uri(endpoint, UriKind.Absolute);
 

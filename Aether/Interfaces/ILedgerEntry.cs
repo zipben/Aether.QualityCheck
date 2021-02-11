@@ -29,5 +29,7 @@ namespace Aether.Interfaces
         public bool? IsTest { get; set; }
 
         public EnforcementActionType? ActionType { get; set; }
+
+        public string ConfirmedBy { get; set; }
     }
 }
