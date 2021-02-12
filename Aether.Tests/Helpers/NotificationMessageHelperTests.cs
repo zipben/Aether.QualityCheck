@@ -15,7 +15,6 @@ namespace Aether.Tests.Helpers
         private NotificationMessageHelper _target;
 
         private Mock<IApiLogger> _mockApiLogger;
-        IOptions<NotificationServiceHelperSettings> _notificationServiceSettings;
 
         private static string _testTemplateID = "testTemplate";
         private static string _testStage = "teststage";
@@ -32,8 +31,6 @@ namespace Aether.Tests.Helpers
         public void Init()
         {
             _mockApiLogger = new Mock<IApiLogger>();
-            NotificationServiceHelperSettings notificationServiceHelperSettings = new NotificationServiceHelperSettings();
-            _notificationServiceSettings = Options.Create<NotificationServiceHelperSettings>(notificationServiceHelperSettings);
 
             _target = new NotificationMessageHelper(_mockApiLogger.Object);
         }
