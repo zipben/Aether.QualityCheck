@@ -27,7 +27,7 @@ namespace Aether.ExternalAccessClients
 
         public async Task<bool> SendEmailAsync(EmailSendModel email)
         {
-            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email?.From, email?.Subject, email?.Body, email?.To);
+            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email?.TemplateId, email?.Stage, email?.ApplicationId ,email?.From, email?.Subject, email?.Body, email?.To);
 
             return await _notificationServiceClient.TryPostRequestAsync(emailObj);
         }

@@ -7,6 +7,6 @@ namespace Aether.Helpers.Interfaces
 {
     public interface INotificationMessageHelper
     {
-        public EmailRootObject CreateEmail(string fromEmail, string subject, string body, List<string> toEmailList);
+        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList);
     }
 }
