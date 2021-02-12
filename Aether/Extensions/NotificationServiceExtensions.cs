@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aether.Extensions
 {
-    public static class NotificationServiceExtension
+    public static class NotificationServiceExtensions
     {
         public static void UseFOCNotificationService(this IServiceCollection service)
         {

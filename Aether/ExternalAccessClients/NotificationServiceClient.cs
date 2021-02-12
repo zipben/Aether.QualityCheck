@@ -23,7 +23,7 @@ namespace Aether.ExternalAccessClients
 
         public NotificationServiceClient(IHttpClientWrapper httpClient, IOptions<NotificationServiceSettings> config, IApiLogger apiLogger)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _settings = config.Value;
             _httpClient.SetBaseURI(_settings.BaseUrl);
             _auth0Auth = new Auth0AuthParams(_settings.ClientID, _settings.ClientSecret, _settings.Audience, AUTHURL);
@@ -57,8 +57,8 @@ namespace Aether.ExternalAccessClients
             _apiLogger.LogInfo($"{nameof(NotificationServiceClient)}:{nameof(GenerateEmailRequestBody)}", emailObject);
             try
             {
-                var des = JsonConvert.SerializeObject(emailObject, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                return new StringContent(des);
+                var stringContent = JsonConvert.SerializeObject(emailObject, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                return new StringContent(stringContent);
             }
             catch (Exception e)
             {
