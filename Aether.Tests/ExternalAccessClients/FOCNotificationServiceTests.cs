@@ -28,6 +28,8 @@ namespace Aether.Tests.ExternalAccessClients
         private string _testFrom;
         private string _testSubject;
         private List<string> _testTo;
+        private List<string> _testCC;
+
 
         [TestInitialize]
         public void Init()
@@ -50,6 +52,7 @@ namespace Aether.Tests.ExternalAccessClients
             _testFrom = "from@from.com";
             _testSubject = "subject";
             _testTo = new List<string> { "to@to.com" };
+            _testCC = new List<string> { "cc@cc.com" };
 
             _testEmailSendModel = new EmailSendModel
             {
@@ -59,7 +62,8 @@ namespace Aether.Tests.ExternalAccessClients
                 Body = _testBody,
                 From = _testFrom,
                 Subject = _testSubject,
-                To = _testTo
+                To = _testTo,
+                CC = _testCC
             };
         }
 
@@ -74,7 +78,7 @@ namespace Aether.Tests.ExternalAccessClients
         {
             await _target.SendEmailAsync(_testEmailSendModel);
 
-            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testTemplateID, _testStage, _testApplicationID, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To), Times.Once);
+            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testTemplateID, _testStage, _testApplicationID, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To, _testEmailSendModel.CC), Times.Once);
 
             _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<Models.NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
             _mockNotificationServiceClient.VerifyNoOtherCalls();

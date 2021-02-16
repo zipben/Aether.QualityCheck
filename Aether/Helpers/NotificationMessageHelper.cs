@@ -16,7 +16,7 @@ namespace Aether.Helpers
             _apiLogger = apiLogger ?? throw new ArgumentNullException(nameof(apiLogger));
         }
 
-        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList)
+        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList, List<string> ccEmailList = null)
         {
             ValidateArguments(templateId, stage, applicationId, fromEmail, subject, body, toEmailList);
 
@@ -32,6 +32,7 @@ namespace Aether.Helpers
                 {
                     from = fromEmail,
                     to = toEmailList.ToArray(),
+                    cc = ccEmailList != null ? ccEmailList.ToArray():null
                 },
             };
         }

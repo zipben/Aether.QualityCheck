@@ -22,8 +22,10 @@ namespace Aether.Tests.Helpers
         private static string _testSubject = "I am your loyal subject";
         private static string _testBody = "I am a body don't objectify me";
         private static string _testEmail = "MedgarMcGregor@quickenloans.com";
+        private static string _testCCEmail = "LuceroToral@quickenloans.com";
         private static string from = "legal@legal.com";
         private static List<string> _testToEmails = new List<string> { _testEmail };
+        private static List<string> _testCCEmails = new List<string> { _testCCEmail };
         private static List<string> _testEmptyEmails = new List<string>();
 
 
@@ -44,7 +46,7 @@ namespace Aether.Tests.Helpers
         [TestMethod]
         public void CreateEmail_AllArguments_ValuesInEmailContent()
         {
-            var emailContent = _target.CreateEmail(_testTemplateID, _testStage, _testApplicationID, from, _testSubject, _testBody, _testToEmails);
+            var emailContent = _target.CreateEmail(_testTemplateID, _testStage, _testApplicationID, from, _testSubject, _testBody, _testToEmails, _testCCEmails);
 
             Assert.AreEqual(_testTemplateID, emailContent.templateId);
             Assert.AreEqual(_testStage, emailContent.stage);
@@ -52,6 +54,8 @@ namespace Aether.Tests.Helpers
             Assert.AreEqual(_testSubject, emailContent.subjectParameters.messageToReplace);
             Assert.AreEqual(_testBody, emailContent.bodyParameters.thisParameter);
             Assert.AreEqual(from, emailContent.sendParameters.from);
+            Assert.AreEqual(_testCCEmails, emailContent.sendParameters.cc);
+
             Assert.IsTrue(Array.Exists(emailContent.sendParameters.to, item => item == _testEmail));
         }
 
