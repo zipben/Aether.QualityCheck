@@ -1,4 +1,5 @@
-﻿using Aether.ExternalAccessClients.Interfaces;
+﻿using Aether.Extensions;
+using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Models;
 using APILogger.Interfaces;
@@ -27,9 +28,21 @@ namespace Aether.ExternalAccessClients
 
         public async Task<bool> SendEmailAsync(EmailSendModel email)
         {
-            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email?.TemplateId, email?.Stage, email?.ApplicationId ,email?.From, email?.Subject, email?.Body, email?.To, email?.CC);
+            ValidateEmailSendModel(email);
+            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email.TemplateId, email.Stage, email.ApplicationId, email.From, email.Subject, email.Body, email.To, email.CC);
 
             return await _notificationServiceClient.TryPostRequestAsync(emailObj);
+        }
+
+        private static void ValidateEmailSendModel(EmailSendModel email)
+        {
+            if (!email.TemplateId.Exists()) throw new ArgumentNullException(nameof(email.TemplateId));
+            if (!email.Stage.Exists()) throw new ArgumentNullException(nameof(email.Stage));
+            if (!email.ApplicationId.Exists()) throw new ArgumentNullException(nameof(email.ApplicationId));
+            if (!email.From.Exists()) throw new ArgumentNullException(nameof(email.From));
+            if (!email.Subject.Exists()) throw new ArgumentNullException(nameof(email.Subject));
+            if (!email.Body.Exists()) throw new ArgumentNullException(nameof(email.Body));
+            if (email.To.IsNullOrEmpty()) throw new ArgumentNullException(nameof(email.To));
         }
     }
 }

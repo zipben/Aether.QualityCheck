@@ -1,4 +1,5 @@
-﻿using Aether.Helpers.Interfaces;
+﻿using Aether.Extensions;
+using Aether.Helpers.Interfaces;
 using APILogger.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Aether.Helpers
         public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList, List<string> ccEmailList = null)
         {
             ValidateArguments(templateId, stage, applicationId, fromEmail, subject, body, toEmailList);
-
+           
             return new EmailRootObject
             {
                 templateId = templateId,
@@ -32,20 +33,20 @@ namespace Aether.Helpers
                 {
                     from = fromEmail,
                     to = toEmailList.ToArray(),
-                    cc = ccEmailList != null ? ccEmailList.ToArray():null
+                    cc = ccEmailList?.ToArray()
                 },
             };
         }
 
         private static void ValidateArguments(string templateId, string stage, string applicationId, string from, string subject, string body, List<string> toEmailList)
         {
-            if (string.IsNullOrEmpty(templateId)) throw new ArgumentNullException($"{nameof(templateId)} field must be defined");
-            if (string.IsNullOrEmpty(stage)) throw new ArgumentNullException($"{nameof(stage)} field must be defined");
-            if (string.IsNullOrEmpty(applicationId)) throw new ArgumentNullException($"{nameof(applicationId)} field must be defined");
-            if (string.IsNullOrWhiteSpace(from)) throw new ArgumentNullException($"{nameof(from)} field must be defined");
-            if (string.IsNullOrWhiteSpace(subject)) throw new ArgumentNullException($"{nameof(subject)} field must be defined");
-            if (string.IsNullOrWhiteSpace(body)) throw new ArgumentNullException($"{nameof(body)} field must be defined");
-            if (toEmailList == null || !toEmailList.Any()) throw new ArgumentNullException($"{nameof(toEmailList)} must have at least one recipient");
+            if (!templateId.Exists()) throw new ArgumentNullException($"{nameof(templateId)} field must be defined");
+            if (!stage.Exists()) throw new ArgumentNullException($"{nameof(stage)} field must be defined");
+            if (!applicationId.Exists()) throw new ArgumentNullException($"{nameof(applicationId)} field must be defined");
+            if (!from.Exists()) throw new ArgumentNullException($"{nameof(from)} field must be defined");
+            if (!subject.Exists()) throw new ArgumentNullException($"{nameof(subject)} field must be defined");
+            if (!body.Exists()) throw new ArgumentNullException($"{nameof(body)} field must be defined");
+            if (toEmailList.IsNullOrEmpty()) throw new ArgumentNullException($"{nameof(toEmailList)} must have at least one recipient");
         }
     }
 }
