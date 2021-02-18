@@ -21,13 +21,16 @@ namespace Aether.Tests.ExternalAccessClients
         private Mock<INotificationServiceClient> _mockNotificationServiceClient;
         private Mock<INotificationMessageHelper> _mockNotificationMessageHelper;
         private EmailSendModel _testEmailSendModel;
-        private string _testTemplateID;
-        private string _testStage;
-        private string _testApplicationID;
-        private string _testBody;
-        private string _testFrom;
-        private string _testSubject;
-        private List<string> _testTo;
+        private EmailSendModel _testEmailSendModelWithNullCC;
+        private static string _testTemplateID = "testTemplate";
+        private static string _testStage = "teststage";
+        private static string _testApplicationID = "00000ID";
+        private static string _testBody = "body";
+        private static string _testFrom = "from@from.com";
+        private static string _testSubject = "subject";
+        private static List<string> _testTo = new List<string> { "to@to.com" };
+        private static List<string> _testCC = new List<string> { "cc@cc.com" };
+        
 
         [TestInitialize]
         public void Init()
@@ -43,14 +46,6 @@ namespace Aether.Tests.ExternalAccessClients
 
         private void SetupTestData()
         {
-            _testTemplateID = "testTemplate";
-            _testStage = "teststage";
-            _testApplicationID = "00000ID";
-            _testBody = "body";
-            _testFrom = "from@from.com";
-            _testSubject = "subject";
-            _testTo = new List<string> { "to@to.com" };
-
             _testEmailSendModel = new EmailSendModel
             {
                 TemplateId = _testTemplateID,
@@ -59,7 +54,18 @@ namespace Aether.Tests.ExternalAccessClients
                 Body = _testBody,
                 From = _testFrom,
                 Subject = _testSubject,
-                To = _testTo
+                To = _testTo,
+                CC = _testCC
+            };
+            _testEmailSendModelWithNullCC = new EmailSendModel
+            {
+                TemplateId = _testTemplateID,
+                Stage = _testStage,
+                ApplicationId = _testApplicationID,
+                Body = _testBody,
+                From = _testFrom,
+                Subject = _testSubject,
+                To = _testTo,
             };
         }
 
@@ -74,10 +80,49 @@ namespace Aether.Tests.ExternalAccessClients
         {
             await _target.SendEmailAsync(_testEmailSendModel);
 
-            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testTemplateID, _testStage, _testApplicationID, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To), Times.Once);
+            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModel.TemplateId, _testEmailSendModel.Stage, _testEmailSendModel.ApplicationId, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To, _testEmailSendModel.CC), Times.Once);
 
             _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<Models.NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
             _mockNotificationServiceClient.VerifyNoOtherCalls();
+        }
+
+        [TestMethod]
+        public async Task SendEmailAsyncWithNullCC()
+        {
+            await _target.SendEmailAsync(_testEmailSendModelWithNullCC);
+
+            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModelWithNullCC.TemplateId, _testEmailSendModelWithNullCC.Stage, _testEmailSendModelWithNullCC.ApplicationId, _testEmailSendModelWithNullCC.From, _testEmailSendModelWithNullCC.Subject, _testEmailSendModelWithNullCC.Body, _testEmailSendModelWithNullCC.To, _testEmailSendModelWithNullCC.CC), Times.Once);
+
+            _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<Models.NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
+            _mockNotificationServiceClient.VerifyNoOtherCalls();
+        }
+
+        public static IEnumerable<object[]> SendEmailAsyncTest_ArgumentNullExceptionData()
+        {
+            yield return new object[] { null, _testStage, _testApplicationID, _testFrom, _testSubject, _testBody, _testTo, _testCC };
+            yield return new object[] { _testTemplateID, null, _testApplicationID, _testFrom, _testSubject, _testBody, _testTo, _testCC };
+            yield return new object[] { _testTemplateID, _testStage, null, _testFrom, _testSubject, _testBody, _testTo, _testCC };
+            yield return new object[] { _testTemplateID, _testStage, _testApplicationID, null, _testSubject, _testBody, _testTo, _testCC };
+            yield return new object[] { _testTemplateID, _testStage, _testApplicationID, _testFrom, null, _testBody, _testTo, _testCC };
+            yield return new object[] { _testTemplateID, _testStage, _testApplicationID, _testFrom, _testSubject, null, _testTo, _testCC};
+            yield return new object[] { _testTemplateID, _testStage, _testApplicationID, _testFrom, _testSubject, _testBody, null, _testCC };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(SendEmailAsyncTest_ArgumentNullExceptionData), DynamicDataSourceType.Method)]
+        public async Task SendEmailAsyncTest_ArgumentNullException(string templateId, string stage, string applicationId, string from, string subject, string body, List<string> toEmails, List<string> ccEmails)
+        {
+            await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => _target.SendEmailAsync(new EmailSendModel
+            {
+                TemplateId = templateId,
+                Stage = stage,
+                ApplicationId = applicationId,
+                Body = body,
+                From = from,
+                Subject = subject,
+                To = toEmails,
+                CC = ccEmails
+            }));
         }
     }
 }
