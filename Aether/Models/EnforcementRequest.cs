@@ -17,6 +17,8 @@ namespace Aether.Models
         public bool HasSSN { get; set; } = true;
 
         public bool IsTestMessage { get; set; }
+
+        public bool IsRetry { get; set; }
     }
 }
 
