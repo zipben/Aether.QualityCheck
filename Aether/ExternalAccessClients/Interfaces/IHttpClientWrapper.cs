@@ -9,6 +9,7 @@ namespace Aether.ExternalAccessClients.Interfaces
     {
         Uri GetBaseURI();
         void SetBaseURI(string endpoint);
+        Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content);
         Task<HttpResponseMessage> GetAsync(string requestUri);
         Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri);
         Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content);
