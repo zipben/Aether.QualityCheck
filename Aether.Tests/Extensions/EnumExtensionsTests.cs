@@ -37,7 +37,7 @@ namespace Aether.Tests.Extensions
             yield return new object[] { EnforcementType.RightToAccess, "Right To Access" };
             yield return new object[] { EnforcementType.RightToDelete, "Right To Delete" };
             yield return new object[] { EnforcementType.RightToKnow, "Right To Know" };
-            yield return new object[] { EnforcementType.None, string.Empty };
+            yield return new object[] { EnforcementType.None, "None" };
         }
 
         [TestMethod]
