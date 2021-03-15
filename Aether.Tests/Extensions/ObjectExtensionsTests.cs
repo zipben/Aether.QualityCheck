@@ -11,9 +11,6 @@ namespace Aether.Extensions.Tests
     [TestClass()]
     public class ObjectExtensionsTests
     {
-
-
-
         [TestMethod]
         public void TestClone_EmailSendModel()
         {
