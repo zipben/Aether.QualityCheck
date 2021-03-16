@@ -63,6 +63,7 @@ namespace Aether.Helpers
             if (!from.Exists()) throw new ArgumentNullException($"{nameof(from)} field must be defined");
             if (!subject.Exists()) throw new ArgumentNullException($"{nameof(subject)} field must be defined");
             if (bodyParams.IsNullOrEmpty()) throw new ArgumentNullException($"{nameof(bodyParams)} field must be defined");
+            if (bodyParams.Any(l => string.IsNullOrEmpty(l.Value))) throw new ArgumentNullException($"{nameof(bodyParams)} value in KVP must be defined");
             if (toEmailList.IsNullOrEmpty()) throw new ArgumentNullException($"{nameof(toEmailList)} must have at least one recipient");
         }
 
