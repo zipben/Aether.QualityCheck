@@ -15,7 +15,7 @@ namespace Aether.Models
             public List<Attachment> attachments { get; set; }
             public SendParameters sendParameters { get; set; }
             public Subjectparameters subjectParameters { get; set; }
-            public Bodyparameters bodyParameters { get; set; }
+            public Dictionary<string, string> bodyParameters { get; set; }
         }
 
         public class SendParameters
@@ -30,12 +30,6 @@ namespace Aether.Models
         public class Subjectparameters
         {
             public string messageToReplace { get; set; }
-        }
-
-        public class Bodyparameters
-        {
-            public string thisParameter { get; set; }
-            public string thatParameter { get; set; }
         }
 
         public class Attachment
