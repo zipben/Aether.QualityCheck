@@ -16,19 +16,7 @@ namespace Aether.IntegrationTests.Setup
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
-            //If this value is null, then we have not set the env variable yet, and are running locally, if it is null,
-            //then we are running locally, and still need them set. 
-
-            string useRemoteCredentials = Environment.GetEnvironmentVariable("USE_REMOTE_CREDENTIAL");
-
-            if (useRemoteCredentials == null)
-            {
-                Console.WriteLine("Overiding set env variable with values from launchSettings.  This shouldn't happen in CircleCI.  " +
-                                  "If you see this log in Circle, its likely followed by an IO exception, because its trying to" +
-                                  "pull a value from a folder that wasnt copied into this step");
-
-                    ForceLoadEnvironmentFromLaunchSettings("..\\..\\..\\launchSettings.json");
-            }
+            ForceLoadEnvironmentFromLaunchSettings("..\\..\\..\\launchSettings.json");
         }
         public static void ForceLoadEnvironmentFromLaunchSettings(string filePath)
         {
