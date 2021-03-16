@@ -34,6 +34,12 @@ namespace Aether.ExternalAccessClients
         public void SetBaseURI(string endpoint) =>
             _httpClient.BaseAddress = new Uri(endpoint, UriKind.Absolute);
 
+        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Delete, endPoint) { Content = content };
+            return await _httpClient.SendAsync(authParams, request);
+        }
+
         public async Task<HttpResponseMessage> GetAsync(string requestUri) =>
             await _policy.ExecuteAsync(() => _httpClient.GetAsync(requestUri)).ConfigureAwait(false);
 

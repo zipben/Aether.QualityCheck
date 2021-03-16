@@ -75,6 +75,13 @@ namespace Aether.Tests.ExternalAccessClients
             Assert.AreEqual(_testUri, _httpClient.BaseAddress);
         }
 
+        [TestMethod]
+        public async Task DeleteAsyncTest()
+        {
+            await _target.DeleteAsync(null, _testUri.ToString(), _testHttpContent);
+
+            VerifyResults(HttpMethod.Delete);
+        }
 
         [TestMethod]
         public async Task GetAsyncTest()

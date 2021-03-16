@@ -7,6 +7,7 @@ namespace Aether.Enums
     {
         ActionTaken = 1,
         ActionNotTaken = 2,
-        NotFound = 3
+        NotFound = 3,
+        ActionPartiallyTaken = 4
     }
 }

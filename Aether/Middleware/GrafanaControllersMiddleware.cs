@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using RockLib.Logging;
 using RockLib.Metrics;
 
 namespace Aether.Middleware
@@ -14,9 +12,7 @@ namespace Aether.Middleware
         private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
         private readonly IApiLogger _logger;
-        private static readonly List<string> _filterList = new List<string>{
-            "/api/heartbeat"
-        };
+        private static readonly List<string> _filterList = new List<string> { "/api/heartbeat" };
 
         /// <summary>
         /// Constructor for GrafanaControllersMiddleware
@@ -52,7 +48,7 @@ namespace Aether.Middleware
             else
             {
                 Operation operation;
-                if(context.Request.QueryString.HasValue)
+                if (context.Request.QueryString.HasValue)
                 {
                     var metricName = $"{context.Request.Path}{context.Request.QueryString.Value}";
                     operation = new Operation(MetricCategory.Http, metricName, context.Request.Method, "1.0");
@@ -61,6 +57,7 @@ namespace Aether.Middleware
                 {
                     operation = new Operation(MetricCategory.Http, context.Request.Path, context.Request.Method, "1.0");
                 }
+
                 using var metric = _metricFactory.CreateWhitebox(operation);
                 try
                 {
@@ -74,6 +71,7 @@ namespace Aether.Middleware
             }
         }
 
-        private bool IsInFilter(HttpContext context) => _filterList.Contains(context.Request.Path);
+        private bool IsInFilter(HttpContext context) =>
+            _filterList.Contains(context.Request.Path);
     }
 }
