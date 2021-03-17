@@ -13,6 +13,7 @@ namespace Aether.Extensions
             service.AddSingleton<INotificationMessageHelper, NotificationMessageHelper>();
             service.AddSingleton<INotificationServiceClient, NotificationServiceClient>();
             service.AddSingleton<IFOCNotificationService, FOCNotificationService>();
+            service.AddSingleton<IFOCTemplatedNotificationService, FOCTemplatedNotificationService>();
         }
     }
 }
