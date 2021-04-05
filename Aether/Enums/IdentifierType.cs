@@ -8,6 +8,7 @@
         RMLoanId = 4,
         RocketAccountId = 5,
         PhoneNumber = 6,
-        ClientName = 7
+        ClientName = 7,
+        CreditGuid = 8
     }
 }
