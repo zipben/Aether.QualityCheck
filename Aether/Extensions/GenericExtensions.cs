@@ -2,11 +2,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace Aether.Extensions
 {
-    public static class ObjectExtensions
+    public static class GenericExtensions
     {
         /// <summary>
         /// Returns a new cloned instance of a simple object.  Please dont use for massive objects.
@@ -29,11 +31,36 @@ namespace Aether.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="hashTarget"></param>
         /// <returns></returns>
-        public static int SluggishHash(this object hashTarget)
+        public static int SluggishHash<T>(this T hashTarget)
         {
             string json = JsonConvert.SerializeObject(hashTarget);
 
             return json.GetHashCode();
         }
+
+        /// <summary>
+        /// Serializes the input model into Http String Content
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static HttpContent GenerateHttpStringContent<T>(T model)
+        {
+            string jsonString;
+            try
+            {
+                jsonString = JsonConvert.SerializeObject(model);
+            }
+            catch (Exception e)
+            {
+                throw new JsonSerializationException($"{nameof(Aether)}.{nameof(GenerateHttpStringContent)} encountered an exception while trying to serialize request model into string content", e);
+            }
+
+            var content = new StringContent(jsonString);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            return content;
+        }
+
     }
 }
