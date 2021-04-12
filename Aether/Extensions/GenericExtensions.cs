@@ -1,10 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
+using Newtonsoft.Json;
 
 namespace Aether.Extensions
 {
@@ -44,7 +41,7 @@ namespace Aether.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="model"></param>
         /// <returns></returns>
-        public static HttpContent GenerateHttpStringContent<T>(T model)
+        public static HttpContent GenerateHttpStringContent<T>(this T model)
         {
             string jsonString;
             try
