@@ -1,7 +1,5 @@
-﻿using Aether.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Aether.Enums;
 
 namespace Aether.Interfaces
 {
@@ -14,6 +12,5 @@ namespace Aether.Interfaces
         public DateTime CreatedDate { get; set; }
         public int LastUpdatedById { get; set; }
         public DateTime LastUpdatedDate { get; set; }
-
     }
 }
