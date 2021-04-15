@@ -13,7 +13,7 @@ namespace Aether.Middleware
 {
     public class QualityCheckMiddleware
     {
-        private const string QUALITY_TEST_ROUTE = "/QualityCheck";
+        private const string QUALITY_TEST_ROUTE = "/api/QualityCheck";
 
         private readonly RequestDelegate _next;
         private readonly IApiLogger _logger;
@@ -34,7 +34,9 @@ namespace Aether.Middleware
  
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path.Value.EndsWith(QUALITY_TEST_ROUTE))
+            _logger.LogDebug("QualityCheckRouteLog:" + context.Request.Path.Value);
+
+            if (context.Request.Path.Value.Contains(QUALITY_TEST_ROUTE))
             {
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
