@@ -12,6 +12,8 @@ namespace Aether.Middleware
         private readonly RequestDelegate _next;
         private readonly IApiLogger _logger;
 
+        private static HashSet<string> SECURED_ENVIRONMENTS = new HashSet<string>() { "Production", "Beta" };
+
         /// <summary>
         /// 
         /// </summary>
@@ -56,7 +58,7 @@ namespace Aether.Middleware
         {
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-            if (environment != null && !environment.Equals("Production"))
+            if (environment != null && !SECURED_ENVIRONMENTS.Contains(environment))
             {
                 return new Dictionary<string, string>()
                 {

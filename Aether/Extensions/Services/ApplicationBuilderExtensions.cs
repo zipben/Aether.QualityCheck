@@ -14,6 +14,8 @@ namespace Aether.Extensions
             builder.UseMiddleware<ErrorHandlingMiddleware>();
         public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder) =>
             builder.UseMiddleware<GrafanaControllersMiddleware>();
+        public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder) =>
+            builder.UseMiddleware<QualityCheckMiddleware>();
 
         /// <summary>
         /// Adds Strict Transport Security and XSS Protection headers to responses
