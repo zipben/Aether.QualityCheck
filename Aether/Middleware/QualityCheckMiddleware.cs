@@ -42,7 +42,7 @@ namespace Aether.Middleware
 
                 List<bool> testResults = new List<bool>();
 
-                foreach (var test in _tests.OrderBy(t => t.Order))
+                foreach (var test in _tests)
                     testResults.Add(await test.Run());
 
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} " +

@@ -7,7 +7,6 @@ namespace Aether.Interfaces
 {
     public interface IQualityCheck
     {
-        int Order { get; }
         Task<bool> Run();
     }
 }
