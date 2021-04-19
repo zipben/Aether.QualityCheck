@@ -1,6 +1,7 @@
 ﻿using Aether.Extensions;
 using Aether.Helpers.Interfaces;
 using APILogger.Interfaces;
+using Ardalis.GuardClauses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,8 @@ namespace Aether.Helpers
 
         public NotificationMessageHelper(IApiLogger apiLogger)
         {
-            _apiLogger = apiLogger ?? throw new ArgumentNullException(nameof(apiLogger));
+            Guard.Against.Null(apiLogger, nameof(apiLogger));
+            _apiLogger = apiLogger;
         }
 
         public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList, List<string> ccEmailList = null)

@@ -40,25 +40,31 @@ namespace Aether.Middleware
             {
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
-                List<bool> testResults = new List<bool>();
+                var testResults = new List<bool>();
 
                 foreach (var test in _tests)
+                {
                     testResults.Add(await test.Run());
+                }
 
-                _logger.LogDebug($"{nameof(QualityCheckMiddleware)} " +
-                    $"Tests Passed: {testResults.Where(t => t == true).Count()} " +
-                    $"Tests Failed: {testResults.Where(t => t == false).Count()}");
+                var passedTests = testResults.Where(t => t == true).Count();
+                var failedTests = testResults.Where(t => t == false).Count();
+
+                _logger.LogDebug($"{nameof(QualityCheckMiddleware)}: Tests Passed: {passedTests}, Tests Failed: {failedTests}");
 
                 if (testResults.Any(t => t == false))
+                {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                }
                 else
+                { 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
+                }
             }
             else
             {
                 await _next(context);
             }
         }
-
     }
 }
