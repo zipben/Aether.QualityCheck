@@ -11,5 +11,6 @@ namespace Aether.Interfaces
         public string EmailAddress { get; set; }
         public long CreatedDate { get; set; }
         public long LastUpdatedDate { get; set; }
+        public bool IsActive { get; set; }
     }
 }
