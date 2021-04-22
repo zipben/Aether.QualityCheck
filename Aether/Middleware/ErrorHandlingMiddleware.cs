@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -37,21 +38,31 @@ namespace Aether.Middleware
             {
                 await _next(context);
             }
-            catch (Exception e)
+            catch (ArgumentException ex)
             {
-                if (context.Response.HasStarted)
-                {
-                    _logger.LogWarning($"Error returning response: Response already started", null, e);
-                    throw;
-                }
-                else
-                {
-                    _logger.LogError($"Error in the API: {e.Message}", null, e);
-                    context.Response.StatusCode = 500;
-                }
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(GenerateErrorMessage(e.Message, e.Source, e.StackTrace)));
+                await HandleException(ex, context, HttpStatusCode.BadRequest, $"Invalid {ex.ParamName}: {ex.Message}");
             }
+            catch (Exception ex)
+            {
+                await HandleException(ex, context, HttpStatusCode.InternalServerError, $"Error in the API: {ex.Message}");
+            }
+        }
+
+        private async Task HandleException(Exception ex, HttpContext context, HttpStatusCode statusCode, string logMessage)
+        {
+            if (context.Response.HasStarted)
+            {
+                _logger.LogWarning($"Error returning response: Response already started", null, ex);
+                throw ex;
+            }
+            else
+            {
+                _logger.LogError(logMessage, null, ex);
+                context.Response.StatusCode = (int) statusCode;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(GenerateErrorMessage(ex.Message, ex.Source, ex.StackTrace)));
         }
 
         private static Dictionary<string, string> GenerateErrorMessage(string message, string source, string stackTrace)
