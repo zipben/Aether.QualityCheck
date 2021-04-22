@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -22,8 +23,12 @@ namespace Aether.Middleware
         /// <param name="next"></param>
         public ErrorHandlingMiddleware(IApiLogger logger, RequestDelegate next)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _next = next ?? throw new ArgumentNullException(nameof(next));
+            Guard.Against.Null(logger, nameof(logger));
+            Guard.Against.Null(next, nameof(next));
+
+            _logger = logger;
+            _next = next;
+
             _logger.LogDebug("Exception handling middleware initialized");
         }
 
@@ -69,19 +74,15 @@ namespace Aether.Middleware
         {
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+            var dict = new Dictionary<string, string>() { {"Error", message } };
+
             if (environment != null && !SECURED_ENVIRONMENTS.Contains(environment))
             {
-                return new Dictionary<string, string>()
-                {
-                    {"Error", message },
-                    {"Source", source },
-                    {"Stack", stackTrace }
-                };
+                dict.Add("Source", source);
+                dict.Add("Stack", stackTrace);
             }
-            else
-            {
-                return new Dictionary<string, string>() { { "Error", message } };
-            }
+
+            return dict;
         }
     }
 }
