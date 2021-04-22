@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
@@ -21,8 +23,12 @@ namespace Aether.Middleware
         /// <param name="next"></param>
         public ErrorHandlingMiddleware(IApiLogger logger, RequestDelegate next)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _next = next ?? throw new ArgumentNullException(nameof(next));
+            Guard.Against.Null(logger, nameof(logger));
+            Guard.Against.Null(next, nameof(next));
+
+            _logger = logger;
+            _next = next;
+
             _logger.LogDebug("Exception handling middleware initialized");
         }
 
@@ -37,40 +43,46 @@ namespace Aether.Middleware
             {
                 await _next(context);
             }
-            catch (Exception e)
+            catch (ArgumentException ex)
             {
-                if (context.Response.HasStarted)
-                {
-                    _logger.LogWarning($"Error returning response: Response already started", null, e);
-                    throw;
-                }
-                else
-                {
-                    _logger.LogError($"Error in the API: {e.Message}", null, e);
-                    context.Response.StatusCode = 500;
-                }
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(GenerateErrorMessage(e.Message, e.Source, e.StackTrace)));
+                await HandleException(ex, context, HttpStatusCode.BadRequest, $"Invalid {ex.ParamName}: {ex.Message}");
             }
+            catch (Exception ex)
+            {
+                await HandleException(ex, context, HttpStatusCode.InternalServerError, $"Error in the API: {ex.Message}");
+            }
+        }
+
+        private async Task HandleException(Exception ex, HttpContext context, HttpStatusCode statusCode, string logMessage)
+        {
+            if (context.Response.HasStarted)
+            {
+                _logger.LogWarning($"Error returning response: Response already started", null, ex);
+                throw ex;
+            }
+            else
+            {
+                _logger.LogError(logMessage, null, ex);
+                context.Response.StatusCode = (int) statusCode;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(GenerateErrorMessage(ex.Message, ex.Source, ex.StackTrace)));
         }
 
         private static Dictionary<string, string> GenerateErrorMessage(string message, string source, string stackTrace)
         {
             string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+            var dict = new Dictionary<string, string>() { {"Error", message } };
+
             if (environment != null && !SECURED_ENVIRONMENTS.Contains(environment))
             {
-                return new Dictionary<string, string>()
-                {
-                    {"Error", message },
-                    {"Source", source },
-                    {"Stack", stackTrace }
-                };
+                dict.Add("Source", source);
+                dict.Add("Stack", stackTrace);
             }
-            else
-            {
-                return new Dictionary<string, string>() { { "Error", message } };
-            }
+
+            return dict;
         }
     }
 }
