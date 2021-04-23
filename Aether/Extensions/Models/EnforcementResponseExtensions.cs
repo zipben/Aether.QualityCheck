@@ -5,10 +5,11 @@ namespace Aether.Extensions
     public static class EnforcementResponseExtensions
     {
         public static object MakeObjectToLog(this EnforcementResponse enforcementResponse) =>
-            new
-            {
-                enforcementResponse.EnforcementRequestId,
-                enforcementResponse.IsTestMessage
-            };
+            enforcementResponse is null ? null
+                                        : new
+                                          {
+                                              enforcementResponse.EnforcementRequestId,
+                                              enforcementResponse.IsTestMessage
+                                          };
     }
 }
