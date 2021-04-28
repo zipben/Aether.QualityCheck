@@ -7,6 +7,8 @@ namespace Aether.Interfaces
 {
     public interface IQualityCheck
     {
+        string LogName { get; }
         Task<bool> Run();
+        Task Cleanup();
     }
 }

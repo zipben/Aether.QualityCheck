@@ -1,4 +1,5 @@
-﻿using Aether.Interfaces;
+﻿using Aether.CustomAttributes;
+using Aether.Interfaces;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
@@ -6,8 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+
+using static Aether.Extensions.MethodExtensions;
 
 namespace Aether.Middleware
 {
@@ -44,7 +46,25 @@ namespace Aether.Middleware
 
                 foreach (var test in _tests)
                 {
-                    testResults.Add(await test.Run());
+                    bool isSuccessful = false;
+
+                    try
+                    {
+                        isSuccessful = await test.Run();
+                    }
+                    catch(Exception e)
+                    {
+                        _logger.LogError(test.LogName, exception: e);
+                    }
+                    finally
+                    {
+                        if(!HasAttribute<IgnoreCleanupAttribute>(() => test.Cleanup()))
+                        {
+                            await test.Cleanup();
+                        }
+
+                        testResults.Add(isSuccessful);
+                    }
                 }
 
                 var passedTests = testResults.Where(t => t == true).Count();
