@@ -9,6 +9,5 @@ namespace Aether.Interfaces
     {
         string LogName { get; }
         Task<bool> Run();
-        Task Cleanup();
     }
 }

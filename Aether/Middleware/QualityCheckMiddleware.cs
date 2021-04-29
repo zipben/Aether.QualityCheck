@@ -1,5 +1,4 @@
-﻿using Aether.CustomAttributes;
-using Aether.Interfaces;
+﻿using Aether.Interfaces;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
@@ -50,6 +49,8 @@ namespace Aether.Middleware
 
                     try
                     {
+                        _logger.LogInfo($"running {test.LogName}");
+
                         isSuccessful = await test.Run();
                     }
                     catch(Exception e)
@@ -58,10 +59,9 @@ namespace Aether.Middleware
                     }
                     finally
                     {
-                        if(!HasAttribute<IgnoreCleanupAttribute>(() => test.Cleanup()))
-                        {
-                            await test.Cleanup();
-                        }
+                        string status = isSuccessful ? "Passed" : "Failed";
+
+                        _logger.LogInfo($"{test.LogName} status: {status}");
 
                         testResults.Add(isSuccessful);
                     }

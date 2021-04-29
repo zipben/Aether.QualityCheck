@@ -6,14 +6,13 @@ using Aether.Extensions;
 using System.Text;
 using System.Reflection;
 using static Aether.Extensions.MethodExtensions;
-using Aether.CustomAttributes;
 
 namespace Aether.Tests.Extensions
 {
     [TestClass]
     public class MethodExtensionTests
     {
-        [IgnoreCleanup]
+        [Ignore]
         private void TestFunction()
         {
         }
@@ -25,7 +24,7 @@ namespace Aether.Tests.Extensions
         [TestMethod]
         public void HasAttribute_True()
         {
-            var hasAttribute = HasAttribute<IgnoreCleanupAttribute>(() => TestFunction());
+            var hasAttribute = HasAttribute<IgnoreAttribute>(() => TestFunction());
 
             Assert.IsTrue(hasAttribute);
         }
@@ -33,7 +32,7 @@ namespace Aether.Tests.Extensions
         [TestMethod]
         public void HasAttribute_False()
         {
-            var hasAttribute = HasAttribute<IgnoreCleanupAttribute>(() => TestFunctionNoAttribute());
+            var hasAttribute = HasAttribute<IgnoreAttribute>(() => TestFunctionNoAttribute());
 
             Assert.IsFalse(hasAttribute);
         }
