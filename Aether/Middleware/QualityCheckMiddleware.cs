@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+
+using static Aether.Extensions.MethodExtensions;
 
 namespace Aether.Middleware
 {
@@ -44,7 +45,26 @@ namespace Aether.Middleware
 
                 foreach (var test in _tests)
                 {
-                    testResults.Add(await test.Run());
+                    bool isSuccessful = false;
+
+                    try
+                    {
+                        _logger.LogInfo($"running {test.LogName}");
+
+                        isSuccessful = await test.Run();
+                    }
+                    catch(Exception e)
+                    {
+                        _logger.LogError(test.LogName, exception: e);
+                    }
+                    finally
+                    {
+                        string status = isSuccessful ? "Passed" : "Failed";
+
+                        _logger.LogInfo($"{test.LogName} status: {status}");
+
+                        testResults.Add(isSuccessful);
+                    }
                 }
 
                 var passedTests = testResults.Where(t => t == true).Count();
