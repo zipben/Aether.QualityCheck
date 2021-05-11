@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Aether.Interfaces
 {
-    public class IIdentifierRestrictionSystemLookUp
+    public interface IIdentifierRestrictionSystemLookUp
     {
         public string Id { get; set; }
         public string SystemId { get; set; }
