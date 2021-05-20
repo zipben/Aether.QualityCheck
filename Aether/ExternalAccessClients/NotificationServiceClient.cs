@@ -1,14 +1,12 @@
-﻿using Aether.ExternalAccessClients.Interfaces;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Aether.ExternalAccessClients.Interfaces;
 using Aether.Models;
 using APILogger.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RockLib.OAuth;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using static Aether.Models.NotificationServiceEmailBody;
 
 namespace Aether.ExternalAccessClients
