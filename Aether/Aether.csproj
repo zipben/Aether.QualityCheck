@@ -12,16 +12,10 @@
     <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
     <Product>DataServices.Aether</Product>
     <PackageId>DataServices.Aether</PackageId>
-    <Version>1.0.80.9999</Version>
-    <AssemblyVersion>1.0.80.0.9999</AssemblyVersion>
-    <FileVersion>1.0.80.0.9999</FileVersion>
+    <Version>1.0.81.0</Version>
+    <AssemblyVersion>1.0.81.0</AssemblyVersion>
+    <FileVersion>1.0.81.0</FileVersion>
   </PropertyGroup>
-
-  <Import Project="ReadmeIncrementer.props" />
-  
-  <Target Name="MyTasks" AfterTargets="AfterBuild">
-    <ReadMeIncrementer FilePath="readme.md"></ReadMeIncrementer>
-  </Target>
 
   <ItemGroup>
     <Compile Remove=".circleci\**" />
@@ -35,6 +29,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.5.0.46" />
+    <PackageReference Include="ReadmeIncrementer" Version="2.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Rocklib.CCE.APILogger" Version="3.2.12" />
     <PackageReference Include="RockLib.Metrics" Version="2.0.3" />
     <PackageReference Include="RockLib.OAuth" Version="2.0.4" />
