@@ -14,18 +14,16 @@ namespace Aether.ExternalAccessClients
 {
     public class ErisClient : IErisClient
     {
+        private const string ERIS_RESOLVER_URL = "/api/identifier/resolver";
         private readonly IHttpClientWrapper _httpClient;
         private readonly ErisConfig _config;
 
-        private const string _erisResolverEndpoint = "/api/identifier/resolver";
         public ErisClient(IHttpClientWrapper httpClient, IOptions<ErisConfig> config)
         {
-            ValidateDependencies(httpClient, config);
-
+            Guard.Against.Null(config, nameof(config));
+            _config = Guard.Against.Null(config.Value, nameof(ErisConfig));
             ValidateConfig(config);
-
-            _config = config.Value;
-            _httpClient = httpClient;
+            _httpClient = Guard.Against.Null(httpClient, nameof(httpClient));
             _httpClient.SetBaseURI(config.Value.BaseUrl);
         }
 
@@ -37,17 +35,9 @@ namespace Aether.ExternalAccessClients
             Guard.Against.NullOrWhiteSpace(config.Value.ClientSecret, nameof(config.Value.ClientSecret));
         }
 
-        private static void ValidateDependencies(IHttpClientWrapper httpClient, IOptions<ErisConfig> config)
-        {
-            Guard.Against.Null(httpClient, nameof(httpClient));
-            Guard.Against.Null(config, nameof(config));
-            Guard.Against.Null(config.Value, nameof(ErisConfig));
-        }
-
         public async Task<IdentifiersRoot> ResolveIdentifiersAsync(ErisRequestModel erisRequestModel)
         {
-            if (erisRequestModel == null)
-                throw new ArgumentNullException(nameof(erisRequestModel));
+            Guard.Against.Null(erisRequestModel, nameof(erisRequestModel));
 
             using StringContent stringContent = GenerateRequestBody(erisRequestModel);
 
@@ -79,7 +69,7 @@ namespace Aether.ExternalAccessClients
             try
             {
                 var _auth0Auth = new Auth0AuthParams(_config.ClientID, _config.ClientSecret, _config.Audience);
-                return await _httpClient.PostAsync(_auth0Auth, _erisResolverEndpoint, content);
+                return await _httpClient.PostAsync(_auth0Auth, ERIS_RESOLVER_URL, content);
             }
             catch (Exception e)
             {
