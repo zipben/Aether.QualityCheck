@@ -16,12 +16,12 @@ namespace Aether.Middleware.Tests
     public class QualityCheckMiddlewareTests
     {
 
-        public Mock<IApiLogger> _mockLogger;
-        public Mock<RequestDelegate> _mockNext;
-        public Mock<HttpContext> _mockHttpContext;
-        public List<IQualityCheck> _mockQualityChecks;
-        public QualityCheckMiddleware _target;
-        public Mock<HttpRequest> _mockRequest;
+        private Mock<IApiLogger> _mockLogger;
+        private Mock<RequestDelegate> _mockNext;
+        private Mock<HttpContext> _mockHttpContext;
+        private List<IQualityCheck> _mockQualityChecks;
+        private QualityCheckMiddleware _target;
+        private Mock<HttpRequest> _mockRequest;
 
         [TestInitialize]
         public void Init()
@@ -30,7 +30,7 @@ namespace Aether.Middleware.Tests
             _mockNext = new Mock<RequestDelegate>();
             _mockHttpContext = new Mock<HttpContext>();
             _mockQualityChecks = new List<IQualityCheck>();
-            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockQualityChecks, _mockNext.Object, "testendpoint");
+            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockQualityChecks, _mockNext.Object, "/testendpoint");
             Setup_Mocks();
         }
 
@@ -39,20 +39,22 @@ namespace Aether.Middleware.Tests
             if (shouldThrowException)
             {
                 _mockNext.Setup(x => x(It.IsAny<HttpContext>()))
-                    .Throws<Exception>();
+                         .Throws<Exception>();
             }
 
             _mockHttpContext.Setup(x => x.Response.HasStarted)
-                .Returns(requestStarted);
+                            .Returns(requestStarted);
 
             _mockRequest = new Mock<HttpRequest>();
             _mockRequest.SetupAllProperties();
-            _mockRequest.Setup(x => x.Path).Returns(new PathString("/testendpoint"));
+            _mockRequest.Setup(x => x.Path)
+                        .Returns(new PathString("/testendpoint"));
 
-            _mockHttpContext.Setup(x => x.Request).Returns(_mockRequest.Object);
+            _mockHttpContext.Setup(x => x.Request)
+                            .Returns(_mockRequest.Object);
 
             _mockHttpContext.Setup(x => x.Response.Body.WriteAsync(It.IsAny<ReadOnlyMemory<byte>>(), It.IsAny<CancellationToken>()))
-                .Returns(new ValueTask());
+                            .Returns(new ValueTask());
 
             
         }
@@ -73,16 +75,17 @@ namespace Aether.Middleware.Tests
         }
 
         [TestMethod()]
-        public async Task QualityCheckMiddlewareTest_InvokeBranchTrue()
+        public async Task QualityCheckMiddlewareTest_InvokeQualityEndpoint()
         {
             await _target.Invoke(_mockHttpContext.Object);
 
         }
 
         [TestMethod()]
-        public async Task QualityCheckMiddlewareTest_InvokeBranchFalse()
+        public async Task QualityCheckMiddlewareTest_InvokeIncorrectQualityEndpoint()
         {
-            _mockRequest.Setup(x => x.Path).Returns(new PathString("/wrongEndpoint"));
+            _mockRequest.Setup(x => x.Path)
+                        .Returns(new PathString("/wrongEndpoint"));
             await _target.Invoke(_mockHttpContext.Object);
 
         }
@@ -108,8 +111,10 @@ namespace Aether.Middleware.Tests
         public void QualityCheckSetup(bool input)
         {
             var qualityCheck = new Mock<IQualityCheck>();
-            qualityCheck.Setup(x => x.LogName).Returns("MockQualityCheck");
-            qualityCheck.Setup(x => x.Run()).Returns(MockTask(input));
+            qualityCheck.Setup(x => x.LogName)
+                        .Returns("MockQualityCheck");
+            qualityCheck.Setup(x => x.Run())
+                        .Returns(MockTask(input));
             _mockQualityChecks.Add(qualityCheck.Object);
         }
 

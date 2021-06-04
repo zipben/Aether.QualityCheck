@@ -14,7 +14,7 @@ namespace Aether.Extensions
             builder.UseMiddleware<ErrorHandlingMiddleware>();
         public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder) =>
             builder.UseMiddleware<GrafanaControllersMiddleware>();
-        public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "api/QualityCheck") {
+        public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "/api/QualityCheck") {
             return builder.UseMiddleware<QualityCheckMiddleware>(route);
         }
 
