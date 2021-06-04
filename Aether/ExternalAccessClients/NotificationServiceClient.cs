@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Models;
 using APILogger.Interfaces;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RockLib.OAuth;
@@ -21,23 +22,35 @@ namespace Aether.ExternalAccessClients
 
         public NotificationServiceClient(IHttpClientWrapper httpClient, IOptions<NotificationServiceSettings> config, IApiLogger apiLogger)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _settings = config.Value;
+            _httpClient = Guard.Against.Null(httpClient, nameof(httpClient));
+            _settings   = config.Value;
             _httpClient.SetBaseURI(_settings.BaseUrl);
+            
             _auth0Auth = new Auth0AuthParams(_settings.ClientID, _settings.ClientSecret, _settings.Audience, AUTHURL);
-            _apiLogger = apiLogger;
+            _apiLogger = Guard.Against.Null(apiLogger, nameof(apiLogger));
+            _apiLogger.Method.CallingClassName = nameof(NotificationServiceClient);
         }
 
         public async Task<bool> TryPostRequestAsync(EmailRootObject emailObj)
         {
-            _apiLogger.LogInfo($"{nameof(NotificationServiceClient)}:{nameof(TryPostRequestAsync)}");
+            _apiLogger.Method.Begin(emailObj);
 
             using StringContent emailRequestContent = GenerateEmailRequestBody(emailObj);
 
             try
             {
                 using var response = await _httpClient.PostAsync(_auth0Auth, _settings.EndPoint, emailRequestContent);
-                return response.IsSuccessStatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    _apiLogger.Method.End(methodName: nameof(TryPostRequestAsync));
+                    return true;
+                }
+                else
+                {
+                    _apiLogger.LogError(nameof(TryPostRequestAsync), new { response = await response.Content.ReadAsStringAsync() });
+                    return false;
+                }
             }
             catch (Exception e)
             {
