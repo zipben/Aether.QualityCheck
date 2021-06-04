@@ -43,6 +43,7 @@ namespace Aether.ExternalAccessClients
 
                 if (response.IsSuccessStatusCode)
                 {
+                    _apiLogger.Method.End(methodName: nameof(TryPostRequestAsync));
                     return true;
                 }
                 else
