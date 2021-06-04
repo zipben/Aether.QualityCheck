@@ -14,31 +14,34 @@ namespace Aether.Middleware
 {
     public class QualityCheckMiddleware
     {
-        private const string QUALITY_TEST_ROUTE = "/api/QualityCheck";
-
+        private readonly string _qualityTestRoute;
+        
         private readonly RequestDelegate _next;
         private readonly IApiLogger _logger;
         private readonly IEnumerable<IQualityCheck> _tests;
 
-        public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next)
+        public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute)
         {
             Guard.Against.Null(logger, nameof(logger));
             Guard.Against.Null(next, nameof(next));
             Guard.Against.Null(tests, nameof(tests));
-
+            Guard.Against.Null(qualityTestRoute, nameof(qualityTestRoute));
             _logger = logger;
             _next = next;
             _tests = tests;
+            _qualityTestRoute = qualityTestRoute;
 
-            _logger.LogDebug("Quality Check middleware initialized");
+            _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");
         }
  
         public async Task Invoke(HttpContext context)
         {
+            Guard.Against.Null(context?.Request?.Path.Value, nameof(context));
             _logger.LogDebug("QualityCheckRouteLog:" + context.Request.Path.Value);
 
-            if (context.Request.Path.Value.Contains(QUALITY_TEST_ROUTE))
+            if (context.Request.Path.Value.Contains(_qualityTestRoute))
             {
+                
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
                 var testResults = new List<bool>();
