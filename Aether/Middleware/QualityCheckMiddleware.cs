@@ -22,10 +22,10 @@ namespace Aether.Middleware
 
         public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute)
         {
-            _logger = Guard.Against.Null(logger, nameof(logger));
-            _next = Guard.Against.Null(next, nameof(next));
-            _tests = Guard.Against.Null(tests, nameof(tests));
-            Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
+            _logger =           Guard.Against.Null(logger, nameof(logger));
+            _next =             Guard.Against.Null(next, nameof(next));
+            _tests =            Guard.Against.Null(tests, nameof(tests));
+                                Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
 
             _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");

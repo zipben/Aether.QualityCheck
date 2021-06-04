@@ -1,5 +1,7 @@
 ﻿using Aether.Middleware;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Builder;
+using System.Linq;
 
 namespace Aether.Extensions
 {
@@ -15,6 +17,7 @@ namespace Aether.Extensions
         public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder) =>
             builder.UseMiddleware<GrafanaControllersMiddleware>();
         public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "/api/QualityCheck") {
+            Guard.Against.InvalidInput(route, nameof(route), delegate (string s) { return s.ElementAt(0).Equals('/'); });
             return builder.UseMiddleware<QualityCheckMiddleware>(route);
         }
 
