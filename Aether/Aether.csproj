@@ -12,9 +12,9 @@
     <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
     <Product>DataServices.Aether</Product>
     <PackageId>DataServices.Aether</PackageId>
-    <Version>1.0.85.0</Version>
-    <AssemblyVersion>1.0.85.0</AssemblyVersion>
-    <FileVersion>1.0.85.0</FileVersion>
+    <Version>1.0.86.0</Version>
+    <AssemblyVersion>1.0.86.0</AssemblyVersion>
+    <FileVersion>1.0.86.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
