@@ -34,7 +34,6 @@ namespace Aether.Middleware
         public async Task Invoke(HttpContext context)
         {
             Guard.Against.Null(context?.Request?.Path.Value, nameof(context));
-            _logger.LogDebug("QualityCheckRouteLog:" + context.Request.Path.Value);
 
             if (context.Request.Path.Value.Contains(_qualityTestRoute))
             {
