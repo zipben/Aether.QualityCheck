@@ -62,5 +62,8 @@ namespace Aether.ExternalAccessClients
             _httpClient.DefaultRequestHeaders
                        .Accept
                        .Add(new MediaTypeWithQualityHeaderValue(contentType));
+
+        public void AddDefaultRequestHeader(string key, string value) =>
+             _httpClient.DefaultRequestHeaders.Add(key, value);
     }
 }
