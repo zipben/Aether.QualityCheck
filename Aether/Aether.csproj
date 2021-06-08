@@ -12,9 +12,9 @@
     <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
     <Product>DataServices.Aether</Product>
     <PackageId>DataServices.Aether</PackageId>
-    <Version>1.0.81</Version>
-    <AssemblyVersion>1.0.81.0</AssemblyVersion>
-    <FileVersion>1.0.81.0</FileVersion>
+    <Version>1.0.87.0</Version>
+    <AssemblyVersion>1.0.87.0</AssemblyVersion>
+    <FileVersion>1.0.87.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,13 +22,17 @@
     <EmbeddedResource Remove=".circleci\**" />
     <None Remove=".circleci\**" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.5.0.46" />
+    <PackageReference Include="ReadmeIncrementer" Version="2.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Rocklib.CCE.APILogger" Version="3.2.12" />
     <PackageReference Include="RockLib.Metrics" Version="2.0.3" />
     <PackageReference Include="RockLib.OAuth" Version="2.0.4" />
