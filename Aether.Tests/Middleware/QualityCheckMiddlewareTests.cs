@@ -113,14 +113,9 @@ namespace Aether.Middleware.Tests
             var qualityCheck = new Mock<IQualityCheck>();
             qualityCheck.Setup(x => x.LogName)
                         .Returns("MockQualityCheck");
-            qualityCheck.Setup(x => x.Run())
-                        .Returns(MockTask(input));
+            qualityCheck.Setup(x => x.RunAsync())
+                        .ReturnsAsync(new Models.QualityCheckResponseModel("TestStep") { Steps = new List<Models.StepResponse>() { new Models.StepResponse() { StepPassed = input } } });
             _mockQualityChecks.Add(qualityCheck.Object);
-        }
-
-        public async Task<bool> MockTask(bool tf)
-        {
-            return !tf;
         }
     }
 }
