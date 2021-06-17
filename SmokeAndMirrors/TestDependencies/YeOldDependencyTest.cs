@@ -7,14 +7,7 @@ namespace SmokeAndMirrors.TestDependencies
 {
     public class YeOldDependencyTest : IYeOldDependencyTest
     {
-        public async Task<bool> DeleteGoldAsync()
-        {
-            return true;
-        }
-
-        public async Task<bool> FindGoldAsync()
-        {
-            return true;
-        }
+        public async Task<bool> DeleteGoldAsync() => true;
+        public async Task<bool> FindGoldAsync() => true;
     }
 }

@@ -10,12 +10,11 @@ namespace Aether.Models
         public string Name { get; set; }
 
         public bool CheckPassed 
-        { get 
+        { 
+            get 
             {
-                if (Steps.IsNullOrEmpty())
-                    return false;
-
-                return Steps.TrueForAll(s => s.StepPassed); 
+                return Steps.IsNullOrEmpty() ? false
+                                             : Steps.TrueForAll(s => s.StepPassed);
             } 
         }
 
