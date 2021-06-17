@@ -1,7 +1,9 @@
 ﻿using Aether.Interfaces;
+using Aether.Models;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +24,15 @@ namespace Aether.Middleware
 
         public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute)
         {
-            _logger =           Guard.Against.Null(logger, nameof(logger));
-            _next =             Guard.Against.Null(next, nameof(next));
-            _tests =            Guard.Against.Null(tests, nameof(tests));
-                                Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
+            _logger = Guard.Against.Null(logger, nameof(logger));
+            _next = Guard.Against.Null(next, nameof(next));
+            _tests = Guard.Against.Null(tests, nameof(tests));
+            Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
 
             _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");
         }
- 
+
         public async Task Invoke(HttpContext context)
         {
             Guard.Against.Null(context?.Request?.Path.Value, nameof(context));
@@ -40,38 +42,36 @@ namespace Aether.Middleware
                 
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
-                var testResults = new List<bool>();
+                var testResults = new List<QualityCheckResponseModel>();
 
                 foreach (var test in _tests)
                 {
-                    bool isSuccessful = false;
+                    QualityCheckResponseModel response = new QualityCheckResponseModel(null);
 
                     try
                     {
                         _logger.LogInfo($"running {test.LogName}");
-
-                        isSuccessful = await test.Run();
+                        response = await test.RunAsync();
                     }
-                    catch(Exception e)
+                    catch (Exception ex)
                     {
-                        _logger.LogError(test.LogName, exception: e);
+                        _logger.LogError(test.LogName, exception: ex);
                     }
                     finally
                     {
-                        string status = isSuccessful ? "Passed" : "Failed";
+                        await test.TearDownAsync();
+
+                        string status = response.CheckPassed ? "Passed" : "Failed";
 
                         _logger.LogInfo($"{test.LogName} status: {status}");
 
-                        testResults.Add(isSuccessful);
+                        testResults.Add(response);
                     }
                 }
 
-                var passedTests = testResults.Where(t => t == true).Count();
-                var failedTests = testResults.Where(t => t == false).Count();
+                _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Test Results", testResults);
 
-                _logger.LogDebug($"{nameof(QualityCheckMiddleware)}: Tests Passed: {passedTests}, Tests Failed: {failedTests}");
-
-                if (testResults.Any(t => t == false))
+                if (testResults.Any(t => t.CheckPassed == false))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 }
@@ -79,6 +79,10 @@ namespace Aether.Middleware
                 { 
                     context.Response.StatusCode = (int)HttpStatusCode.OK;
                 }
+
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(JsonConvert.SerializeObject(testResults));
+
             }
             else
             {

@@ -16,7 +16,7 @@ namespace Aether.IntegrationTests.Setup
         [AssemblyInitialize]
         public static void AssemblyInit(TestContext context)
         {
-            ForceLoadEnvironmentFromLaunchSettings("..\\..\\..\\launchSettings.json");
+            ForceLoadEnvironmentFromLaunchSettings("..\\..\\..\\..\\SmokeAndMirrors\\Properties\\launchSettings.json");
         }
         public static void ForceLoadEnvironmentFromLaunchSettings(string filePath)
         {
