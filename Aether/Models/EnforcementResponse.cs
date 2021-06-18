@@ -29,4 +29,5 @@ namespace Aether.Models
                     base.DiagnosticFlags.Remove("IsTest");
             }
         }
+    }
 }
