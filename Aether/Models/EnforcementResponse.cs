@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Aether.Models
 {
-    public class EnforcementResponse : IEnforcementMessage
+    public class EnforcementResponse : ModelBase, IEnforcementMessage
     {
         public string EnforcementRequestId { get; set; }
 
@@ -13,8 +13,20 @@ namespace Aether.Models
         [JsonProperty("data")]
         public List<Classification> Data { get; set; } = new List<Classification>();
         public string RequestCloseReason { get; set; }
-        // Indicates we patch to the test endpoint
-        public bool IsTestMessage { get; set; }
         public EnforcementType? EnforcementType { get; set; }
-    }
+
+        public bool IsTestMessage
+        {
+            get
+            {
+                return base.DiagnosticFlags.Contains("IsTest");
+            }
+            set
+            {
+                if (value)
+                    base.DiagnosticFlags.Add("IsTest");
+                else
+                    base.DiagnosticFlags.Remove("IsTest");
+            }
+        }
 }
