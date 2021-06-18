@@ -4,7 +4,7 @@ using Aether.Interfaces;
 
 namespace Aether.Models
 {
-    public class EnforcementRequest : IEnforcementMessage
+    public class EnforcementRequest : ModelBase, IEnforcementMessage
     {
         public string EnforcementRequestId { get; set; }
 
@@ -16,7 +16,19 @@ namespace Aether.Models
         // Default to true so that if DRE is not yet sending this field then we won't default to false
         public bool HasSSN { get; set; } = true;
 
-        public bool IsTestMessage { get; set; }
+        public bool IsTestMessage {
+            get 
+            {
+                return base.DiagnosticFlags.Contains("IsTest");
+            }
+            set 
+            {
+                if (value)
+                    base.DiagnosticFlags.Add("IsTest");
+                else
+                    base.DiagnosticFlags.Remove("IsTest");
+            } 
+        }
     }
 }
 
