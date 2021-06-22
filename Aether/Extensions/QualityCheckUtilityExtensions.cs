@@ -8,7 +8,7 @@ namespace Aether.Extensions
 {
     public static class QualityCheckHelperExtensions
     {
-        public static QualityCheckResponseModel QuickConvertToModel(this bool checkPassed, string checkName, string stepName)
+        public static QualityCheckResponseModel QuickConvertToQualityCheckResponse(this bool checkPassed, string checkName, string stepName)
         {
             Guard.Against.Null(checkName, nameof(checkName));
             Guard.Against.Null(stepName, nameof(stepName));

@@ -17,20 +17,20 @@ namespace Aether.Extensions.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void QuickConvertToModelTest_NullParams()
         {
-            true.QuickConvertToModel(null, null);
+            true.QuickConvertToQualityCheckResponse(null, null);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void QuickConvertToModelTest_NullStepName()
         {
-            true.QuickConvertToModel(CHECK_NAME, null);
+            true.QuickConvertToQualityCheckResponse(CHECK_NAME, null);
         }
 
         [TestMethod]
         public void QuickConvertToModelTest_CheckModel_True()
         {
-            var model = true.QuickConvertToModel(CHECK_NAME, STEP_NAME);
+            var model = true.QuickConvertToQualityCheckResponse(CHECK_NAME, STEP_NAME);
 
             Assert.AreEqual(model.Name, CHECK_NAME);
             Assert.IsTrue(model.CheckPassed);
@@ -42,7 +42,7 @@ namespace Aether.Extensions.Tests
         [TestMethod]
         public void QuickConvertToModelTest_CheckModel_False()
         {
-            var model = false.QuickConvertToModel(CHECK_NAME, STEP_NAME);
+            var model = false.QuickConvertToQualityCheckResponse(CHECK_NAME, STEP_NAME);
 
             Assert.AreEqual(model.Name, CHECK_NAME);
             Assert.IsFalse(model.CheckPassed);
