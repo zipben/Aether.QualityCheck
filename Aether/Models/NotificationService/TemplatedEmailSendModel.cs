@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aether.Models
+namespace Aether.Models.NotificationService
 {
     public class TemplatedEmailSendModel : BaseEmailSendModel
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Aether.Models
+namespace Aether.Models.Oya
 {
     public class Classification
     {

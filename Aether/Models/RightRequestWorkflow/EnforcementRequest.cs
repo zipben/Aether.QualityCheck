@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using Aether.Enums;
 using Aether.Interfaces;
+using Aether.Interfaces.Oya;
 
-namespace Aether.Models
+namespace Aether.Models.RightRequestWorkflow
 {
     public class EnforcementRequest : ModelBase, IEnforcementMessage
     {
