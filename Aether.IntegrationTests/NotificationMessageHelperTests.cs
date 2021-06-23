@@ -2,6 +2,7 @@
 using Aether.ExternalAccessClients;
 using Aether.Helpers;
 using Aether.Models;
+using Aether.Models.NotificationService;
 using APILogger.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,5 +1,6 @@
 ﻿using Aether.Extensions;
 using Aether.Models;
+using Aether.Models.RightRequestWorkflow;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;

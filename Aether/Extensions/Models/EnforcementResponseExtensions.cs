@@ -1,4 +1,5 @@
 ﻿using Aether.Models;
+using Aether.Models.RightRequestWorkflow;
 
 namespace Aether.Extensions
 {

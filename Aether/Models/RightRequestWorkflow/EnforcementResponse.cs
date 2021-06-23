@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Aether.Enums;
 using Aether.Interfaces;
+using Aether.Interfaces.Oya;
+using Aether.Models.Oya;
 using Newtonsoft.Json;
 
-namespace Aether.Models
+namespace Aether.Models.RightRequestWorkflow
 {
     public class EnforcementResponse : ModelBase, IEnforcementMessage
     {

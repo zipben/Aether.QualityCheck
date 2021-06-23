@@ -1,4 +1,4 @@
-﻿namespace Aether.Interfaces
+﻿namespace Aether.Interfaces.Oya
 {
     public interface ISentEmailLog
     { 

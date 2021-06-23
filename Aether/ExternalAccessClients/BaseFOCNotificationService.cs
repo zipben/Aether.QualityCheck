@@ -1,5 +1,6 @@
 ﻿using Aether.Extensions;
 using Aether.Models;
+using Aether.Models.NotificationService;
 using System;
 
 namespace Aether.ExternalAccessClients

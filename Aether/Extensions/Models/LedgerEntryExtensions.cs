@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Aether.Interfaces;
+using Aether.Interfaces.Oya;
 
 namespace Aether.Extensions
 {

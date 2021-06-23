@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Aether.Models;
-using static Aether.Models.NotificationServiceEmailBody;
+using Aether.Models.NotificationService;
+using Aether.Models.Oya;
 
 namespace Aether.Extensions.Tests
 {

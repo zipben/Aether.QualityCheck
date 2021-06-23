@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using static Aether.Models.NotificationServiceEmailBody;
+using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 
 namespace Aether.ExternalAccessClients.Interfaces
 {

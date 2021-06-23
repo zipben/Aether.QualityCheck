@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Aether.Enums;
 
-namespace Aether.Interfaces
+namespace Aether.Interfaces.Oya
 {
     public interface ILedgerEntry
     {
