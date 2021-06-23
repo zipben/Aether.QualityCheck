@@ -3,12 +3,13 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Models;
+using Aether.Models.NotificationService;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RockLib.OAuth;
-using static Aether.Models.NotificationServiceEmailBody;
+using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 
 namespace Aether.ExternalAccessClients
 {

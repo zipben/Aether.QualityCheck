@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static Aether.Models.NotificationServiceEmailBody;
+using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 
 namespace Aether.Helpers.Interfaces
 {
