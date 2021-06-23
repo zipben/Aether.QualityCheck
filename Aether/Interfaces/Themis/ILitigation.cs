@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aether.Interfaces
+namespace Aether.Interfaces.Themis
 {
-    class ILitigation
+    public interface ILitigation
     {
         public string Id { get; set; }
         public string CaseName { get; set; }
