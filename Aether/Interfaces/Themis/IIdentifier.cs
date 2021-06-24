@@ -3,16 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aether.Models.Themis
+namespace Aether.Interfaces.Themis
 {
-    public class Identifier
+    public interface IIdentifier
     {
         public IdentifierType IdentifierType { get; set; }
         public List<string> IdentifierValues { get; set; }
-
-        public Identifier()
-        {
-            IdentifierValues = new List<string>();
-        }
     }
 }
