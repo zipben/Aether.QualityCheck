@@ -1,16 +1,14 @@
-﻿using Aether.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using Aether.Interfaces;
 using Aether.Models;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-
-using static Aether.Extensions.MethodExtensions;
 
 namespace Aether.Middleware
 {
@@ -24,9 +22,10 @@ namespace Aether.Middleware
 
         public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute)
         {
-            _logger = Guard.Against.Null(logger, nameof(logger));
-            _next = Guard.Against.Null(next, nameof(next));
-            _tests = Guard.Against.Null(tests, nameof(tests));
+            _logger =   Guard.Against.Null(logger, nameof(logger));
+            _next =     Guard.Against.Null(next, nameof(next));
+            _tests =    Guard.Against.Null(tests, nameof(tests));
+            
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
 
@@ -39,7 +38,6 @@ namespace Aether.Middleware
 
             if (context.Request.Path.Value.Contains(_qualityTestRoute))
             {
-                
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
                 var testResults = new List<QualityCheckResponseModel>();
@@ -71,18 +69,11 @@ namespace Aether.Middleware
 
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Test Results", testResults);
 
-                if (testResults.Any(t => t.CheckPassed == false))
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                }
-                else
-                { 
-                    context.Response.StatusCode = (int)HttpStatusCode.OK;
-                }
+                context.Response.StatusCode = testResults.All(t => t.CheckPassed) ? (int) HttpStatusCode.OK
+                                                                                  : (int) HttpStatusCode.InternalServerError;
 
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(testResults));
-
             }
             else
             {
