@@ -1,10 +1,11 @@
 ﻿using Aether.Extensions;
 using Aether.Helpers.Interfaces;
 using APILogger.Interfaces;
+using Ardalis.GuardClauses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Aether.Models.NotificationServiceEmailBody;
+using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 
 namespace Aether.Helpers
 {
@@ -14,13 +15,20 @@ namespace Aether.Helpers
 
         public NotificationMessageHelper(IApiLogger apiLogger)
         {
-            _apiLogger = apiLogger ?? throw new ArgumentNullException(nameof(apiLogger));
+            _apiLogger = Guard.Against.Null(apiLogger, nameof(apiLogger));
         }
 
         public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList, List<string> ccEmailList = null)
         {
-            ValidateArguments(templateId, stage, applicationId, fromEmail, subject, body, toEmailList);
-           
+            var bodyParams = new KeyValuePair<string, string>("thisParamater", body).CreateList().ToArray();
+
+            return CreateEmail(templateId, stage, applicationId, fromEmail, subject, toEmailList, ccEmailList, bodyParams);
+        }
+
+        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, List<string> toEmailList, List<string> ccEmailList = null, params KeyValuePair<string, string>[] bodyParams)
+        {
+            ValidateArguments(templateId, stage, applicationId, fromEmail, subject, toEmailList, bodyParams);
+
             return new EmailRootObject
             {
                 templateId = templateId,
@@ -28,7 +36,7 @@ namespace Aether.Helpers
                 applicationId = applicationId,
                 notificationType = "email",
                 subjectParameters = new Subjectparameters { messageToReplace = subject },
-                bodyParameters = new Bodyparameters { thisParameter = body },
+                bodyParameters = new Dictionary<string, string>(bodyParams),
                 sendParameters = new SendParameters
                 {
                     from = fromEmail,
@@ -38,15 +46,16 @@ namespace Aether.Helpers
             };
         }
 
-        private static void ValidateArguments(string templateId, string stage, string applicationId, string from, string subject, string body, List<string> toEmailList)
+        private static void ValidateArguments(string templateId, string stage, string applicationId, string from, string subject, List<string> toEmailList, params KeyValuePair<string, string> [] bodyParams)
         {
-            if (!templateId.Exists()) throw new ArgumentNullException($"{nameof(templateId)} field must be defined");
-            if (!stage.Exists()) throw new ArgumentNullException($"{nameof(stage)} field must be defined");
-            if (!applicationId.Exists()) throw new ArgumentNullException($"{nameof(applicationId)} field must be defined");
-            if (!from.Exists()) throw new ArgumentNullException($"{nameof(from)} field must be defined");
-            if (!subject.Exists()) throw new ArgumentNullException($"{nameof(subject)} field must be defined");
-            if (!body.Exists()) throw new ArgumentNullException($"{nameof(body)} field must be defined");
-            if (toEmailList.IsNullOrEmpty()) throw new ArgumentNullException($"{nameof(toEmailList)} must have at least one recipient");
+            Guard.Against.NullOrWhiteSpace(templateId, nameof(templateId));
+            Guard.Against.NullOrWhiteSpace(stage, nameof(stage));
+            Guard.Against.NullOrWhiteSpace(applicationId, nameof(applicationId));
+            Guard.Against.NullOrWhiteSpace(from, nameof(from));
+            Guard.Against.NullOrWhiteSpace(subject, nameof(subject));
+            Guard.Against.NullOrEmpty(toEmailList, nameof(toEmailList));
+            Guard.Against.NullOrEmpty(bodyParams, nameof(bodyParams));
+            Guard.Against.InvalidInput(bodyParams, nameof(bodyParams), x => x.All(l => !string.IsNullOrEmpty(l.Value)));
         }
     }
 }

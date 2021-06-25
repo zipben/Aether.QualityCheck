@@ -16,5 +16,6 @@ namespace Aether.ExternalAccessClients.Interfaces
         Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content);
         Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content);
         void SetContentType(string contentType);
+        void AddDefaultRequestHeader(string key, string value);
     }
 }

@@ -2,6 +2,7 @@
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Models;
+using Aether.Models.NotificationService;
 using APILogger.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -31,7 +32,6 @@ namespace Aether.Tests.ExternalAccessClients
         private static List<string> _testTo = new List<string> { "to@to.com" };
         private static List<string> _testCC = new List<string> { "cc@cc.com" };
         
-
         [TestInitialize]
         public void Init()
         {
@@ -82,7 +82,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModel.TemplateId, _testEmailSendModel.Stage, _testEmailSendModel.ApplicationId, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To, _testEmailSendModel.CC), Times.Once);
 
-            _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<Models.NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
+            _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
             _mockNotificationServiceClient.VerifyNoOtherCalls();
         }
 
@@ -93,7 +93,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModelWithNullCC.TemplateId, _testEmailSendModelWithNullCC.Stage, _testEmailSendModelWithNullCC.ApplicationId, _testEmailSendModelWithNullCC.From, _testEmailSendModelWithNullCC.Subject, _testEmailSendModelWithNullCC.Body, _testEmailSendModelWithNullCC.To, _testEmailSendModelWithNullCC.CC), Times.Once);
 
-            _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<Models.NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
+            _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
             _mockNotificationServiceClient.VerifyNoOtherCalls();
         }
 
