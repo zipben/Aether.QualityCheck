@@ -16,7 +16,7 @@ namespace Aether.Models.Themis
         public DateTime CreatedDate { get; set; }
         public int LastUpdatedById { get; set; }
         public DateTime LastUpdatedDate { get; set; }
-        public string EmailConfirmationId { get; set; }
-        public bool IsConfirmed { get; set; }
+        public Guid? EmailConfirmationId { get; set; }
+        public bool? IsConfirmed { get; set; }
     }
 }
