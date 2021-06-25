@@ -1,17 +1,15 @@
-﻿using Aether.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Aether.Extensions;
 using Aether.ExternalAccessClients;
 using Aether.Helpers;
-using Aether.Models;
 using Aether.Models.NotificationService;
 using APILogger.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aether.IntegrationTests
 {
@@ -46,7 +44,7 @@ namespace Aether.IntegrationTests
                                                               "emmanuelaubrey@quickenloans.com", 
                                                               "Hello out there", 
                                                               "emmanuelaubrey@quickenloans.com".CreateList(), 
-                                                              null, 
+                                                              null,
                                                               bodyParams.ToArray());
             var isSent = await notificationServiceClient.TryPostRequestAsync(email);
             Assert.IsTrue(isSent);

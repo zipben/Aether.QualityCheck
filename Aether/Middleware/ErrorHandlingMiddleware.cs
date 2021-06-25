@@ -23,11 +23,8 @@ namespace Aether.Middleware
         /// <param name="next"></param>
         public ErrorHandlingMiddleware(IApiLogger logger, RequestDelegate next)
         {
-            Guard.Against.Null(logger, nameof(logger));
-            Guard.Against.Null(next, nameof(next));
-
-            _logger = logger;
-            _next = next;
+            _logger =   Guard.Against.Null(logger, nameof(logger));
+            _next =     Guard.Against.Null(next, nameof(next));
 
             _logger.LogDebug("Exception handling middleware initialized");
         }

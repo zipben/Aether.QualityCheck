@@ -32,7 +32,6 @@ namespace Aether.Tests.ExternalAccessClients
         private static List<string> _testTo = new List<string> { "to@to.com" };
         private static List<string> _testCC = new List<string> { "cc@cc.com" };
         
-
         [TestInitialize]
         public void Init()
         {

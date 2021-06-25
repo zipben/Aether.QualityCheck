@@ -1,7 +1,6 @@
-﻿using Aether.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Aether.Extensions;
 
 namespace Aether.Models
 {
@@ -11,11 +10,8 @@ namespace Aether.Models
 
         public bool CheckPassed 
         { 
-            get 
-            {
-                return Steps.IsNullOrEmpty() ? false
-                                             : Steps.TrueForAll(s => s.StepPassed);
-            } 
+            get => Steps.IsNullOrEmpty() ? false
+                                         : Steps.All(s => s.StepPassed);
         }
 
         public List<StepResponse> Steps { get; set; }
