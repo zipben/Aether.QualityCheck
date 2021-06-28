@@ -74,7 +74,6 @@ namespace Aether.Extensions
             var hostName =      Guard.Against.MissingConfigurationValue(section, nameof(KafkaSettings.HostName));
             var password =      Guard.Against.MissingConfigurationValue(section, nameof(KafkaSettings.Password));
             var userName =      Guard.Against.MissingConfigurationValue(section, nameof(KafkaSettings.UserName));
-            var topic =         Guard.Against.MissingConfigurationValue(section, nameof(KafkaSettings.Topic));
 
             var jsonLicense =   Guard.Against.MissingConfigurationValue(configuration, NEWTONSOFT_LICENSE);
 
