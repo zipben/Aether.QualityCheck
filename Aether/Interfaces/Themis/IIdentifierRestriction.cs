@@ -1,6 +1,6 @@
 ﻿using Aether.Enums;
 
-namespace Aether.Interfaces.Oya
+namespace Aether.Interfaces.Themis
 {
     public interface IIdentifierRestriction : IRestriction
     {
