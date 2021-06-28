@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aether.Interfaces.Oya
+namespace Aether.Interfaces.Themis
 {
     public interface IRestriction
     {
