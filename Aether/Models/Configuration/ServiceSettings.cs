@@ -1,6 +1,6 @@
 ﻿using Aether.Enums;
 
-namespace Aether.Models
+namespace Aether.Models.Configuration
 {
     public class ServiceSettings
     {
