@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Ardalis.GuardClauses
 {
@@ -30,6 +31,34 @@ namespace Ardalis.GuardClauses
         {
             if (!httpResponse.IsSuccessStatusCode)
                 throw new HttpRequestException($"{httpResponse.RequestMessage.Method} call to {httpResponse.RequestMessage.RequestUri} returned {httpResponse.StatusCode}: {httpResponse.ReasonPhrase}");
+        }
+
+        public static IConfigurationSection MissingConfigurationSection(this IGuardClause guardClause, IConfiguration configuration, string sectionName)
+        {
+            var section = configuration.GetSection(sectionName);
+
+            if (!section.Exists())
+                throw new ArgumentNullException($"Configuration section {sectionName} must be defined");
+            else
+                return section;
+        }
+
+        public static string MissingConfigurationValue(this IGuardClause guardClause, IConfigurationSection section)
+        {
+            if (string.IsNullOrWhiteSpace(section.Value))
+                throw new ArgumentException($"Configuration {section.Path} must be set");
+            else
+                return section.Value;
+        }
+
+        public static string MissingConfigurationValue(this IGuardClause guardClause, IConfiguration configuration, string keyName)
+        {
+            var value = configuration.GetValue<string>(keyName);
+
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException($"Configuration {keyName} must be set");
+            else
+                return value;
         }
     }
 }

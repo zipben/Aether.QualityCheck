@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="JsonSchemaTests\test-invalid-raw.schema.json" />
+    <None Remove="JsonSchemaTests\test-raw.schema.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="JsonSchemaTests\test-invalid-raw.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="JsonSchemaTests\test-raw.schema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DataServices.Aether.TestUtils" Version="1.0.15" />
     <PackageReference Include="coverlet.msbuild" Version="2.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
