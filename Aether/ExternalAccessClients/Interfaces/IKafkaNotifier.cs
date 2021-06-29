@@ -6,6 +6,6 @@ namespace Aether.ExternalAccessClients.Interfaces
 {
     public interface IKafkaNotifier
     {
-        public Task<NotificationResult> SendAsync(BaseKafkaMessage messageContent, string schemaPath);
+        public Task<NotificationResult> SendAsync(BaseKafkaMessage messageContent, string schemaPath, string topic);
     }
 }

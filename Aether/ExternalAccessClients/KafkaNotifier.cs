@@ -35,11 +35,11 @@ namespace Aether.ExternalAccessClients
             _apiLogger.Method.CallingClassName = nameof(KafkaNotifier);
         }
 
-        public async Task<NotificationResult> SendAsync(BaseKafkaMessage messageContent, string schemaPath)
+        public async Task<NotificationResult> SendAsync(BaseKafkaMessage messageContent, string schemaPath, string topic)
         {
             _apiLogger.Method.Begin(out var methodName, 
                                     out var objectToLog, 
-                                    new { HostName = _config?.HostName, Topic = _config?.Topic, UserName = _config?.UserName, Id = messageContent?.Id, Subject = messageContent?.Subject }, 
+                                    new { HostName = _config?.HostName, UserName = _config?.UserName, Id = messageContent?.Id, Subject = messageContent?.Subject, Topic = topic }, 
                                     nameof(SendAsync));
 
             Guard.Against.Null(messageContent, nameof(messageContent));
@@ -63,7 +63,7 @@ namespace Aether.ExternalAccessClients
                     Value = serializedKafkaMessage
                 };
 
-                notificationResult = await TrySendAsync(message);
+                notificationResult = await TrySendAsync(message, topic);
             }
             else
             {
@@ -89,7 +89,7 @@ namespace Aether.ExternalAccessClients
             return messageIsValid;
         }
 
-        private async Task<NotificationResult> TrySendAsync(Message<string, string> message)
+        private async Task<NotificationResult> TrySendAsync(Message<string, string> message, string topic)
         {
             _apiLogger.Method.Begin(out var methodName, out var objectToLog, new { Id = message.Key }, nameof(TrySendAsync));
 
@@ -98,9 +98,9 @@ namespace Aether.ExternalAccessClients
 
             try
             {
-                if (_config.Topic.Exists())
+                if (topic.Exists())
                 {
-                    result = await _kafkaProducer.ProduceAsync(_config.Topic, message);
+                    result = await _kafkaProducer.ProduceAsync(topic, message);
 
                     if (result is null)
                     {
