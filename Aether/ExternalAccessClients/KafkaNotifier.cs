@@ -39,7 +39,7 @@ namespace Aether.ExternalAccessClients
         {
             _apiLogger.Method.Begin(out var methodName, 
                                     out var objectToLog, 
-                                    new { HostName = _config?.HostName, SendMessages = _config?.SendMessages, UserName = _config?.UserName, Id = messageContent?.Id, Subject = messageContent?.Subject, Topic = topic }, 
+                                    new { HostName = _config?.HostName, UserName = _config?.UserName, Id = messageContent?.Id, Subject = messageContent?.Subject, Topic = topic }, 
                                     nameof(SendAsync));
 
             Guard.Against.Null(messageContent, nameof(messageContent));
@@ -98,7 +98,7 @@ namespace Aether.ExternalAccessClients
 
             try
             {
-                if (topic.Exists() && _config.SendMessages)
+                if (topic.Exists())
                 {
                     result = await _kafkaProducer.ProduceAsync(topic, message);
 

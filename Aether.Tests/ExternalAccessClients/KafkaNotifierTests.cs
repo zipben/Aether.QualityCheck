@@ -216,7 +216,6 @@ namespace Aether.Tests.ServiceLayerTests
         {
             HostName = Guid.NewGuid().ToString(),
             Password = Guid.NewGuid().ToString(),
-            SendMessages = true,
             UserName = Guid.NewGuid().ToString()
         });
 
