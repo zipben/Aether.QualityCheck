@@ -26,11 +26,4 @@ namespace Aether.Models
             Steps = new List<StepResponse>();
         }
     }
-
-    public class StepResponse
-    {
-        public string Name { get; set; }
-        public string Message { get; set; }
-        public bool StepPassed { get; set; }
-    }
 }
