@@ -1,5 +1,8 @@
 ﻿## Aether
 
+[![CircleCI](https://circleci.foc.zone/gh/DataServices/Aether.svg?style=shield)](https://[circleci.foc.zone/gh/DataServices/Aether](https://circleci.foc.zone/gh/DataServices/Aether))
+[![Quality Gate Status](https://sonarqube.rockfin.com/api/project_badges/measure?project=QL.207965&metric=alert_status)](https://sonarqube.rockfin.com/dashboard?id=QL.207965)
+
 ### Overview
 
 Aether is a shared library that PBMC uses to store utilities and models that are shared across multiple projects.
@@ -13,4 +16,4 @@ When you are ready to publish your new version of Aether and make it available t
 Please reserve full version changes for large features, or breaking changes
 
 ![enter image description here](https://git.rockfin.com/DataServices/Aether/blob/master/Aether.png)
-32829cd3-f0b2-462b-a526-49f381950d22
+eec5be13-9db7-42b4-a95b-a548b6802138

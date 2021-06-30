@@ -105,16 +105,25 @@ namespace Aether.Tests.Helpers
             yield return new object[] { _testTemplateID, _testStage, null, from, _testSubject, _testBody, _testToEmails, _testCCEmails };
             yield return new object[] { _testTemplateID, _testStage, _testApplicationID, null, _testSubject, _testBody, _testToEmails, _testCCEmails };
             yield return new object[] { _testTemplateID, _testStage, _testApplicationID, from, null, _testBody, _testToEmails, _testCCEmails };
-            yield return new object[] { _testTemplateID, _testStage, _testApplicationID, from, _testSubject, null, _testToEmails, _testCCEmails };
             yield return new object[] { _testTemplateID, _testStage, _testApplicationID, from, _testSubject, _testBody, null, _testCCEmails };
 
         }
-
         [TestMethod]
         [DynamicData(nameof(CreateEmailTest_ArgumentNullExceptionData), DynamicDataSourceType.Method)]
         public void CreateEmailTest_ArgumentNullException(string templateId, string stage, string applicationId, string from, string subject, string body, List<string> toEmails, List<string> ccEmails)
         {
             Assert.ThrowsException<ArgumentNullException>(() => _target.CreateEmail(templateId, stage, applicationId, from, subject, body, toEmails, ccEmails));
+        }
+
+        public static IEnumerable<object[]> CreateEmailTest_ArgumentExceptionData()
+        {
+            yield return new object[] { _testTemplateID, _testStage, _testApplicationID, from, _testSubject, null, _testToEmails, _testCCEmails };
+        }
+        [TestMethod]
+        [DynamicData(nameof(CreateEmailTest_ArgumentExceptionData), DynamicDataSourceType.Method)]
+        public void CreateEmailTest_ArgumentException(string templateId, string stage, string applicationId, string from, string subject, string body, List<string> toEmails, List<string> ccEmails)
+        {
+            Assert.ThrowsException<ArgumentException>(() => _target.CreateEmail(templateId, stage, applicationId, from, subject, body, toEmails, ccEmails));
         }
     }
 }

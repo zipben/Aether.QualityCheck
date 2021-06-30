@@ -4,9 +4,9 @@
     {
         public static class EmailContentKeys
         {
-            public static string BODY_KEY = "body";
-            public static string CASE_NAME_KEY = "caseName";
-            public static string CONFIRMATION_ID_KEY = "emailConfirmationId";
+            public const string BODY_KEY = "body";
+            public const string CASE_NAME_KEY = "caseName";
+            public const string CONFIRMATION_ID_KEY = "emailConfirmationId";
         }
     }
 }

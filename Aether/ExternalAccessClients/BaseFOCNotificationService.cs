@@ -1,20 +1,18 @@
-﻿using Aether.Extensions;
-using Aether.Models;
-using Aether.Models.NotificationService;
-using System;
+﻿using Aether.Models.NotificationService;
+using Ardalis.GuardClauses;
 
 namespace Aether.ExternalAccessClients
 {
     public abstract class BaseFOCNotificationService
     {
-        internal void ValidateBaseEmailSendModel(BaseEmailSendModel email)
+        protected void ValidateBaseEmailSendModel(BaseEmailSendModel email)
         {
-            if (!email.TemplateId.Exists()) throw new ArgumentNullException(nameof(email.TemplateId));
-            if (!email.Stage.Exists()) throw new ArgumentNullException(nameof(email.Stage));
-            if (!email.ApplicationId.Exists()) throw new ArgumentNullException(nameof(email.ApplicationId));
-            if (!email.From.Exists()) throw new ArgumentNullException(nameof(email.From));
-            if (!email.Subject.Exists()) throw new ArgumentNullException(nameof(email.Subject));
-            if (email.To.IsNullOrEmpty()) throw new ArgumentNullException(nameof(email.To));
+            Guard.Against.NullOrWhiteSpace(email.TemplateId, nameof(email.TemplateId));
+            Guard.Against.NullOrWhiteSpace(email.Stage, nameof(email.Stage));
+            Guard.Against.NullOrWhiteSpace(email.ApplicationId, nameof(email.ApplicationId));
+            Guard.Against.NullOrWhiteSpace(email.From, nameof(email.From));
+            Guard.Against.NullOrWhiteSpace(email.Subject, nameof(email.Subject));
+            Guard.Against.NullOrEmpty(email.To, nameof(email.To));
         }
     }
 }

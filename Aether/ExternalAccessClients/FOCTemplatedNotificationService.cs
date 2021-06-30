@@ -1,14 +1,11 @@
-﻿using Aether.Extensions;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
-using Aether.Models;
 using Aether.Models.NotificationService;
 using APILogger.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 
 namespace Aether.ExternalAccessClients
@@ -23,9 +20,9 @@ namespace Aether.ExternalAccessClients
                                       INotificationServiceClient notificationServiceClient,
                                       INotificationMessageHelper notificationMessageHelper)
         {
-            _apiLogger = apiLogger ?? throw new ArgumentNullException(nameof(apiLogger));
-            _notificationServiceClient = notificationServiceClient ?? throw new ArgumentNullException(nameof(notificationServiceClient));
-            _notificationMessageHelper = notificationMessageHelper ?? throw new ArgumentNullException(nameof(notificationMessageHelper));
+            _apiLogger =                    Guard.Against.Null(apiLogger, nameof(apiLogger));
+            _notificationServiceClient =    Guard.Against.Null(notificationServiceClient, nameof(notificationServiceClient));
+            _notificationMessageHelper =    Guard.Against.Null(notificationMessageHelper, nameof(notificationMessageHelper));
         }
 
         public async Task<bool> SendEmailAsync(TemplatedEmailSendModel email)
@@ -42,8 +39,7 @@ namespace Aether.ExternalAccessClients
         {
             base.ValidateBaseEmailSendModel(email);
 
-            if (email.Contents is null) throw new ArgumentNullException(nameof(email.Contents));
-            if (!email.Contents.Any()) throw new ArgumentNullException($"{nameof(email.Contents)} Values");
+            Guard.Against.NullOrEmpty(email.Contents, nameof(email.Contents));
         }
     }
 }

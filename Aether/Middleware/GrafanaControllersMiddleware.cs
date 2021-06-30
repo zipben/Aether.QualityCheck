@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using RockLib.Metrics;
 
@@ -21,9 +22,10 @@ namespace Aether.Middleware
         /// <param name="next"></param>
         public GrafanaControllersMiddleware(IApiLogger logger, RequestDelegate next, IMetricFactory metricFactory)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _next = next ?? throw new ArgumentNullException(nameof(next));
-            _metricFactory = metricFactory ?? throw new ArgumentNullException(nameof(metricFactory));
+            _logger =           Guard.Against.Null(logger, nameof(logger));
+            _next =             Guard.Against.Null(next, nameof(next));
+            _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
+
             _logger.LogDebug("Exception handling middleware initialized");
         }
 

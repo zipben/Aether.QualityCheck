@@ -1,4 +1,4 @@
-﻿namespace Aether.Interfaces.Oya
+﻿namespace Aether.Interfaces.Themis
 {
     public interface ISystemRestriction : IRestriction
     {
