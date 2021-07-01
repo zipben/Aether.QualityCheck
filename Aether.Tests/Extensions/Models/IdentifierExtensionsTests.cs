@@ -19,17 +19,26 @@ namespace Aether.Tests.Extensions.Models
 
         private TestIdentifier _testIdentifier;
         private List<TestIdentifier> _testIdentifierList;
+        private Dictionary<string, List<string>> _testIdentifierDict;
 
         [TestInitialize]
         public void Init()
         {
             _testIdentifier = new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "12345" } };
             _testIdentifierList = _testIdentifier.CreateList();
+            _testIdentifierDict = new Dictionary<string, List<string>> { { IdentifierType.GCID.ToString(), new List<string> { "12345" } } };
         }
 
+        [TestMethod]
+        public void ToKafkaIdentifiersTest_Dictionary()
+        {
+            var result = _testIdentifierDict.ToKafkaIdentifiers().ToList();
+
+            Assert.AreEqual(_testIdentifierList.Count, result.Count);
+        }
 
         [TestMethod]
-        public void ToKafkaIdentifiersTest()
+        public void ToKafkaIdentifiersTest_List()
         {
             var result = _testIdentifierList.ToKafkaIdentifiers().ToList();
 
