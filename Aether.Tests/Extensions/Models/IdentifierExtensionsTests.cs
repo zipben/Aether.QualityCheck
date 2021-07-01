@@ -41,6 +41,7 @@ namespace Aether.Tests.Extensions.Models
         {
             var result = _testIdentifier.ToKafkaIdentifier();
 
+            Assert.AreEqual(_testIdentifier.IdentifierType.ToString(), result.Type);
             Assert.AreEqual(_testIdentifier.IdentifierValues.Count, result.Value.Count);
             Assert.AreEqual(_testIdentifier.IdentifierValues[0], result.Value[0]);
         }
