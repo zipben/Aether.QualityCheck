@@ -6,15 +6,15 @@ namespace Aether.Extensions.Models
 {
     public static class IdentifierExtensions
     {
-        public static IEnumerable<KafkaIdentifier> MakeKafkaIdentifiers(this IEnumerable<IIdentifier> identifiers)
+        public static IEnumerable<KafkaIdentifier> ToKafkaIdentifiers(this IEnumerable<IIdentifier> identifiers)
         {
             foreach (var identifier in identifiers)
             {
-                yield return identifier.MakeKafkaIdentifier();
+                yield return identifier.ToKafkaIdentifier();
             }
         }
 
-        public static KafkaIdentifier MakeKafkaIdentifier(this IIdentifier identifier)
+        public static KafkaIdentifier ToKafkaIdentifier(this IIdentifier identifier)
         {
             return new KafkaIdentifier
             {
