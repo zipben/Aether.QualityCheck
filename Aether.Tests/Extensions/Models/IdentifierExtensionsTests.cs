@@ -17,14 +17,13 @@ namespace Aether.Tests.Extensions.Models
             public List<string> IdentifierValues { get; set; }
         }
 
-        private string _testIdValue;
         private TestIdentifier _testIdentifier;
         private List<TestIdentifier> _testIdentifierList;
 
         [TestInitialize]
         public void Init()
         {
-            _testIdentifier = new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { _testIdValue } };
+            _testIdentifier = new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "12345" } };
             _testIdentifierList = _testIdentifier.CreateList();
         }
 
