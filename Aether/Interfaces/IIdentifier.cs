@@ -1,9 +1,7 @@
-﻿using Aether.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using Aether.Enums;
 
-namespace Aether.Interfaces.Themis
+namespace Aether.Interfaces
 {
     public interface IIdentifier
     {

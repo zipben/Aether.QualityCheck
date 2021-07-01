@@ -91,7 +91,7 @@ namespace Aether.ExternalAccessClients
 
         private async Task<NotificationResult> TrySendAsync(Message<string, string> message, string topic)
         {
-            _apiLogger.Method.Begin(out var methodName, out var objectToLog, new { Id = message.Key }, nameof(TrySendAsync));
+            _apiLogger.Method.Begin(out var methodName, out var objectToLog, new { Id = message.Key, Topic = topic }, nameof(TrySendAsync));
 
             DeliveryResult<string, string> result = null;
             NotificationResult notificationResult = null;
@@ -104,22 +104,22 @@ namespace Aether.ExternalAccessClients
 
                     if (result is null)
                     {
-                        notificationResult = NotificationResult.Failure(message.Key, $"Kafka did not respond for {message.Key}");
+                        notificationResult = NotificationResult.Failure(message.Key, $"Kafka did not respond for {message.Key} and topic {topic}");
                         _apiLogger.LogError(notificationResult.ResponseDetails, message);
                     }
                     else if (result.Status == PersistenceStatus.NotPersisted)
                     {
-                        notificationResult = NotificationResult.Failure(message.Key, $"The message was not persisted for {message.Key}");
+                        notificationResult = NotificationResult.Failure(message.Key, $"The message was not persisted for {message.Key} and topic {topic}");
                         _apiLogger.LogError(notificationResult.ResponseDetails, message);
                     }
                     else if (result.Status == PersistenceStatus.PossiblyPersisted)
                     {
-                        notificationResult = NotificationResult.Failure(message.Key, $"The message may or may not not have been persisted for {message.Key}");
+                        notificationResult = NotificationResult.Failure(message.Key, $"The message may or may not not have been persisted for {message.Key} and topic {topic}");
                         _apiLogger.LogWarning(notificationResult.ResponseDetails, result);
                     }
                     else
                     {
-                        notificationResult = NotificationResult.Success($"Kafka received the message successfully for {message.Key}");
+                        notificationResult = NotificationResult.Success($"Kafka received the message successfully for {message.Key} and topic {topic}");
                     }
                 }
                 else
