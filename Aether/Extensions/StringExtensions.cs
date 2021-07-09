@@ -37,5 +37,17 @@ namespace Aether.Extensions
 
             return r.Replace(val, delimeter);
         }
+
+        public static string Encode64(this string val)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(val);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Decode64(this string val)
+        {
+            var base64EncodedBytes = System.Convert.FromBase64String(val);
+            return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
     }
 }
