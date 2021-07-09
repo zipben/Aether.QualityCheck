@@ -59,5 +59,39 @@ namespace Aether.Extensions
             return content;
         }
 
+        public static string Encode64<T>(this T target)
+        {
+            string jsonString;
+            try
+            {
+                jsonString = JsonConvert.SerializeObject(target);
+            }
+            catch (Exception e)
+            {
+                throw new JsonSerializationException($"{nameof(Aether)}.{nameof(Encode64)} encountered an exception while trying to serialize target into string", e);
+            }
+
+            return jsonString.Encode64();
+        }
+
+        public static T Decode64<T>(this string encodedTarget)
+        {
+            string decodedString = encodedTarget.Decode64();
+
+            T decodedTarget;
+
+            try
+            {
+                decodedTarget = JsonConvert.DeserializeObject<T>(decodedString);
+            }
+            catch (Exception e)
+            {
+                throw new JsonSerializationException($"{nameof(Aether)}.{nameof(Encode64)} encountered an exception while trying to deserialize target", e);
+            }
+
+            return decodedTarget;
+
+        }
+
     }
 }

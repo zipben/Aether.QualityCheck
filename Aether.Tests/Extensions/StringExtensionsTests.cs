@@ -36,5 +36,36 @@ namespace Aether.Tests.Extensions
         {
             Assert.AreEqual(expectedResult, str.SplitCamelCase());
         }
+
+        [TestMethod]
+        [DataRow("abcdef")]
+        [DataRow("ThisIsACamel")]
+        [DataRow("THIIISSSSIsACamel")]
+        [DataRow("PartyInTheUSA")]
+        [DataRow("IAmnotAProperlyConstructedSentence")]
+        public void EncodeString(string str)
+        {
+            var encodedString = str.Encode64();
+
+            var base64EncodedBytes = System.Convert.FromBase64String(encodedString);
+            var decodedString = System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+
+            Assert.AreEqual(str, decodedString);
+        }
+
+        [TestMethod]
+        [DataRow("abcdef")]
+        [DataRow("ThisIsACamel")]
+        [DataRow("THIIISSSSIsACamel")]
+        [DataRow("PartyInTheUSA")]
+        [DataRow("IAmnotAProperlyConstructedSentence")]
+        public void DecodeString(string str)
+        {
+            var encodedString = str.Encode64();
+
+            var decodedString = encodedString.Decode64();
+
+            Assert.AreEqual(str, decodedString);
+        }
     }
 }

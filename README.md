@@ -16,4 +16,4 @@ When you are ready to publish your new version of Aether and make it available t
 Please reserve full version changes for large features, or breaking changes
 
 ![enter image description here](https://git.rockfin.com/DataServices/Aether/blob/master/Aether.png)
-9de3a8dd-c750-42c1-a0e4-7ddfff978dfd
+a3e9c27e-938c-4aa5-a16b-cd4f743b2ab4
