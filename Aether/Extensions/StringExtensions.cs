@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Aether.Extensions
@@ -48,6 +51,45 @@ namespace Aether.Extensions
         {
             var base64EncodedBytes = System.Convert.FromBase64String(val);
             return System.Text.Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+
+        public static string Compress(this string uncompressedString)
+        {
+            byte[] compressedBytes;
+
+            using (var uncompressedStream = new MemoryStream(Encoding.UTF8.GetBytes(uncompressedString)))
+            {
+                using (var compressedStream = new MemoryStream())
+                {  
+                    using (var compressorStream = new DeflateStream(compressedStream, CompressionLevel.Optimal, true))
+                    {
+                        uncompressedStream.CopyTo(compressorStream);
+                    }
+
+                    compressedBytes = compressedStream.ToArray();
+                }
+            }
+
+            return Convert.ToBase64String(compressedBytes);
+        }
+
+        public static string Decompress(this string compressedString)
+        {
+            byte[] decompressedBytes;
+
+            var compressedStream = new MemoryStream(Convert.FromBase64String(compressedString));
+
+            using (var decompressorStream = new DeflateStream(compressedStream, CompressionMode.Decompress))
+            {
+                using (var decompressedStream = new MemoryStream())
+                {
+                    decompressorStream.CopyTo(decompressedStream);
+
+                    decompressedBytes = decompressedStream.ToArray();
+                }
+            }
+
+            return Encoding.UTF8.GetString(decompressedBytes);
         }
     }
 }
