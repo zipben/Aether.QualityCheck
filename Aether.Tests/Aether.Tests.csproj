@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoBogus" Version="2.13.0" />
     <PackageReference Include="DataServices.Aether.TestUtils" Version="1.0.15" />
     <PackageReference Include="coverlet.msbuild" Version="2.9.0">
       <PrivateAssets>all</PrivateAssets>
