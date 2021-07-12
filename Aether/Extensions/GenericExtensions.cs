@@ -93,5 +93,51 @@ namespace Aether.Extensions
 
         }
 
+        /// <summary>
+        /// Compresses and encoded compressed object as a string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static string Compress<T>(this T target)
+        {
+            string jsonString;
+            try
+            {
+                jsonString = JsonConvert.SerializeObject(target);
+            }
+            catch (Exception e)
+            {
+                throw new JsonSerializationException($"{nameof(Aether)}.{nameof(Encode64)} encountered an exception while trying to serialize target into string", e);
+            }
+
+            return jsonString.Compress();
+        }
+
+        /// <summary>
+        /// Decompresses and decodes object from string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="compressedTarget"></param>
+        /// <returns></returns>
+        public static T Decompress<T>(this string compressedTarget)
+        {
+            string decodedString = compressedTarget.Decompress();
+
+            T decodedTarget;
+
+            try
+            {
+                decodedTarget = JsonConvert.DeserializeObject<T>(decodedString);
+            }
+            catch (Exception e)
+            {
+                throw new JsonSerializationException($"{nameof(Aether)}.{nameof(Encode64)} encountered an exception while trying to deserialize target", e);
+            }
+
+            return decodedTarget;
+
+        }
+
     }
 }
