@@ -19,10 +19,7 @@ namespace Aether.Models.RightRequestWorkflow
 
         public bool IsTestMessage
         {
-            get
-            {
-                return base.DiagnosticFlags.Contains("IsTest");
-            }
+            get => base.DiagnosticFlags.Contains("IsTest");
             set
             {
                 if (value)
