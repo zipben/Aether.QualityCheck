@@ -27,6 +27,7 @@ namespace Aether.Models.RightRequestWorkflow
         ///for a single person from one of these systems, to accomodate as many as needed.
         ///</summary>
         public Dictionary<string, List<string>> OwnedData { get; set; }
+
         public EnforcementType? EnforcementType { get; set; }
     }
 }

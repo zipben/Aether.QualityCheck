@@ -17,11 +17,9 @@ namespace Aether.Models.RightRequestWorkflow
         // Default to true so that if DRE is not yet sending this field then we won't default to false
         public bool HasSSN { get; set; } = true;
 
-        public bool IsTestMessage {
-            get 
-            {
-                return base.DiagnosticFlags.Contains("IsTest");
-            }
+        public bool IsTestMessage
+        {
+            get => base.DiagnosticFlags.Contains("IsTest");
             set 
             {
                 if (value)
