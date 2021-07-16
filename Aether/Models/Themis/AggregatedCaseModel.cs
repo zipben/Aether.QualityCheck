@@ -8,7 +8,7 @@ namespace Aether.Models.Themis
         public string Name { get; set; }
         public DateTime UpdateDate { get; set; }
         public DateTime DateHoldCreated { get; set; }
-        public DateTime DateHoldEnded { get; set; }
+        public DateTime? DateHoldEnded { get; set; }
         public string Id { get; set; }
         public HashSet<string> Gcids { get; set; }
         public HashSet<string> LoanNumbers { get; set; }

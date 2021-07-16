@@ -30,7 +30,7 @@ namespace Aether.Tests.JsonConvertersTests
         {
             var testObject = new TestSerialization { Id = 1, Name = Guid.NewGuid().ToString() };
 
-            var serializedString = JsonConvert.SerializeObject(testObject);
+            var serializedString = JsonConvert.SerializeObject(testObject, _jsonSerializationSettings);
 
             var resultObject = JsonConvert.DeserializeObject<ITestSerialization>(serializedString, _jsonSerializationSettings);
 
@@ -47,7 +47,7 @@ namespace Aether.Tests.JsonConvertersTests
                 testList.Add(new TestSerialization { Id = i, Name = Guid.NewGuid().ToString() });
             };
 
-            var serializedString = JsonConvert.SerializeObject(testList);
+            var serializedString = JsonConvert.SerializeObject(testList, _jsonSerializationSettings);
 
             var resultList = JsonConvert.DeserializeObject<List<ITestSerialization>>(serializedString, _jsonSerializationSettings);
 
