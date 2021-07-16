@@ -28,6 +28,25 @@ namespace Aether.Tests.Extensions.Models
             _testIdentifierList = _testIdentifier.CreateList();
             _testIdentifierDict = new Dictionary<string, List<string>> { { IdentifierType.GCID.ToString(), new List<string> { "12345" } } };
         }
+        public static IEnumerable<object[]> HasValuesTestData()
+        {
+            var identifierWithValues = new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "123" } };
+            var identifierWithNoValues = new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { } };
+            var identifierWithNullValues = new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = null };
+
+            yield return new object[] { identifierWithValues, true };
+            yield return new object[] { identifierWithNoValues, false };
+            yield return new object[] { identifierWithNullValues, false };
+            yield return new object[] { null, false };
+        }
+
+        [TestMethod]
+        [DynamicData(nameof(HasValuesTestData), DynamicDataSourceType.Method)]
+        public void HasValuesTest(IIdentifier testIdentifier, bool expectedResult)
+        {
+            var actualResult = testIdentifier.HasValues();
+            Assert.AreEqual(expectedResult, actualResult);
+        }
 
         [TestMethod]
         public void ToKafkaIdentifiersTest_Dictionary()
