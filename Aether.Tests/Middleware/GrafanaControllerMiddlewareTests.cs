@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using RockLib.Metrics;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace Aether.Tests.Middleware
             _mockHttpContext = new Mock<HttpContext>();
             _mockMetricFactory = new Mock<IMetricFactory>();
 
-            _target = new GrafanaControllersMiddleware(_mockLogger.Object, _mockNext.Object, _mockMetricFactory.Object);
+            _target = new GrafanaControllersMiddleware(_mockLogger.Object, _mockMetricFactory.Object, _mockNext.Object, new List<string>() { "/api/heartbeat" });
 
             SetupMocks();
         }

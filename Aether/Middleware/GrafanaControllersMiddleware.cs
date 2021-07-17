@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
@@ -13,20 +15,23 @@ namespace Aether.Middleware
         private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
         private readonly IApiLogger _logger;
-        private static readonly List<string> _filterList = new List<string> { "/api/heartbeat" };
+        private readonly List<string> _filterList = new List<string>();
 
         /// <summary>
         /// Constructor for GrafanaControllersMiddleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public GrafanaControllersMiddleware(IApiLogger logger, RequestDelegate next, IMetricFactory metricFactory)
+        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList = null)
         {
             _logger =           Guard.Against.Null(logger, nameof(logger));
             _next =             Guard.Against.Null(next, nameof(next));
             _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
 
-            _logger.LogDebug("Exception handling middleware initialized");
+            if (filterList != null)
+                _filterList = filterList.ToList();
+
+            _logger.LogDebug("GrafanaControllersMiddleware initialized");
         }
 
         /// <summary>
@@ -73,7 +78,17 @@ namespace Aether.Middleware
             }
         }
 
-        private bool IsInFilter(HttpContext context) =>
-            _filterList.Contains(context.Request.Path);
+        private bool IsInFilter(HttpContext context)
+        {
+            foreach(var filter in _filterList)
+            {
+                Regex rgx = new Regex(filter);
+
+                if (rgx.IsMatch(context.Request.Path))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }
