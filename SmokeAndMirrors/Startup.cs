@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using RockLib.Metrics;
 using SmokeAndMirrors.TestDependencies;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace SmokeAndMirrors
             services.RegisterQualityChecks(typeof(Startup));
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
 
+            services.AddSingleton<IMetricFactory, MetricFactory>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -51,6 +54,8 @@ namespace SmokeAndMirrors
             }
 
             app.UseQualityCheckMiddleware();
+
+            app.UseGrafanaControllerMiddleware("/api/heartbeat", "/api/Litigation", "/api/test/*");
 
             app.UseHttpsRedirection();
 
