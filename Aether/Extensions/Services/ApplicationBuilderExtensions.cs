@@ -14,8 +14,15 @@ namespace Aether.Extensions
         /// <returns></returns>
         public static IApplicationBuilder UseExceptionHandlingMiddleware(this IApplicationBuilder builder) =>
             builder.UseMiddleware<ErrorHandlingMiddleware>();
-        public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder) =>
-            builder.UseMiddleware<GrafanaControllersMiddleware>();
+        
+        public static IApplicationBuilder UseGrafanaControllerMiddleware(this IApplicationBuilder builder, params string[] filterLists)
+        {
+            if (!filterLists.Any())
+                filterLists = new string[] { "/api/heartbeat" };
+
+            return builder.UseMiddleware<GrafanaControllersMiddleware>(filterLists.ToList());
+        }
+
         public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "/api/QualityCheck") {
             Guard.Against.InvalidInput(route, nameof(route), delegate (string s) { return s.ElementAt(0).Equals('/'); });
             return builder.UseMiddleware<QualityCheckMiddleware>(route);
