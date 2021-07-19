@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>PBMC</Authors>
+    <Company>Quicken Loans</Company>
+    <PackageProjectUrl>https://git.rockfin.com/DataServices/Aether</PackageProjectUrl>
+    <Description>Shared library with common extensions, classes, etc.</Description>
+    <PackageIcon>Aether.png</PackageIcon>
+    <Copyright>Copyright 2021(c) Quicken Loans Corporation. All rights reserved.</Copyright>
+    <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
+    <Product>DataServices.Aether</Product>
+    <PackageId>DataServices.Aether</PackageId>
+    <Version>2.0.19.0</Version>
+    <AssemblyVersion>2.0.19.0</AssemblyVersion>
+    <FileVersion>2.0.19.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove=".circleci\**" />
+    <EmbeddedResource Remove=".circleci\**" />
+    <None Remove=".circleci\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" Version="3.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.5.0.46" />
+    <PackageReference Include="ReadmeIncrementer" Version="2.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Rocklib.CCE.APILogger" Version="3.2.12" />
+    <PackageReference Include="RockLib.Messaging.Kafka" Version="1.0.0-rc7" />
+    <PackageReference Include="RockLib.Metrics" Version="2.0.3" />
+    <PackageReference Include="RockLib.OAuth" Version="2.0.4" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Aether.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Moria\" />
+  </ItemGroup>
+
+</Project>
