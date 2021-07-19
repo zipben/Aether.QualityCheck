@@ -2,7 +2,10 @@
 using Aether.Models.ErisClient;
 using AutoBogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Sockets;
 
 namespace Aether.Tests.Extensions
 {
@@ -43,6 +46,39 @@ namespace Aether.Tests.Extensions
             IdentifiersRoot decompressed = compressed.Decompress<IdentifiersRoot>();
 
             Assert.AreEqual(decompressed.SluggishHash(), testObj.SluggishHash());
+        }
+
+
+        [TestMethod]
+        public void GenerateHttpStringContentNullTest()
+        {
+            string data = null;
+            var x = data.GenerateHttpStringContent();
+            Assert.IsNotNull(x);
+
+        }
+        [TestMethod]
+        [ExpectedException(typeof(JsonSerializationException))]
+        public void GenerateHttpStringContentIllegalObjectTest()
+        {
+            var data = new TcpClient();
+            var x = data.GenerateHttpStringContent();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(JsonSerializationException))]
+        public void Encode64IllegalObjectTest()
+        {
+            var data = new TcpClient();
+            var x = data.Encode64();
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(JsonSerializationException))]
+        public void CompressIllegalObjectTest()
+        {
+            var data = new TcpClient();
+            var x = data.Compress();
         }
     }
 }
