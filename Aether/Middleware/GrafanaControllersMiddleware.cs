@@ -22,14 +22,12 @@ namespace Aether.Middleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList = null)
+        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList)
         {
             _logger =           Guard.Against.Null(logger, nameof(logger));
             _next =             Guard.Against.Null(next, nameof(next));
             _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
-
-            if (filterList != null)
-                _filterList = filterList.ToList();
+            _filterList =       Guard.Against.Null(filterList, nameof(filterList));
 
             _logger.LogDebug("GrafanaControllersMiddleware initialized");
         }

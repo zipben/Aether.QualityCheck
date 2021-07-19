@@ -59,7 +59,7 @@ namespace Aether.Tests.Middleware
         [TestMethod]
         public void ArgumentNullExceptionTest()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => _target = new GrafanaControllersMiddleware(null, null, null));
+            Assert.ThrowsException<ArgumentNullException>(() => _target = new GrafanaControllersMiddleware(null, null, null, null));
         }
 
         [TestMethod]
