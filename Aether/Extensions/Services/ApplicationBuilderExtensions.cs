@@ -1,6 +1,7 @@
 ﻿using Aether.Middleware;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Builder;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Aether.Extensions
@@ -33,6 +34,7 @@ namespace Aether.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="isDevelopment"></param>
+        [ExcludeFromCodeCoverage]
         public static void UseSecurityHeaders(this IApplicationBuilder builder, bool isDevelopment)
         {
             if (!isDevelopment)
