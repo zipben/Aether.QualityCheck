@@ -12,7 +12,7 @@ namespace Aether.Tests.Models
         [TestMethod]
         public void MongoSettingsTest()
         {
-            IMongoSettings testModelA = AutoFaker.Generate<MongoSettings>();
+            MongoSettings testModelA = AutoFaker.Generate<MongoSettings>();
             IMongoSettings testModelB = testModelA.SluggishClone();
             Assert.AreEqual(testModelA.SluggishHash(), testModelB.SluggishHash());
         }
