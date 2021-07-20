@@ -1,20 +1,14 @@
 using Aether.Extensions;
+using Aether.Models.ErisClient;
 using APILogger.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RockLib.Metrics;
 using SmokeAndMirrors.TestDependencies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SmokeAndMirrors
 {
@@ -33,6 +27,10 @@ namespace SmokeAndMirrors
             services.AddAPILogger();
             services.RegisterQualityChecks(typeof(Startup));
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
+
+            services.Configure<ServiceConfig>(Configuration.GetSection(nameof(ServiceConfig)));
+
+            services.RegisterAuditEventPublisher("SmokeAndMirrors");
 
             services.AddSingleton<IMetricFactory, MetricFactory>();
 
