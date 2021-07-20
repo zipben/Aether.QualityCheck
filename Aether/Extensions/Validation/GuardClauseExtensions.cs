@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -50,7 +51,7 @@ namespace Ardalis.GuardClauses
             else
                 return section.Value;
         }
-
+        [ExcludeFromCodeCoverage]
         public static string MissingConfigurationValue(this IGuardClause guardClause, IConfiguration configuration, string keyName)
         {
             var value = configuration.GetValue<string>(keyName);

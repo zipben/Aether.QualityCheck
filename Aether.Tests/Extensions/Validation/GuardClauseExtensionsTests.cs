@@ -94,5 +94,29 @@ namespace Aether.Tests.Extensions.Validation
             return config.Object;
         }
 
+        [TestMethod]
+        public void MissingConfigurationValueHasValueTest()
+        {
+            var configSection = ConfigurationSectionSetup();
+
+            Guard.Against.MissingConfigurationValue(configSection);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void MissingConfigurationValueNullValueTest()
+        {
+            var configSection = new Mock<IConfigurationSection>().Object;
+            
+            Guard.Against.MissingConfigurationValue(configSection);
+        }
+
+        [TestMethod]
+        public void MissingConfigurationValueConfigurationHasValueTest()
+        {
+            var config = ConfigurationSetup();
+
+            Guard.Against.MissingConfigurationValue(config, "key");
+        }
     }
 }
