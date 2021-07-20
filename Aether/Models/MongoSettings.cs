@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Aether.Interfaces;
 
-namespace ThemisBackend.Data.Configuration
+namespace Aether.Models
 {
-    public abstract class MongoSettings : IMongoSettings
+    public class MongoSettings : IMongoSettings
     {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
