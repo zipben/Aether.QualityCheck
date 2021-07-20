@@ -64,5 +64,35 @@ namespace Aether.Tests.Extensions.Validation
             {
                 RequestMessage = new HttpRequestMessage(HttpMethod.Get, "Http://tempuri.org")
             };
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void MissingConfigurationSectionTest()
+        {
+            var config = new Mock<IConfiguration>().Object;
+            Guard.Against.MissingConfigurationSection(config, Guid.NewGuid().ToString());
+        }
+        [TestMethod]
+        public void MissingConfigurationSectionExistsTest()
+        {
+            var config = ConfigurationSetup();
+            Guard.Against.MissingConfigurationSection(config, Guid.NewGuid().ToString());
+        }
+
+        private IConfiguration ConfigurationSetup()
+        {
+            var configSection = ConfigurationSectionSetup();
+            var config = new Mock<IConfiguration>();
+            config.Setup(x => x.GetSection(It.IsAny<string>())).Returns(configSection);
+            return config.Object;
+        }
+        private IConfigurationSection ConfigurationSectionSetup()
+        {
+            var config = new Mock<IConfigurationSection>();
+            config.Setup(x => x.Key).Returns("key");
+            config.Setup(x => x.Value).Returns("value");
+            return config.Object;
+        }
+
     }
 }
