@@ -1,8 +1,8 @@
 ﻿using Aether.Extensions;
 using Aether.Interfaces;
+using Aether.Models;
 using AutoBogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ThemisBackend.Data.Configuration;
 
 namespace Aether.Tests.Models
 {
