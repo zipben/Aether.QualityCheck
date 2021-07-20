@@ -4,6 +4,6 @@ namespace Aether.Helpers.Interfaces
 {
     public interface IAuditEventPublisher
     {
-        Task Audit(string eventName, string targetId, string eventInitiator, string originalValue, string newValue);
+        Task CaptureAuditEvent(string eventName, string targetId, string eventInitiator, string originalValue, string newValue);
     }
 }

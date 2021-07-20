@@ -29,7 +29,7 @@ namespace SmokeAndMirrors.Controllers
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            await _eventPublisher.Audit("GetWeather", "1234", "Me", "1", "2");
+            await _eventPublisher.CaptureAuditEvent("GetWeather", "1234", "Me", "1", "2");
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

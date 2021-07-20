@@ -18,7 +18,7 @@ namespace Aether.Helpers
             _client         = Guard.Against.Null(client, nameof(client));
         }
 
-        public async Task Audit(string eventName, string targetId, string eventInitiator, string originalValue, string newValue)
+        public async Task CaptureAuditEvent(string eventName, string targetId, string eventInitiator, string originalValue, string newValue)
         {
             var evnt = new AuditEvent()
             {
