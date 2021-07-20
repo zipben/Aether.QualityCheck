@@ -13,6 +13,6 @@ namespace Aether.Interfaces.Moria
         public long EventCreateDate { get; set; }
         public string EventInitiator { get; set; }
         public string OriginalValue { get; set; }
-        public string NewlValue { get; set; }
+        public string NewValue { get; set; }
     }
 }
