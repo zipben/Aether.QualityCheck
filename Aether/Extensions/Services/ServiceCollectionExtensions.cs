@@ -88,11 +88,13 @@ namespace Aether.Extensions
                 Guard.Against.Null(serviceConfig.Value.ClientID, nameof(serviceConfig.Value.ClientID));
                 Guard.Against.Null(serviceConfig.Value.ClientSecret, nameof(serviceConfig.Value.ClientSecret));
 
-                AuditClientConfig config = new AuditClientConfig();
-                config.Audience = audience;
-                config.BaseUrl = baseUrl;
-                config.ClientID = serviceConfig.Value.ClientID;
-                config.ClientSecret = serviceConfig.Value.ClientSecret;
+                AuditClientConfig config = new AuditClientConfig()
+                {
+                    Audience = audience,
+                    BaseUrl = baseUrl,
+                    ClientID = serviceConfig.Value.ClientID,
+                    ClientSecret = serviceConfig.Value.ClientSecret
+                };
 
                 return new AuditClient(services.BuildServiceProvider().GetRequiredService<IHttpClientWrapper>(), Options.Create(config));
                 

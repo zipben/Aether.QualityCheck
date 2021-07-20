@@ -22,8 +22,8 @@ namespace Aether.ExternalAccessClients
 
         public AuditClient(IHttpClientWrapper httpClient, IOptions<AuditClientConfig> config)
         {
-            _httpClient =     Guard.Against.Null(httpClient, nameof(httpClient));
-            _config =         Guard.Against.Null(config?.Value, nameof(ServiceConfig));
+            _httpClient     = Guard.Against.Null(httpClient, nameof(httpClient));
+            _config         = Guard.Against.Null(config?.Value, nameof(ServiceConfig));
 
             ValidateConfig(config);
 
