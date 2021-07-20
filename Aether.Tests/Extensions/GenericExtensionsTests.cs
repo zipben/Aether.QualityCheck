@@ -58,27 +58,24 @@ namespace Aether.Tests.Extensions
 
         }
         [TestMethod]
-        [ExpectedException(typeof(JsonSerializationException))]
         public void GenerateHttpStringContentIllegalObjectTest()
         {
             var data = new TcpClient();
-            var x = data.GenerateHttpStringContent();
+            Assert.ThrowsException<JsonSerializationException>(() => data.GenerateHttpStringContent());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(JsonSerializationException))]
         public void Encode64IllegalObjectTest()
         {
             var data = new TcpClient();
-            var x = data.Encode64();
+            Assert.ThrowsException<JsonSerializationException>(() => data.Encode64());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(JsonSerializationException))]
         public void CompressIllegalObjectTest()
         {
             var data = new TcpClient();
-            var x = data.Compress();
+            Assert.ThrowsException<JsonSerializationException>(() => data.Compress());
         }
     }
 }

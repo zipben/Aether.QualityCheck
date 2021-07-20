@@ -66,17 +66,16 @@ namespace Aether.Tests.Extensions.Validation
             };
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void MissingConfigurationSectionTest()
         {
             var config = new Mock<IConfiguration>().Object;
-            Guard.Against.MissingConfigurationSection(config, Guid.NewGuid().ToString());
+            Assert.ThrowsException<ArgumentNullException>(() => Guard.Against.MissingConfigurationSection(config, Guid.NewGuid().ToString()));
         }
         [TestMethod]
         public void MissingConfigurationSectionExistsTest()
         {
             var config = ConfigurationSetup();
-            Guard.Against.MissingConfigurationSection(config, Guid.NewGuid().ToString());
+            Assert.AreEqual(Guard.Against.MissingConfigurationSection(config, Guid.NewGuid().ToString()), config.GetSection("any"));
         }
 
         private IConfiguration ConfigurationSetup()
@@ -99,16 +98,15 @@ namespace Aether.Tests.Extensions.Validation
         {
             var configSection = ConfigurationSectionSetup();
 
-            Guard.Against.MissingConfigurationValue(configSection);
+            Assert.AreEqual(Guard.Against.MissingConfigurationValue(configSection), configSection.Value);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void MissingConfigurationValueNullValueTest()
         {
             var configSection = new Mock<IConfigurationSection>().Object;
-            
-            Guard.Against.MissingConfigurationValue(configSection);
+
+            Assert.ThrowsException<ArgumentException>(() => Guard.Against.MissingConfigurationValue(configSection));
         }
 
         [TestMethod]
@@ -116,7 +114,7 @@ namespace Aether.Tests.Extensions.Validation
         {
             var config = ConfigurationSetup();
 
-            Guard.Against.MissingConfigurationValue(config, "key");
+            Assert.AreEqual(Guard.Against.MissingConfigurationValue(config, "key"), ConfigurationSectionSetup().Value) ;
         }
     }
 }

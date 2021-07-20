@@ -10,6 +10,7 @@ using Moq;
 using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 using Aether.Models.NotificationService;
 using System.Threading.Tasks;
+using AutoBogus;
 
 namespace Aether.ExternalAccessClients.Tests
 {
@@ -49,17 +50,7 @@ namespace Aether.ExternalAccessClients.Tests
         [TestMethod()]
         public async Task SendEmailAsyncTest()
         {
-            var email = new TemplatedEmailSendModel();
-            email.Contents = new Dictionary<string, string>();
-            email.Contents.Add(Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
-            email.TemplateId = Guid.NewGuid().ToString();
-            email.Stage = Guid.NewGuid().ToString();
-            email.ApplicationId = Guid.NewGuid().ToString();
-            email.From = Guid.NewGuid().ToString();
-            email.Subject = Guid.NewGuid().ToString();
-            var toList = new List<string>();
-            toList.Add(Guid.NewGuid().ToString());
-            email.To = toList;
+            var email = AutoFaker.Generate<TemplatedEmailSendModel>();
             var x = await _target.SendEmailAsync(email);
             Assert.IsTrue(x);
         }

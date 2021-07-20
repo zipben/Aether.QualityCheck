@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Moq;
 using Microsoft.AspNetCore.Http;
+using Aether.Middleware;
 
 namespace Aether.Extensions.Tests
 {
