@@ -1,6 +1,6 @@
 ﻿namespace Aether
 {
-    static class Constants
+    public static class Constants
     {
         //This should be around 185kb if each identifier is ~36 chars the actual max is 256kb. Leaving some room.
         public const int MAX_AWS_MESSAGE_SIZE = 5000;
