@@ -12,8 +12,8 @@ namespace Aether.Tests.Models
         [TestMethod]
         public void MongoSettingsTest()
         {
-            MongoSettings testModelA = AutoFaker.Generate<MongoSettings>();
-            IMongoSettings testModelB = testModelA.SluggishClone();
+            MongoDBSettings testModelA = AutoFaker.Generate<MongoDBSettings>();
+            IMongoDBSettings testModelB = testModelA.SluggishClone();
             Assert.AreEqual(testModelA.SluggishHash(), testModelB.SluggishHash());
         }
     }
