@@ -1,6 +1,6 @@
 ﻿using Aether.Extensions;
-using Aether.Interfaces;
-using Aether.Models;
+using Aether.Interfaces.Configuration;
+using Aether.Models.Configuration;
 using AutoBogus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
