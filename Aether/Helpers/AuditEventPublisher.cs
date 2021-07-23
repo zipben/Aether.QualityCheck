@@ -2,6 +2,7 @@
 using Aether.Helpers.Interfaces;
 using Aether.Models;
 using Ardalis.GuardClauses;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
@@ -27,6 +28,24 @@ namespace Aether.Helpers
                 EventCreateDate = DateTime.UtcNow.Ticks,
                 TargetId = targetId,
                 EventInitiator = eventInitiator,
+                OriginalValue = originalValue,
+                NewValue = newValue
+            };
+
+            await _client.CaptureAuditEvent(evnt);
+        }
+
+        public async Task CaptureAuditEvent(string eventName, string targetId, string originalValue, string newValue, HttpRequest request)
+        {
+            request.Headers.TryGetValue("", out var value);
+
+            var evnt = new AuditEvent()
+            {
+                SystemOfOrigin = _systemOfOrigin,
+                EventName = eventName,
+                EventCreateDate = DateTime.UtcNow.Ticks,
+                TargetId = targetId,
+                EventInitiator = value,
                 OriginalValue = originalValue,
                 NewValue = newValue
             };

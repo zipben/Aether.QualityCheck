@@ -40,5 +40,11 @@ namespace SmokeAndMirrors.Controllers
             })
             .ToArray();
         }
+
+        //[HttpGet("/again")]
+        //public async Task<IEnumerable<WeatherForecast>> GetAgain()
+        //{
+        //    Request
+        //}
     }
 }

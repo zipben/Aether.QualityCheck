@@ -34,29 +34,74 @@ namespace Aether.ExternalAccessClients
         public void SetBaseURI(string endpoint) =>
             _httpClient.BaseAddress = new Uri(endpoint, UriKind.Absolute);
 
-        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content)
+        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content) => 
+            await DeleteAsync(authParams, endPoint, content, null); 
+
+        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Delete, endPoint) { Content = content };
+
+            if (callInitiator != null)
+                request.Headers.Add(nameof(callInitiator), callInitiator);
+
             return await _httpClient.SendAsync(authParams, request);
         }
 
         public async Task<HttpResponseMessage> GetAsync(string requestUri) =>
             await _policy.ExecuteAsync(() => _httpClient.GetAsync(requestUri)).ConfigureAwait(false);
 
-        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri) =>
-            await _policy.ExecuteAsync(() => _httpClient.GetAsync(auth0Auth, requestUri)).ConfigureAwait(false);
 
-        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content)
+        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri) => 
+            await GetAsync(auth0Auth, requestUri, null);
+            
+        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, string callInitiator = null)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+            if (callInitiator != null)
+                request.Headers.Add(nameof(callInitiator), callInitiator);
+
+            return await _policy.ExecuteAsync(() => _httpClient.SendAsync(auth0Auth, request)).ConfigureAwait(false);
+        }
+
+        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
+            await PatchAsync(authParams, endPoint, content, null);
+
+        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Patch, endPoint) { Content = content };
+
+            if (callInitiator != null)
+                request.Headers.Add(nameof(callInitiator), callInitiator);
+
             return await _httpClient.SendAsync(authParams, request);
         }
 
         public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
-            await _httpClient.PostAsync(authParams, endPoint, content);
+            await PostAsync(authParams, endPoint, content, null);
+
+        public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, endPoint) { Content = content };
+
+            if (callInitiator != null)
+                request.Headers.Add(nameof(callInitiator), callInitiator);
+
+            return await _httpClient.SendAsync(authParams, request);
+        }
 
         public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
-            await _httpClient.PutAsync(authParams, endPoint, content);
+            await PutAsync(authParams, endPoint, content, null);
+
+        public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Put, endPoint) { Content = content };
+
+            if (callInitiator != null)
+                request.Headers.Add(nameof(callInitiator), callInitiator);
+
+            return await _httpClient.SendAsync(authParams, request);
+        }
 
         public void SetContentType(string contentType) =>
             _httpClient.DefaultRequestHeaders
