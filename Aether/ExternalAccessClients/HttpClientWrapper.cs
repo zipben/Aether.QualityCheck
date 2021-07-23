@@ -42,7 +42,7 @@ namespace Aether.ExternalAccessClients
             using var request = new HttpRequestMessage(HttpMethod.Delete, endPoint) { Content = content };
 
             if (callInitiator != null)
-                request.Headers.Add(nameof(callInitiator), callInitiator);
+                request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
 
             return await _httpClient.SendAsync(authParams, request);
         }
@@ -59,7 +59,7 @@ namespace Aether.ExternalAccessClients
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             if (callInitiator != null)
-                request.Headers.Add(nameof(callInitiator), callInitiator);
+                request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
 
             return await _policy.ExecuteAsync(() => _httpClient.SendAsync(auth0Auth, request)).ConfigureAwait(false);
         }
@@ -72,7 +72,7 @@ namespace Aether.ExternalAccessClients
             using var request = new HttpRequestMessage(HttpMethod.Patch, endPoint) { Content = content };
 
             if (callInitiator != null)
-                request.Headers.Add(nameof(callInitiator), callInitiator);
+                request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
 
             return await _httpClient.SendAsync(authParams, request);
         }
@@ -85,7 +85,7 @@ namespace Aether.ExternalAccessClients
             using var request = new HttpRequestMessage(HttpMethod.Post, endPoint) { Content = content };
 
             if (callInitiator != null)
-                request.Headers.Add(nameof(callInitiator), callInitiator);
+                request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
 
             return await _httpClient.SendAsync(authParams, request);
         }
@@ -98,7 +98,7 @@ namespace Aether.ExternalAccessClients
             using var request = new HttpRequestMessage(HttpMethod.Put, endPoint) { Content = content };
 
             if (callInitiator != null)
-                request.Headers.Add(nameof(callInitiator), callInitiator);
+                request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
 
             return await _httpClient.SendAsync(authParams, request);
         }

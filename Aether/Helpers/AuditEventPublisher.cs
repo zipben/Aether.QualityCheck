@@ -37,7 +37,7 @@ namespace Aether.Helpers
 
         public async Task CaptureAuditEvent(string eventName, string targetId, string originalValue, string newValue, HttpRequest request)
         {
-            request.Headers.TryGetValue("", out var value);
+            request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
 
             var evnt = new AuditEvent()
             {
@@ -45,7 +45,7 @@ namespace Aether.Helpers
                 EventName = eventName,
                 EventCreateDate = DateTime.UtcNow.Ticks,
                 TargetId = targetId,
-                EventInitiator = value,
+                EventInitiator = callInitiator,
                 OriginalValue = originalValue,
                 NewValue = newValue
             };
