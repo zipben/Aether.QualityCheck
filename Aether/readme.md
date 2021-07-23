@@ -1,5 +1,8 @@
 ﻿##Read Me
 
-NEW HOTNESS: ADDED LOGGERS TO THE NOTIFICATION SERVICE
+NEW HOTNESS: Added the audit event publisher and the ability to send a caller id in the header
+of out new requests.
 
-b07206ca-1347-404a-b62d-c71f51ddc69c
+Enjoy your day
+
+b54e022a-cb31-47fb-9b62-a96119e3e1c8
