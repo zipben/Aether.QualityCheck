@@ -3,6 +3,7 @@ using Aether.Helpers.Interfaces;
 using Aether.Models;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Threading.Tasks;
 
@@ -39,13 +40,20 @@ namespace Aether.Helpers
         {
             request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
 
+            string callInitiatorString = "";
+
+            if (callInitiator == StringValues.Empty)
+                callInitiatorString = "No Provided Initiator";
+            else
+                callInitiatorString = callInitiator;
+
             var evnt = new AuditEvent()
             {
                 SystemOfOrigin = _systemOfOrigin,
                 EventName = eventName,
                 EventCreateDate = DateTime.UtcNow.Ticks,
                 TargetId = targetId,
-                EventInitiator = callInitiator,
+                EventInitiator = callInitiatorString,
                 OriginalValue = originalValue,
                 NewValue = newValue
             };
