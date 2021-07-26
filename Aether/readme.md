@@ -3,6 +3,8 @@
 NEW HOTNESS: Added the audit event publisher and the ability to send a caller id in the header
 of out new requests.
 
+added the ability to capture an audit event with an entire object in it
+
 Enjoy your day
 
-b54e022a-cb31-47fb-9b62-a96119e3e1c8
+1d009286-fdf7-459f-a446-10777c9bd613
