@@ -9,5 +9,7 @@
         public const int OYA_UI_APP_ID      = 208259;
         public const int THEMIS_API_APP_ID  = 207844;
         public const int THEMIS_UI_APP_ID   = 206980;
+
+        public const string CALL_INITIATOR_HEADER_KEY = "CALL_INITIATOR";
     }
 }
