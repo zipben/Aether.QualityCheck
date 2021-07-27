@@ -11,20 +11,20 @@ namespace Aether.ExternalAccessClients.Interfaces
         void SetBaseURI(string endpoint);
         Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content);
         Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null);
-        Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isLoadTest);
+        Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest);
         Task<HttpResponseMessage> GetAsync(string requestUri);
         Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri);
         Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, string callInitiator = null);
-        Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, bool isLoadTest);
+        Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, bool isTest);
         Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content);
         Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null);
-        Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isLoadTest);
+        Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest);
         Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content);
         Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null);
-        Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isLoadTest);
+        Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest);
         Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content);
         Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null);
-        Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isLoadTest);
+        Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest);
         void SetContentType(string contentType);
         void AddDefaultRequestHeader(string key, string value);
     }

@@ -46,7 +46,7 @@ namespace Aether.Helpers
 
         public async Task CaptureAuditEvent(string eventName, string targetId, string originalValue, string newValue, HttpRequest request)
         {
-            if (!request.IsLoadTest())
+            if (!request.IsTest())
             {
                 request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
 
