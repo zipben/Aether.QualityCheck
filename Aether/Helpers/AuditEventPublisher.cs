@@ -1,4 +1,5 @@
-﻿using Aether.ExternalAccessClients.Interfaces;
+﻿using Aether.Extensions;
+using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Models;
 using Ardalis.GuardClauses;
@@ -45,27 +46,31 @@ namespace Aether.Helpers
 
         public async Task CaptureAuditEvent(string eventName, string targetId, string originalValue, string newValue, HttpRequest request)
         {
-            request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
-
-            string callInitiatorString = "";
-
-            if (callInitiator == StringValues.Empty)
-                callInitiatorString = "No Provided Initiator";
-            else
-                callInitiatorString = callInitiator;
-
-            var evnt = new AuditEvent()
+            if (!request.IsLoadTest())
             {
-                SystemOfOrigin = _systemOfOrigin,
-                EventName = eventName,
-                EventCreateDate = DateTime.UtcNow.Ticks,
-                TargetId = targetId,
-                EventInitiator = callInitiatorString,
-                OriginalValue = originalValue,
-                NewValue = newValue
-            };
+                request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
 
-            await _client.CaptureAuditEvent(evnt);
+                string callInitiatorString = "";
+
+                if (callInitiator == StringValues.Empty)
+                    callInitiatorString = "No Provided Initiator";
+                else
+                    callInitiatorString = callInitiator;
+
+                var evnt = new AuditEvent()
+                {
+                    SystemOfOrigin = _systemOfOrigin,
+                    EventName = eventName,
+                    EventCreateDate = DateTime.UtcNow.Ticks,
+                    TargetId = targetId,
+                    EventInitiator = callInitiatorString,
+                    OriginalValue = originalValue,
+                    NewValue = newValue
+                };
+
+                await _client.CaptureAuditEvent(evnt);
+            }
+
         }
 
         public async Task CaptureDeleteAuditEvent(string eventName, string targetId, string eventInitiator) =>

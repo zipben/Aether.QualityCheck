@@ -11,5 +11,6 @@
         public const int THEMIS_UI_APP_ID   = 206980;
 
         public const string CALL_INITIATOR_HEADER_KEY = "CALL_INITIATOR";
+        public const string IS_LOAD_TEST_HEADER_KEY = "IS_LOAD_TEST";
     }
 }
