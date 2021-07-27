@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Aether.Helpers.Interfaces;
+using Ardalis.GuardClauses;
 
 namespace Aether.Helpers
 {
@@ -14,8 +15,9 @@ namespace Aether.Helpers
         private string Key = "Errors";
         public ErrorContext(IHttpContextAccessor httpContextAccessor)
         {
-            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = Guard.Against.Null(httpContextAccessor, nameof(httpContextAccessor));
         }
+
         public void CaptureMethod(IEnumerable<CorrelatedIdentifierResponseModel> responses)
         {
             _httpContextAccessor.HttpContext.Items.TryGetValue(Key, out object value);
