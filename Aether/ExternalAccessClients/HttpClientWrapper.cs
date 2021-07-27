@@ -36,14 +36,23 @@ namespace Aether.ExternalAccessClients
             _httpClient.BaseAddress = new Uri(endpoint, UriKind.Absolute);
 
         public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content) => 
-            await DeleteAsync(authParams, endPoint, content, null); 
+            await DeleteAsync(authParams, endPoint, content, null);
 
-        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
+        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null) =>
+            await DeleteAsync(authParams, endPoint, content, false, callInitiator);
+
+        public async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest) =>
+            await DeleteAsync(authParams, endPoint, content, isTest, null);
+
+        private async Task<HttpResponseMessage> DeleteAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Delete, endPoint) { Content = content };
 
             if (callInitiator.Exists())
                 request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
+
+            if(isTest)
+                request.Headers.Add(Constants.IS_TEST_HEADER_KEY, isTest.ToString());
 
             return await _httpClient.SendAsync(authParams, request);
         }
@@ -54,13 +63,22 @@ namespace Aether.ExternalAccessClients
 
         public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri) => 
             await GetAsync(auth0Auth, requestUri, null);
-            
-        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, string callInitiator = null)
+
+        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, string callInitiator = null) =>
+            await GetAsync(auth0Auth, requestUri, false, callInitiator);
+
+        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, bool isTest) =>
+            await GetAsync(auth0Auth, requestUri, isTest, null);
+
+        public async Task<HttpResponseMessage> GetAsync(IAuthParams auth0Auth, string requestUri, bool isTest, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             if (callInitiator.Exists())
                 request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
+
+            if(isTest)
+                request.Headers.Add(Constants.IS_TEST_HEADER_KEY, isTest.ToString());
 
             return await _policy.ExecuteAsync(() => _httpClient.SendAsync(auth0Auth, request)).ConfigureAwait(false);
         }
@@ -68,12 +86,21 @@ namespace Aether.ExternalAccessClients
         public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
             await PatchAsync(authParams, endPoint, content, null);
 
-        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
+        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null) =>
+            await PatchAsync(authParams, endPoint, content, false, callInitiator);
+
+        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest) =>
+            await PatchAsync(authParams, endPoint, content, isTest, null);
+
+        public async Task<HttpResponseMessage> PatchAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Patch, endPoint) { Content = content };
 
             if (callInitiator.Exists())
                 request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
+
+            if (isTest)
+                request.Headers.Add(Constants.IS_TEST_HEADER_KEY, isTest.ToString());
 
             return await _httpClient.SendAsync(authParams, request);
         }
@@ -81,12 +108,21 @@ namespace Aether.ExternalAccessClients
         public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
             await PostAsync(authParams, endPoint, content, null);
 
-        public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
+        public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null) =>
+            await PostAsync(authParams, endPoint, content, false, callInitiator);
+
+        public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest) =>
+            await PostAsync(authParams, endPoint, content, isTest, null);
+
+        public async Task<HttpResponseMessage> PostAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, endPoint) { Content = content };
 
             if (callInitiator.Exists())
                 request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
+
+            if (isTest)
+                request.Headers.Add(Constants.IS_TEST_HEADER_KEY, isTest.ToString());
 
             return await _httpClient.SendAsync(authParams, request);
         }
@@ -94,12 +130,21 @@ namespace Aether.ExternalAccessClients
         public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content) =>
             await PutAsync(authParams, endPoint, content, null);
 
-        public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null)
+        public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, string callInitiator = null) =>
+            await PutAsync(authParams, endPoint, content, false, callInitiator);
+
+        public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest) =>
+            await PutAsync(authParams, endPoint, content, isTest, null);
+
+        public async Task<HttpResponseMessage> PutAsync(IAuthParams authParams, string endPoint, HttpContent content, bool isTest, string callInitiator = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Put, endPoint) { Content = content };
 
             if (callInitiator.Exists())
                 request.Headers.Add(Constants.CALL_INITIATOR_HEADER_KEY, callInitiator);
+
+            if (isTest)
+                request.Headers.Add(Constants.IS_TEST_HEADER_KEY, isTest.ToString());
 
             return await _httpClient.SendAsync(authParams, request);
         }
