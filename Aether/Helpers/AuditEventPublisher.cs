@@ -67,6 +67,12 @@ namespace Aether.Helpers
 
             await _client.CaptureAuditEvent(evnt);
         }
+
+        public async Task CaptureDeleteAuditEvent(string eventName, string targetId, string eventInitiator) =>
+            await CaptureAuditEvent(eventName, targetId, eventInitiator, null, "DELETED");
+
+        public async Task CaptureDeleteAuditEvent(string eventName, string targetId, HttpRequest request) =>
+            await CaptureAuditEvent(eventName, targetId, null, "DELETED", request);
         
     }
 }
