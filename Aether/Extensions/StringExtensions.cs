@@ -91,18 +91,5 @@ namespace Aether.Extensions
 
             return Encoding.UTF8.GetString(decompressedBytes);
         }
-
-        public static bool IsValidEmailAddress(this string str)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(str);
-                return (addr.Address == str);
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 }
