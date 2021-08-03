@@ -69,6 +69,24 @@ namespace Aether.Tests.Extensions
         }
 
         [TestMethod]
+        [DataRow("zip@gmail.com")]
+        [DataRow("burt@gurt.co.uk")]
+        [DataRow("guerder@curn.co")]
+        public void IsValidEmailString_AllValid(string str)
+        {
+            Assert.IsTrue(str.IsValidEmailAddress());
+        }
+
+        [TestMethod]
+        [DataRow("zipATgmail")]
+        [DataRow("burtASKJASKJAgurt")]
+        [DataRow("guerder")]
+        public void IsValidEmailString_AllInvalid(string str)
+        {
+            Assert.IsFalse(str.IsValidEmailAddress());
+        }
+
+        [TestMethod]
         [DataRow("abcdef")]
         [DataRow("ThisIsACamel")]
         [DataRow("THIIISSSSIsACamel")]
