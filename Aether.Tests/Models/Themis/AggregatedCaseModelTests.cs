@@ -1,10 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.Models.Themis;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Aether.Extensions;
 using AutoBogus;
-using Aether.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aether.Models.Themis.Tests
 {
