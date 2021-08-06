@@ -48,5 +48,20 @@ namespace SmokeAndMirrors.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet("/again")]
+        public async Task<IEnumerable<WeatherForecast>> GetAgain()
+        {
+            await _eventPublisher.CaptureAuditEvent("GetWeather", "1234", "1", "2", Request);
+
+            var rng = new Random();
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = rng.Next(-20, 55),
+                Summary = Summaries[rng.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
     }
 }

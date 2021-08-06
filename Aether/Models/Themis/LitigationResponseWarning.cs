@@ -5,6 +5,6 @@ namespace Aether.Models.Themis
     public class LitigationResponseWarning
     {
         public string CaseName { get; set; }
-        public List<string> Messages { get; set; }
+        public List<WarningMessage> Messages { get; set; }
     }
 }
