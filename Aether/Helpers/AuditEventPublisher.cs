@@ -24,7 +24,7 @@ namespace Aether.Helpers
             {
                 SystemOfOrigin = _systemOfOrigin,
                 EventName = eventName,
-                EventCreateDate = DateTime.UtcNow.Ticks,
+                EventCreateDate = DateTimeOffset.Now.ToUnixTimeSeconds(),
                 TargetId = targetId,
                 EventInitiator = eventInitiator,
                 OriginalValue = originalValue,

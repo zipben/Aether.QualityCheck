@@ -29,7 +29,15 @@ namespace SmokeAndMirrors.Controllers
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
-            await _eventPublisher.CaptureAuditEvent("GetWeather", "1234", "Me", "1", "2");
+            try
+            {
+                await _eventPublisher.CaptureAuditEvent("GetWeather", "1234", "Me", "1", "2");
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, "Failed to Publish to sqs");
+                throw;
+            }
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
