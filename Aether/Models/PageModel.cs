@@ -6,5 +6,11 @@ namespace Aether.Models
     {
         public List<T> Data { get; set; }
         public long TotalCount { get; set; }
+
+        public PageModel(List<T> data = null, long ? totalCount = null)
+        {
+            Data = data is null ? new List<T>() : data;
+            TotalCount = totalCount ?? 0;
+        }
     }
 }
