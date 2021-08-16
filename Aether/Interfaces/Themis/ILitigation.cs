@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Aether.Models.Themis;
 
 namespace Aether.Interfaces.Themis
 {
@@ -13,5 +14,6 @@ namespace Aether.Interfaces.Themis
         public List<IIdentifier> ResolvedIdentifiers { get; set; }
         public DateTime LastUpdateDate { get; set; }
         public DateTime CreateDate { get; set; }
+        public EmailDraftModel EmailDraft { get; set; }
     }
 }

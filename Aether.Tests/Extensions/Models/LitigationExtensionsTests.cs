@@ -4,6 +4,7 @@ using Aether.Enums;
 using Aether.Extensions.Models;
 using Aether.Interfaces;
 using Aether.Interfaces.Themis;
+using Aether.Models.Themis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aether.Tests.Extensions
@@ -17,23 +18,11 @@ namespace Aether.Tests.Extensions
             public List<string> IdentifierValues { get; set; }
         }
 
-        private class TestLitigation : ILitigation
-        {
-            public string Id { get ; set ; }
-            public string CaseName { get; set; }
-            public DateTime DateHoldCreated { get; set; }
-            public DateTime? DateHoldEnded { get; set; }
-            public List<IIdentifier> InputIdentifiers { get; set; }
-            public List<IIdentifier> ResolvedIdentifiers { get; set; }
-            public DateTime LastUpdateDate { get; set; }
-            public DateTime CreateDate { get; set; }
-        }
-
         public static IEnumerable<object[]> HasInputIdentifiersTestData()
         {
-            var litigationWithInputidentifiers = new TestLitigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "1235" } } } };
-            var litigationWithNullIdentifiers = new TestLitigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = null };
-            var litigationWithZeroIdentifierCount = new TestLitigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { } };
+            var litigationWithInputidentifiers = new Litigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "1235" } } } };
+            var litigationWithNullIdentifiers = new Litigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = null };
+            var litigationWithZeroIdentifierCount = new Litigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { } };
 
             yield return new object[] { litigationWithInputidentifiers, true };
             yield return new object[] { litigationWithNullIdentifiers, false };
