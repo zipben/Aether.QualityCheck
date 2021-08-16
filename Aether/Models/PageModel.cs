@@ -6,11 +6,13 @@ namespace Aether.Models
     {
         public List<T> Data { get; set; }
         public long TotalCount { get; set; }
+        public PageParams PageParams { get; set; }
 
-        public PageModel(List<T> data = null, long ? totalCount = null)
+        public PageModel(List<T> data = null, long ? totalCount = null, PageParams pageParams = null)
         {
             Data = data is null ? new List<T>() : data;
             TotalCount = totalCount ?? 0;
+            PageParams = pageParams ?? new PageParams();
         }
     }
 }
