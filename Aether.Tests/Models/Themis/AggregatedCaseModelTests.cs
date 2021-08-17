@@ -1,18 +1,16 @@
-﻿using Aether.Extensions;
-using AutoBogus;
+﻿using Aether.Models.Themis;
+using Aether.TestUtils.BaseClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Aether.Models.Themis.Tests
+namespace Aether.Tests.Models.Themis
 {
     [TestClass()]
-    public class AggregatedCaseModelTests
+    public class AggregatedCaseModelTests : ModelUnitTestBase<AggregatedCaseModel>
     {
         [TestMethod]
         public void AggregatedCaseModelTest()
         {
-            AggregatedCaseModel testModelA = AutoFaker.Generate<AggregatedCaseModel>();
-            AggregatedCaseModel testModelB = testModelA.SluggishClone();
-            Assert.AreEqual(testModelA.SluggishHash(), testModelB.SluggishHash());
+            BaseModelTest();
         }
     }
 }

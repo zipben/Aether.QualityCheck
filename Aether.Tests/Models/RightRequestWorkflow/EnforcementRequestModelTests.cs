@@ -1,12 +1,19 @@
 ﻿using Aether.Extensions;
 using Aether.Models.RightRequestWorkflow;
+using Aether.TestUtils.BaseClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Aether.Tests.Models
+namespace Aether.Tests.Models.RightRequestWorkflow
 {
     [TestClass]
-    public class EnforcementRequestModelTests
+    public class EnforcementRequestModelTests : ModelUnitTestBase<EnforcementRequest>
     {
+        [TestMethod]
+        public void EnforcementRequestTest()
+        {
+            BaseModelTest();
+        }
+
         [TestMethod]
         public void EnforcementRequest_DiagnosticTags_IsTestFlag_True()
         {

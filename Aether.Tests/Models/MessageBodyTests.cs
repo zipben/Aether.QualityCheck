@@ -1,19 +1,16 @@
-﻿using Aether.Extensions;
-using Aether.Models;
-using AutoBogus;
+﻿using Aether.Models;
+using Aether.TestUtils.BaseClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Aether.Tests.Models
 {
     [TestClass]
-    public class MessageBodyTests
+    public class MessageBodyTests : ModelUnitTestBase<MessageBody>
     {
         [TestMethod]
         public void MessageBodyTest()
         {
-            MessageBody testModelA = AutoFaker.Generate<MessageBody>();
-            MessageBody testModelB = testModelA.SluggishClone();
-            Assert.AreEqual(testModelA.SluggishHash(), testModelB.SluggishHash());
+            BaseModelTest();
         }
     }
 }

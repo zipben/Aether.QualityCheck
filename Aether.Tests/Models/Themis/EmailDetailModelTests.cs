@@ -1,22 +1,16 @@
-﻿using Aether.Extensions;
-using Aether.Models.Themis;
-using AutoBogus;
+﻿using Aether.Models.Themis;
+using Aether.TestUtils.BaseClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Aether.Tests.Models.Themis
 {
     [TestClass]
-    public class EmailDetailModelTests
+    public class EmailDetailModelTests : ModelUnitTestBase<EmailDetailModel>
     {
         [TestMethod]
         public void EmailDetailModelTest()
         {
-            EmailDetailModel testModelA = AutoFaker.Generate<EmailDetailModel>();
-            EmailDetailModel testModelB = testModelA.SluggishClone();
-            Assert.AreEqual(testModelA.SluggishHash(), testModelB.SluggishHash());
+            BaseModelTest();
         }
     }
 }
