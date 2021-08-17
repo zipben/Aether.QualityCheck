@@ -91,7 +91,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
 
-            await client.ResolveIdentifiersAsync(new ErisRequestModel());
+            await client.ResolveIdentifiersAsync(new IdentifierRequestModel());
         }
 
         [TestMethod()]
@@ -107,7 +107,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
 
-            await client.ResolveIdentifiersAsync(new ErisRequestModel());
+            await client.ResolveIdentifiersAsync(new IdentifierRequestModel());
         }
 
         [TestMethod()]
@@ -122,7 +122,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
 
-            var response = await client.ResolveIdentifiersAsync(new ErisRequestModel());
+            var response = await client.ResolveIdentifiersAsync(new IdentifierRequestModel());
 
             Assert.IsNull(response);
         }
@@ -140,7 +140,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
 
-            var response = await client.ResolveIdentifiersAsync(new ErisRequestModel());
+            var response = await client.ResolveIdentifiersAsync(new IdentifierRequestModel());
         }
 
         [TestMethod()]
@@ -157,7 +157,7 @@ namespace Aether.Tests.ExternalAccessClients
 
             ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
 
-            var response = await client.ResolveIdentifiersAsync(new ErisRequestModel());
+            var response = await client.ResolveIdentifiersAsync(new IdentifierRequestModel());
 
             Assert.IsNotNull(response);
         }

@@ -36,7 +36,7 @@ namespace Aether.ExternalAccessClients
             Guard.Against.NullOrWhiteSpace(config.Value.ClientSecret, nameof(config.Value.ClientSecret));
         }
 
-        public async Task<IdentifiersRoot> ResolveIdentifiersAsync(ErisRequestModel erisRequestModel)
+        public async Task<IdentifiersRoot> ResolveIdentifiersAsync(IdentifierRequestModel erisRequestModel)
         {
             Guard.Against.Null(erisRequestModel, nameof(erisRequestModel));
 
@@ -78,7 +78,7 @@ namespace Aether.ExternalAccessClients
             }
         }
 
-        private StringContent GenerateRequestBody(ErisRequestModel erisRequestModel)
+        private StringContent GenerateRequestBody(IdentifierRequestModel erisRequestModel)
         {
             try
             {
