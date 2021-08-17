@@ -8,6 +8,6 @@ namespace Aether.ExternalAccessClients.Interfaces
 {
     public interface IErisClient
     {
-        Task<IdentifiersRoot> ResolveIdentifiersAsync(ErisRequestModel erisRequestModel);
+        Task<IdentifiersRoot> ResolveIdentifiersAsync(IdentifierRequestModel erisRequestModel);
     }
 }

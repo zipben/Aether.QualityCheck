@@ -5,7 +5,10 @@ using System.Text;
 
 namespace Aether.Models.ErisClient
 {
-    public class ErisRequestModel
+    /// <summary>
+    /// Used for requests sent to both SAM, and Eris
+    /// </summary>
+    public class IdentifierRequestModel
     {
         public IdentifierType Source { get; set; }
         public IdentifierType Destination { get; set; }
