@@ -1,14 +1,14 @@
-﻿using Aether.Models.Themis;
+﻿using Aether.Models;
 using Aether.TestUtils.BaseClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Aether.Tests.Models.Themis
+namespace Aether.Tests.Models
 {
     [TestClass]
-    public class TMDSPersonTests : ModelUnitTestBase<TMDSPerson>
+    public class PageModelTests : ModelUnitTestBase<PageModel<string>>
     {
         [TestMethod]
-        public void IdentifierRootTest()
+        public void PageModelTest()
         {
             BaseModelTest();
         }
