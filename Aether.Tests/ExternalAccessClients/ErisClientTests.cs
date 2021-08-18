@@ -1,4 +1,5 @@
-﻿using Aether.ExternalAccessClients;
+﻿using Aether.Enums;
+using Aether.ExternalAccessClients;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Models.ErisClient;
 using Microsoft.Extensions.Options;
@@ -125,6 +126,23 @@ namespace Aether.Tests.ExternalAccessClients
             var response = await client.ResolveIdentifiersAsync(new IdentifierRequestModel());
 
             Assert.IsNull(response);
+        }
+
+        [TestMethod()]
+        public async Task ErisClientTest_GetAllPaths_SerializationToValueTupleIsEquivalent(){
+            var pathEndpoint = "/api/identifier/paths";
+            var paths = new List<(IdentifierType, IdentifierType)>{
+                (IdentifierType.ClientName, IdentifierType.CreditGuid),
+                (IdentifierType.GCID, IdentifierType.LoanNumber),
+            };
+            IOptions<ErisConfig> config = GenerateTestConfig();
+            _mockHttpClientWrapper.Setup(x => x.GetAsync(pathEndpoint)).ReturnsAsync(new HttpResponseMessage{
+                Content = new StringContent(JsonConvert.SerializeObject(paths))
+            });
+
+            ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
+            var response = await client.GetAllPaths();
+            CollectionAssert.AreEquivalent(response, paths);
         }
 
         [TestMethod()]
