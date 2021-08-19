@@ -7,6 +7,7 @@ namespace Aether.Models.Sam
 {
     public class SamRequestModel
     {
+        public string RequestId {get; set;}
         public string CallBackUrl { get; set; }
         public string CallBackAudience { get; set; }
         public List<string> Identifiers { get; set; }
