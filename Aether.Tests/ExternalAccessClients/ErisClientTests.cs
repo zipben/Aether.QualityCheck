@@ -131,18 +131,29 @@ namespace Aether.Tests.ExternalAccessClients
         [TestMethod()]
         public async Task ErisClientTest_GetAllPaths_SerializationToValueTupleIsEquivalent(){
             var pathEndpoint = "/api/identifier/paths";
-            var paths = new List<(IdentifierType, IdentifierType)>{
-                (IdentifierType.ClientName, IdentifierType.CreditGuid),
-                (IdentifierType.GCID, IdentifierType.LoanNumber),
+            var paths = new List<Path>{
+                new Path()
+                {
+                    Source = IdentifierType.ClientName, 
+                    Destination = IdentifierType.CreditGuid
+                },
+                new Path()
+                {
+                    Source = IdentifierType.GCID,
+                    Destination = IdentifierType.LoanNumber
+                },
             };
+
             IOptions<ErisConfig> config = GenerateTestConfig();
-            _mockHttpClientWrapper.Setup(x => x.GetAsync(pathEndpoint)).ReturnsAsync(new HttpResponseMessage{
+            _mockHttpClientWrapper.Setup(x => x.GetAsync(It.IsAny<Auth0AuthParams>(), pathEndpoint)).ReturnsAsync(new HttpResponseMessage{
                 Content = new StringContent(JsonConvert.SerializeObject(paths))
             });
 
             ErisClient client = new ErisClient(_mockHttpClientWrapper.Object, config);
             var response = await client.GetAllPaths();
-            CollectionAssert.AreEquivalent(response, paths);
+
+            Assert.AreEqual(response.Count, paths.Count);
+            Assert.IsInstanceOfType(response, paths.GetType());
         }
 
         [TestMethod()]
