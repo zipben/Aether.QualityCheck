@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Aether.Models.ErisClient
 {
-    public class PathResponse
+    public class ResolutionPathResponse
     {
         public List<Path> Paths { get; set; }
     }

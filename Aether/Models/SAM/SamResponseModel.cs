@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Aether.Models.SAM
+namespace Aether.Models.Sam
 {
     public class SamResponseModel
     {

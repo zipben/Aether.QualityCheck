@@ -53,13 +53,13 @@ namespace SmokeAndMirrors.Controllers
             .ToArray();
         }
 
-        [HttpGet("eris")]
+        [HttpGet("Eris")]
         public async Task<IActionResult> Eris()
         {
             return new OkObjectResult(await _erisClient.GetAllPaths());
         }
 
-        [HttpGet("again")]
+        [HttpGet("Again")]
         public async Task<IEnumerable<WeatherForecast>> GetAgain()
         {
             await _eventPublisher.CaptureAuditEvent("GetWeather", "1234", "1", "2", Request);

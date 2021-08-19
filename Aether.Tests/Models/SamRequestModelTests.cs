@@ -1,5 +1,5 @@
 ﻿using Aether.Models;
-using Aether.Models.SAM;
+using Aether.Models.Sam;
 using Aether.TestUtils.BaseClasses;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
