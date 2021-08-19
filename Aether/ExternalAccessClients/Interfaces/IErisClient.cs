@@ -11,7 +11,7 @@ namespace Aether.ExternalAccessClients.Interfaces
     {
         Task<IdentifiersRoot> ResolveIdentifiersAsync(IdentifierRequestModel erisRequestModel);
         Task<IdentifiersRoot> ResolveTestIdentifiersAsync(IdentifierRequestModel erisRequestModel);
-        Task<List<(IdentifierType source, IdentifierType destination)>> GetAllPaths();
-        Task<List<(IdentifierType source, IdentifierType destination)>> GetAllTestPaths();
+        Task<List<Path>> GetAllPaths();
+        Task<List<Path>> GetAllTestPaths();
     }
 }

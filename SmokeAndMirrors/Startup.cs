@@ -1,4 +1,6 @@
 using Aether.Extensions;
+using Aether.ExternalAccessClients;
+using Aether.ExternalAccessClients.Interfaces;
 using Aether.Models.ErisClient;
 using APILogger.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +31,10 @@ namespace SmokeAndMirrors
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
 
             services.Configure<ServiceConfig>(Configuration.GetSection(nameof(ServiceConfig)));
+            services.Configure<ErisConfig>(Configuration.GetSection(nameof(ErisConfig)));
+
+            services.AddHttpClient<HttpClientWrapper>();
+            services.AddSingleton<IErisClient, ErisClient>();
 
             services.RegisterAuditEventPublisher("SmokeAndMirrors");
 

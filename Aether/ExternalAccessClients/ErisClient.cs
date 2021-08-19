@@ -57,17 +57,17 @@ namespace Aether.ExternalAccessClients
             return await RetrieveIdentifiers(stringContent, url).ConfigureAwait(false);
         }
 
-        public async Task<List<(IdentifierType source, IdentifierType destination)>> GetAllPaths() =>
+        public async Task<List<Path>> GetAllPaths() =>
             await GetAllPaths(ERIS_PATHS_URL);
-        public async Task<List<(IdentifierType source, IdentifierType destination)>> GetAllTestPaths() =>
+        public async Task<List<Path>> GetAllTestPaths() =>
             await GetAllPaths(ERIS_PATHS_TEST_URL);
 
-        private async Task<List<(IdentifierType source, IdentifierType destination)>> GetAllPaths(string url)
+        private async Task<List<Path>> GetAllPaths(string url)
         {
             using HttpResponseMessage httpResponseMessage = await TryGetAsync(url);
             ValidateHttpResponse(httpResponseMessage);
             var serializedContent = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<List<(IdentifierType source, IdentifierType destination)>>(serializedContent);
+            return JsonConvert.DeserializeObject<List<Path>>(serializedContent);
         }
 
         private async Task<IdentifiersRoot> RetrieveIdentifiers(StringContent content, string url)
@@ -95,7 +95,7 @@ namespace Aether.ExternalAccessClients
             try
             {
                 var _auth0Auth = new Auth0AuthParams(_config.ClientID, _config.ClientSecret, _config.Audience);
-                return await _httpClient.GetAsync(url);
+                return await _httpClient.GetAsync(_auth0Auth, url);
             }
             catch (Exception e)
             {

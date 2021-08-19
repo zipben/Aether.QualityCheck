@@ -1,4 +1,5 @@
-﻿using Aether.Helpers.Interfaces;
+﻿using Aether.ExternalAccessClients.Interfaces;
+using Aether.Helpers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,21 +11,24 @@ namespace SmokeAndMirrors.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class TestController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<TestController> _logger;
         private readonly IAuditEventPublisher _eventPublisher;
+        private readonly IErisClient _erisClient;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IAuditEventPublisher eventPublisher)
+        public TestController(ILogger<TestController> logger, IAuditEventPublisher eventPublisher, IErisClient erisClient)
         {
             _logger = logger;
             _eventPublisher = eventPublisher;
+            _erisClient = erisClient;
         }
+
 
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> Get()
@@ -49,7 +53,13 @@ namespace SmokeAndMirrors.Controllers
             .ToArray();
         }
 
-        [HttpGet("/again")]
+        [HttpGet("Eris")]
+        public async Task<IActionResult> Eris()
+        {
+            return new OkObjectResult(await _erisClient.GetAllPaths());
+        }
+
+        [HttpGet("Again")]
         public async Task<IEnumerable<WeatherForecast>> GetAgain()
         {
             await _eventPublisher.CaptureAuditEvent("GetWeather", "1234", "1", "2", Request);
