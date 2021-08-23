@@ -17,5 +17,6 @@ namespace Aether.Interfaces.Themis
         public EmailDraftModel EmailDraft { get; set; }
         public bool IsTestCase { get; set; }
         public bool Deleted { get; set; }
+        public DateTime? DeletedDate { get; set; }
     }
 }
