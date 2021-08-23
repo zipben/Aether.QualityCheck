@@ -16,5 +16,7 @@ namespace Aether.Models.Themis
         public DateTime LastUpdateDate { get; set; }
         public DateTime CreateDate { get; set; }
         public EmailDraftModel EmailDraft { get; set; }
+        public bool IsTestCase { get; set; }
+        public bool Deleted { get; set; }
     }
 }
