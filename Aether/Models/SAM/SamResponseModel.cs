@@ -9,6 +9,6 @@ namespace Aether.Models.Sam
     {
         public string RequestId {get; set;}
         public List<string> SourceValues { get; set; }
-        public List<IIdentifier> CorrelatedIdentifiers { get; set; }
+        public List<Identifier> CorrelatedIdentifiers { get; set; }
     }
 }
