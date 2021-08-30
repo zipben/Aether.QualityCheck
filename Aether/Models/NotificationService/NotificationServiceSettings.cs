@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Aether.Models.NotificationService
+﻿namespace Aether.Models.NotificationService
 {
     public class NotificationServiceSettings
     {

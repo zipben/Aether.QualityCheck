@@ -1,16 +1,13 @@
-﻿using Aether.Extensions;
+﻿using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Aether.Extensions;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Models;
 using Aether.Models.ErisClient;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using RockLib.OAuth;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aether.ExternalAccessClients
 {
@@ -22,8 +19,8 @@ namespace Aether.ExternalAccessClients
 
         public AuditClient(IHttpClientWrapper httpClient, IOptions<AuditClientConfig> config)
         {
-            _httpClient     = Guard.Against.Null(httpClient, nameof(httpClient));
-            _config         = Guard.Against.Null(config?.Value, nameof(ServiceConfig));
+            _httpClient =   Guard.Against.Null(httpClient, nameof(httpClient));
+            _config =       Guard.Against.Null(config?.Value, nameof(ServiceConfig));
 
             ValidateConfig(config);
 

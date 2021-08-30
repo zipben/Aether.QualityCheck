@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Aether.Models.NotificationService
 {
@@ -12,6 +10,7 @@ namespace Aether.Models.NotificationService
         public string From { get; set; }
         public List<string> To { get; set; }
         public List<string> CC { get; set; }
+        public List<string> BCC { get; set; }
         public string Subject { get; set; }
     }
 }

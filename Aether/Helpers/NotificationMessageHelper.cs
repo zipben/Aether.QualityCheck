@@ -1,10 +1,9 @@
-﻿using Aether.Extensions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Aether.Extensions;
 using Aether.Helpers.Interfaces;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using static Aether.Models.NotificationService.NotificationServiceEmailBody;
 
 namespace Aether.Helpers
@@ -18,14 +17,14 @@ namespace Aether.Helpers
             _apiLogger = Guard.Against.Null(apiLogger, nameof(apiLogger));
         }
 
-        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList, List<string> ccEmailList = null)
+        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, string body, List<string> toEmailList, List<string> ccEmailList = null, List<string> bccEmailList = null)
         {
             var bodyParams = new KeyValuePair<string, string>("thisParamater", body).CreateList().ToArray();
 
-            return CreateEmail(templateId, stage, applicationId, fromEmail, subject, toEmailList, ccEmailList, bodyParams);
+            return CreateEmail(templateId, stage, applicationId, fromEmail, subject, toEmailList, ccEmailList, bccEmailList, bodyParams);
         }
 
-        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, List<string> toEmailList, List<string> ccEmailList = null, params KeyValuePair<string, string>[] bodyParams)
+        public EmailRootObject CreateEmail(string templateId, string stage, string applicationId, string fromEmail, string subject, List<string> toEmailList, List<string> ccEmailList = null, List<string> bccEmailList = null, params KeyValuePair<string, string>[] bodyParams)
         {
             ValidateArguments(templateId, stage, applicationId, fromEmail, subject, toEmailList, bodyParams);
 
@@ -41,7 +40,8 @@ namespace Aether.Helpers
                 {
                     from = fromEmail,
                     to = toEmailList.ToArray(),
-                    cc = ccEmailList?.ToArray()
+                    cc = ccEmailList?.ToArray(),
+                    bcc = bccEmailList?.ToArray()
                 },
             };
         }

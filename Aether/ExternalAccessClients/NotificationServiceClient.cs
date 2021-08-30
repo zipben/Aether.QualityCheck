@@ -21,14 +21,16 @@ namespace Aether.ExternalAccessClients
         private readonly NotificationServiceSettings _settings;
         private const string AUTHURL = "https://sso.authrock.com/oauth/token";
 
-        public NotificationServiceClient(IHttpClientWrapper httpClient, IOptions<NotificationServiceSettings> config, IApiLogger apiLogger)
+        public NotificationServiceClient(IHttpClientWrapper httpClient, IOptions<NotificationServiceSettings> notificationServiceSettings, IApiLogger apiLogger)
         {
-            _httpClient = Guard.Against.Null(httpClient, nameof(httpClient));
-            _settings   = config.Value;
+            _httpClient =   Guard.Against.Null(httpClient, nameof(httpClient));
+            _settings =     Guard.Against.Null(notificationServiceSettings?.Value, nameof(notificationServiceSettings));
+            _apiLogger =    Guard.Against.Null(apiLogger, nameof(apiLogger));
+
             _httpClient.SetBaseURI(_settings.BaseUrl);
             
             _auth0Auth = new Auth0AuthParams(_settings.ClientID, _settings.ClientSecret, _settings.Audience, AUTHURL);
-            _apiLogger = Guard.Against.Null(apiLogger, nameof(apiLogger));
+
             _apiLogger.Method.CallingClassName = nameof(NotificationServiceClient);
         }
 
