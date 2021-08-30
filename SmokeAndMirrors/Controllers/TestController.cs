@@ -21,12 +21,14 @@ namespace SmokeAndMirrors.Controllers
         private readonly ILogger<TestController> _logger;
         private readonly IAuditEventPublisher _eventPublisher;
         private readonly IErisClient _erisClient;
+        private readonly ICreditV2Client _creditClient;
 
-        public TestController(ILogger<TestController> logger, IAuditEventPublisher eventPublisher, IErisClient erisClient)
+        public TestController(ILogger<TestController> logger, IAuditEventPublisher eventPublisher, IErisClient erisClient, ICreditV2Client creditClient)
         {
             _logger = logger;
             _eventPublisher = eventPublisher;
             _erisClient = erisClient;
+            _creditClient = creditClient;
         }
 
 
@@ -51,6 +53,14 @@ namespace SmokeAndMirrors.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("Credit/{guid}")]
+        public async Task<IActionResult> Credit(string guid)
+        {
+            var response = await _creditClient.PullCredit(guid);
+
+            return new OkObjectResult(response);
         }
 
         [HttpGet("Eris")]
