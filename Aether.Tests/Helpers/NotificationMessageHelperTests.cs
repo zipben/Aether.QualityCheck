@@ -84,7 +84,7 @@ namespace Aether.Tests.Helpers
             _testBodyParms = new List<KeyValuePair<string, string>>();
             _testBodyParms.Add(new KeyValuePair<string, string>("thisParamater", _testBody));
             _testBodyParms.Add(new KeyValuePair<string, string>("EmailConfirmationId", _emailGuid));
-            var emailContent = _target.CreateEmail(_testTemplateID, _testStage, _testApplicationID, from, _testSubject, _testToEmails, null, _testBodyParms.ToArray());
+            var emailContent = _target.CreateEmail(_testTemplateID, _testStage, _testApplicationID, from, _testSubject, _testToEmails, null, null, _testBodyParms.ToArray());
 
             Assert.AreEqual(_testTemplateID, emailContent.templateId);
             Assert.AreEqual(_testStage, emailContent.stage);

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Aether.Extensions;
+﻿using System.Threading.Tasks;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Models.NotificationService;
@@ -30,7 +28,7 @@ namespace Aether.ExternalAccessClients
             _apiLogger.LogInfo($"{nameof(FOCNotificationService)}:{nameof(SendEmailAsync)}");
 
             ValidateEmailSendModel(email);
-            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email.TemplateId, email.Stage, email.ApplicationId, email.From, email.Subject, email.Body, email.To, email.CC);
+            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email.TemplateId, email.Stage, email.ApplicationId, email.From, email.Subject, email.Body, email.To, email.CC, email.BCC);
 
             return await _notificationServiceClient.TryPostRequestAsync(emailObj);
         }

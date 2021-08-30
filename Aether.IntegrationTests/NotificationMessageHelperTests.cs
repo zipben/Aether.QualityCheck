@@ -43,7 +43,8 @@ namespace Aether.IntegrationTests
                                                               "206980", 
                                                               "emmanuelaubrey@quickenloans.com", 
                                                               "Hello out there", 
-                                                              "emmanuelaubrey@quickenloans.com".CreateList(), 
+                                                              "emmanuelaubrey@quickenloans.com".CreateList(),
+                                                              "emmanuelaubrey@quickenloans.com".CreateList(),
                                                               null,
                                                               bodyParams.ToArray());
             var isSent = await notificationServiceClient.TryPostRequestAsync(email);

@@ -31,7 +31,8 @@ namespace Aether.Tests.ExternalAccessClients
         private static string _testSubject = "subject";
         private static List<string> _testTo = new List<string> { "to@to.com" };
         private static List<string> _testCC = new List<string> { "cc@cc.com" };
-        
+        private static List<string> _testBCC = new List<string> { "bcc@bcc.com" };
+
         [TestInitialize]
         public void Init()
         {
@@ -55,7 +56,8 @@ namespace Aether.Tests.ExternalAccessClients
                 From = _testFrom,
                 Subject = _testSubject,
                 To = _testTo,
-                CC = _testCC
+                CC = _testCC,
+                BCC = _testBCC,
             };
             _testEmailSendModelWithNullCC = new EmailSendModel
             {
@@ -80,7 +82,7 @@ namespace Aether.Tests.ExternalAccessClients
         {
             await _target.SendEmailAsync(_testEmailSendModel);
 
-            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModel.TemplateId, _testEmailSendModel.Stage, _testEmailSendModel.ApplicationId, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To, _testEmailSendModel.CC), Times.Once);
+            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModel.TemplateId, _testEmailSendModel.Stage, _testEmailSendModel.ApplicationId, _testEmailSendModel.From, _testEmailSendModel.Subject, _testEmailSendModel.Body, _testEmailSendModel.To, _testEmailSendModel.CC, _testEmailSendModel.BCC), Times.Once);
 
             _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
             _mockNotificationServiceClient.VerifyNoOtherCalls();
@@ -91,7 +93,7 @@ namespace Aether.Tests.ExternalAccessClients
         {
             await _target.SendEmailAsync(_testEmailSendModelWithNullCC);
 
-            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModelWithNullCC.TemplateId, _testEmailSendModelWithNullCC.Stage, _testEmailSendModelWithNullCC.ApplicationId, _testEmailSendModelWithNullCC.From, _testEmailSendModelWithNullCC.Subject, _testEmailSendModelWithNullCC.Body, _testEmailSendModelWithNullCC.To, _testEmailSendModelWithNullCC.CC), Times.Once);
+            _mockNotificationMessageHelper.Verify(x => x.CreateEmail(_testEmailSendModelWithNullCC.TemplateId, _testEmailSendModelWithNullCC.Stage, _testEmailSendModelWithNullCC.ApplicationId, _testEmailSendModelWithNullCC.From, _testEmailSendModelWithNullCC.Subject, _testEmailSendModelWithNullCC.Body, _testEmailSendModelWithNullCC.To, _testEmailSendModelWithNullCC.CC, _testEmailSendModelWithNullCC.BCC), Times.Once);
 
             _mockNotificationServiceClient.Verify(x => x.TryPostRequestAsync(It.IsAny<NotificationServiceEmailBody.EmailRootObject>()), Times.Once);
             _mockNotificationServiceClient.VerifyNoOtherCalls();
