@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Aether.Helpers
+﻿namespace Aether.Helpers
 {
     public static class ValidationUtils
     {

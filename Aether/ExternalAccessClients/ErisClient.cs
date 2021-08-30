@@ -24,8 +24,8 @@ namespace Aether.ExternalAccessClients
 
         public ErisClient(IHttpClientWrapper httpClient, IOptions<ErisConfig> config)
         {
-            _httpClient = Guard.Against.Null(httpClient, nameof(httpClient));
-            _config = Guard.Against.Null(config?.Value, nameof(ErisConfig));
+            _httpClient =   Guard.Against.Null(httpClient, nameof(httpClient));
+            _config =       Guard.Against.Null(config?.Value, nameof(ErisConfig));
 
             ValidateConfig(config);
 

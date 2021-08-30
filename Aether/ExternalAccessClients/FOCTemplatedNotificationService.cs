@@ -30,7 +30,7 @@ namespace Aether.ExternalAccessClients
             _apiLogger.LogInfo($"{nameof(FOCTemplatedNotificationService)}:{nameof(SendEmailAsync)}");
 
             ValidateEmailSendModel(email);
-            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email.TemplateId, email.Stage, email.ApplicationId, email.From, email.Subject, email.To, email.CC, email.Contents.ToArray());
+            EmailRootObject emailObj = _notificationMessageHelper.CreateEmail(email.TemplateId, email.Stage, email.ApplicationId, email.From, email.Subject, email.To, email.CC, email.BCC, email.Contents.ToArray());
 
             return await _notificationServiceClient.TryPostRequestAsync(emailObj);
         }
