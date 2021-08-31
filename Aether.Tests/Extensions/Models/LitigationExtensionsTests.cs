@@ -20,9 +20,9 @@ namespace Aether.Tests.Extensions
 
         public static IEnumerable<object[]> HasInputIdentifiersTestData()
         {
-            var litigationWithInputidentifiers = new Litigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "1235" } } } };
-            var litigationWithNullIdentifiers = new Litigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = null };
-            var litigationWithZeroIdentifierCount = new Litigation { CaseName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { } };
+            var litigationWithInputidentifiers = new Litigation { HoldName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { new TestIdentifier { IdentifierType = IdentifierType.GCID, IdentifierValues = new List<string> { "1235" } } } };
+            var litigationWithNullIdentifiers = new Litigation { HoldName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = null };
+            var litigationWithZeroIdentifierCount = new Litigation { HoldName = "abc", DateHoldCreated = DateTime.Now, InputIdentifiers = new List<IIdentifier> { } };
 
             yield return new object[] { litigationWithInputidentifiers, true };
             yield return new object[] { litigationWithNullIdentifiers, false };
