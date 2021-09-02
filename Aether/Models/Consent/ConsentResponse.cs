@@ -14,7 +14,7 @@ namespace Aether.Models.Consent
     {
         public string IdentifierMappingId { get; set; }
         public bool Decision { get; set; }
-        public bool _Explicit { get; set; }
+        public bool Explicit { get; set; }
         public string ConsentCaptureType { get; set; }
         public string PolicyId { get; set; }
         public DateTime DecisionDateTimeUtc { get; set; }
