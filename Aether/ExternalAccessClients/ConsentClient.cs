@@ -12,6 +12,7 @@ using RockLib.OAuth;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Aether.ExternalAccessClients
 {
@@ -32,9 +33,9 @@ namespace Aether.ExternalAccessClients
             _httpClient.SetBaseURI(_config.BaseUrl);
         }
 
-        public async Task<ConsentResponse> GetSingleConsentFromDps(IdentifierType clientIdentifier, string identifier)
+        public async Task<ConsentResponse> GetSingleConsentFromDps(IdentifierType clientIdentifierType, string identifier)
         {
-            var endpointArgs = $"{URL_PATH}{clientIdentifier}/{identifier}";
+            var endpointArgs = $"{URL_PATH}{clientIdentifierType}/{identifier}";
             _httpClient.AddDefaultRequestHeader("X-Version", "2");
             var consentDreResponse = await _httpClient.GetAsync(GenerateAuthParam(), endpointArgs);
 
@@ -44,10 +45,10 @@ namespace Aether.ExternalAccessClients
             return JsonConvert.DeserializeObject<ConsentResponse>(message);
 
         }
-        public async Task<ConsentResponse> GetBatchConsentFromDps(IdentifierType clientIdentifier, List<string> identifiers)
+        public async Task<ConsentResponse> GetBatchConsentFromDps(IdentifierType clientIdentifierType, List<string> identifiers)
         {
             var endpointArgs = $"{URL_PATH}clients";
-            HttpContent batchRequests = CreateBatchsAsync(clientIdentifier, identifiers);
+            HttpContent batchRequests = CreateBatchsAsync(clientIdentifierType, identifiers);
             var consentDreResponse = await _httpClient.PostAsync(GenerateAuthParam(), endpointArgs, batchRequests);
 
             Guard.Against.UnsuccessfulHttpRequest(consentDreResponse);
@@ -57,15 +58,15 @@ namespace Aether.ExternalAccessClients
 
         }
 
-        private static HttpContent CreateBatchsAsync(IdentifierType clientIdentifier, List<string> identifiers)
+        private static HttpContent CreateBatchsAsync(IdentifierType clientIdentifierType, List<string> identifiers)
         {
             List<ConsentBatchRequest> batch = new List<ConsentBatchRequest>();
             foreach (var id in identifiers)
             {
                 var batchRequest = new ConsentBatchRequest
                 {
-                    clientIdentifierType = clientIdentifier.ToString(),
-                    clientIdentifier = id
+                    ClientIdentifierType = clientIdentifierType.ToString(),
+                    ClientIdentifier = id
                 };
                 batch.Add(batchRequest);
             }
