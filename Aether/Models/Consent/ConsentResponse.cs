@@ -6,21 +6,21 @@ namespace Aether.Models.Consent
 
     public class ConsentResponse
     {
-        public Consentrecord[] consentRecords { get; set; }
-        public bool overallConsent { get; set; }
+        public ConsentRecord[] ConsentRecords { get; set; }
+        public bool OverallConsent { get; set; }
     }
 
-    public class Consentrecord
+    public class ConsentRecord
     {
-        public string identifierMappingId { get; set; }
-        public bool decision { get; set; }
-        public bool _explicit { get; set; }
-        public string consentCaptureType { get; set; }
-        public string policyId { get; set; }
-        public DateTime decisionDateTimeUtc { get; set; }
-        public string createdBy { get; set; }
-        public string clientIdentifierType { get; set; }
-        public string clientIdentifier { get; set; }
+        public string IdentifierMappingId { get; set; }
+        public bool Decision { get; set; }
+        public bool _Explicit { get; set; }
+        public string ConsentCaptureType { get; set; }
+        public string PolicyId { get; set; }
+        public DateTime DecisionDateTimeUtc { get; set; }
+        public string CreatedBy { get; set; }
+        public string ClientIdentifierType { get; set; }
+        public string ClientIdentifier { get; set; }
     }
 
 }

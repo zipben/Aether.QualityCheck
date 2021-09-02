@@ -2,7 +2,7 @@
 {
     public class ConsentBatchRequest
     {
-        public string clientIdentifier { get; set; }
-        public string clientIdentifierType { get; set; }
+        public string ClientIdentifier { get; set; }
+        public string ClientIdentifierType { get; set; }
     }
 }
