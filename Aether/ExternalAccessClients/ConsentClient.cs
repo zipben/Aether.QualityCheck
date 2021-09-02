@@ -22,8 +22,10 @@ namespace Aether.ExternalAccessClients
 
         public ConsentClient(IHttpClientWrapper httpClient, IOptions<ConsentConfiguration> clientConfiguration)
         {
-            var clientConfig = Guard.Against.Null(clientConfiguration, nameof(clientConfiguration));
-            _config = Guard.Against.Null(clientConfig.Value, nameof(clientConfig.Value));
+            var clientConfig    = Guard.Against.Null(clientConfiguration, nameof(clientConfiguration));
+            _config             = Guard.Against.Null(clientConfig.Value, nameof(clientConfig.Value));
+
+            _httpClient         = Guard.Against.Null(httpClient, nameof(httpClient));
 
             _httpClient.SetBaseURI(_config.BaseUrl);
             _urlPath = "api/consent/";
@@ -34,6 +36,9 @@ namespace Aether.ExternalAccessClients
             var endpointArgs = $"{_urlPath}{clientIdentifier}/{identifier}";
             _httpClient.AddDefaultRequestHeader("X-Version", "2");
             var consentDreResponse = await _httpClient.GetAsync(GenerateAuthParam(), endpointArgs);
+
+            Guard.Against.UnsuccessfulHttpRequest(consentDreResponse);
+
             var message = await consentDreResponse.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ConsentResponse>(message);
 
@@ -43,6 +48,9 @@ namespace Aether.ExternalAccessClients
             var endpointArgs = $"{_urlPath}clients";
             System.Net.Http.HttpContent batchRequests = CreateBatchsAsync(clientIdentifier, identifiers);
             var consentDreResponse = await _httpClient.PostAsync(GenerateAuthParam(), endpointArgs, batchRequests);
+
+            Guard.Against.UnsuccessfulHttpRequest(consentDreResponse);
+
             var message = await consentDreResponse.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<ConsentResponse>(message);
 
