@@ -33,18 +33,6 @@ namespace Aether.ExternalAccessClients
             _httpClient.SetBaseURI(_config.BaseUrl);
         }
 
-        public async Task<ConsentResponse> GetSingleConsentFromDps(IdentifierType clientIdentifierType, string identifier)
-        {
-            var endpointArgs = $"{URL_PATH}{clientIdentifierType}/{identifier}";
-            _httpClient.AddDefaultRequestHeader("X-Version", "2");
-            var consentDreResponse = await _httpClient.GetAsync(GenerateAuthParam(), endpointArgs);
-
-            Guard.Against.UnsuccessfulHttpRequest(consentDreResponse);
-
-            var message = await consentDreResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ConsentResponse>(message);
-
-        }
         public async Task<ConsentResponse> GetBatchConsentFromDps(IdentifierType clientIdentifierType, List<string> identifiers)
         {
             var endpointArgs = $"{URL_PATH}clients";

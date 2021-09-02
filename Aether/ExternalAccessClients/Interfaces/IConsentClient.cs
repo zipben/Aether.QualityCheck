@@ -8,6 +8,5 @@ namespace Aether.Interfaces.ExternalAccessClients
     public interface IConsentClient
     {
         Task<ConsentResponse> GetBatchConsentFromDps(IdentifierType clientIdentifierType, List<string> identifiers);
-        Task<ConsentResponse> GetSingleConsentFromDps(IdentifierType clientIdentifierType, string identifier);
     }
 }
