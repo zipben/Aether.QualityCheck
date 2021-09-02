@@ -38,6 +38,9 @@ namespace Aether.ExternalAccessClients
             _httpClient.AddDefaultRequestHeader("client_secret", _config.ClientSecret);
 
             var creditResponse = await _httpClient.GetAsync(endpoint);
+
+            Guard.Against.UnsuccessfulHttpRequest(creditResponse);
+
             var content = await creditResponse.Content.ReadAsStringAsync();
             var creditReport = XmlHelper.DeserializeFromXmlString<Credit.Mismo.RESPONSE_GROUP>(content);
             return creditReport;

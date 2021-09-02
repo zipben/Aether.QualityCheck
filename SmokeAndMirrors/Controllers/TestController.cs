@@ -1,5 +1,7 @@
-﻿using Aether.ExternalAccessClients.Interfaces;
+﻿using Aether.Extensions;
+using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
+using Aether.Interfaces.ExternalAccessClients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,13 +24,15 @@ namespace SmokeAndMirrors.Controllers
         private readonly IAuditEventPublisher _eventPublisher;
         private readonly IErisClient _erisClient;
         private readonly ICreditV2Client _creditClient;
+        private readonly IConsentClient _consentClient;
 
-        public TestController(ILogger<TestController> logger, IAuditEventPublisher eventPublisher, IErisClient erisClient, ICreditV2Client creditClient)
+        public TestController(ILogger<TestController> logger, IAuditEventPublisher eventPublisher, IErisClient erisClient, ICreditV2Client creditClient, IConsentClient consentClient)
         {
             _logger = logger;
             _eventPublisher = eventPublisher;
             _erisClient = erisClient;
             _creditClient = creditClient;
+            _consentClient = consentClient;
         }
 
 
@@ -59,6 +63,14 @@ namespace SmokeAndMirrors.Controllers
         public async Task<IActionResult> Credit(string guid)
         {
             var response = await _creditClient.PullCredit(guid);
+
+            return new OkObjectResult(response);
+        }
+
+        [HttpGet("Consent/{gcid}")]
+        public async Task<IActionResult> Consent(string gcid)
+        {
+            var response = await _consentClient.GetBatchConsentFromDps(Aether.Enums.IdentifierType.GCID, gcid.CreateList());
 
             return new OkObjectResult(response);
         }

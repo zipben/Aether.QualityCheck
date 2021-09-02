@@ -1,7 +1,9 @@
 using Aether.Extensions;
 using Aether.ExternalAccessClients;
 using Aether.ExternalAccessClients.Interfaces;
+using Aether.Interfaces.ExternalAccessClients;
 using Aether.Models.Configuration;
+using Aether.Models.Configurations;
 using Aether.Models.ErisClient;
 using APILogger.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -34,10 +36,12 @@ namespace SmokeAndMirrors
             services.Configure<ServiceConfig>(Configuration.GetSection(nameof(ServiceConfig)));
             services.Configure<ErisConfig>(Configuration.GetSection(nameof(ErisConfig)));
             services.Configure<CreditV2Configuration>(Configuration.GetSection(nameof(CreditV2Configuration)));
+            services.Configure<ConsentConfiguration>(Configuration.GetSection(nameof(ConsentConfiguration)));
 
-            services.AddHttpClient<HttpClientWrapper>();
+            services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
             services.AddSingleton<IErisClient, ErisClient>();
             services.AddSingleton<ICreditV2Client, CreditV2Client>();
+            services.AddSingleton<IConsentClient, ConsentClient>();
 
             services.RegisterAuditEventPublisher("SmokeAndMirrors");
 
