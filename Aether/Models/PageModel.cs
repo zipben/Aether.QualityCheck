@@ -9,11 +9,12 @@ namespace Aether.Models
         public bool IsLastPage { get; set; }
         public PageParams PageParams { get; set; }
 
-        public PageModel(List<T> data = null, long ? totalCount = null, PageParams pageParams = null)
+        public PageModel(List<T> data = null, long ? totalCount = null, PageParams pageParams = null, bool isLastPage = false)
         {
             Data = data is null ? new List<T>() : data;
             TotalCount = totalCount ?? 0;
             PageParams = pageParams ?? new PageParams();
+            IsLastPage = isLastPage;
         }
     }
 }
