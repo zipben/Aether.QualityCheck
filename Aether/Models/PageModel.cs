@@ -6,6 +6,7 @@ namespace Aether.Models
     {
         public List<T> Data { get; set; }
         public long TotalCount { get; set; }
+        public bool IsLastPage { get; set; }
         public PageParams PageParams { get; set; }
 
         public PageModel(List<T> data = null, long ? totalCount = null, PageParams pageParams = null)
