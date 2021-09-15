@@ -1,3 +1,4 @@
+using Aether;
 using Aether.Extensions;
 using Aether.ExternalAccessClients;
 using Aether.ExternalAccessClients.Interfaces;
@@ -36,7 +37,8 @@ namespace SmokeAndMirrors
             services.Configure<ServiceConfig>(Configuration.GetSection(nameof(ServiceConfig)));
             services.Configure<ErisConfig>(Configuration.GetSection(nameof(ErisConfig)));
             services.Configure<CreditV2Configuration>(Configuration.GetSection(nameof(CreditV2Configuration)));
-            services.Configure<ConsentConfiguration>(Configuration.GetSection(nameof(ConsentConfiguration)));
+
+            services.Configure<ServiceOAuthConfiguration>(Constants.Consent.CONSENT_SETTINGS, Configuration.GetSection(Constants.Consent.CONSENT_SETTINGS));
 
             services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
             services.AddSingleton<IErisClient, ErisClient>();

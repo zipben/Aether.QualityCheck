@@ -12,5 +12,10 @@
 
         public const string CALL_INITIATOR_HEADER_KEY = "CALL_INITIATOR";
         public const string IS_TEST_HEADER_KEY = "IS_TEST";
+
+        public static class Consent
+        {
+            public const string CONSENT_SETTINGS = "ConsentConfiguration";
+        }
     }
 }
