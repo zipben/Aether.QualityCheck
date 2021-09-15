@@ -38,7 +38,7 @@ namespace SmokeAndMirrors
             services.Configure<ErisConfig>(Configuration.GetSection(nameof(ErisConfig)));
             services.Configure<CreditV2Configuration>(Configuration.GetSection(nameof(CreditV2Configuration)));
 
-            services.Configure<ServiceOAuthConfiguration>(Constants.Consent.CONSENT_SETTINGS_NAME, Configuration.GetSection(Constants.Consent.CONSENT_SETTINGS_NAME));
+            services.Configure<ServiceOAuthConfiguration>(Constants.Consent.CONSENT_SETTINGS, Configuration.GetSection(Constants.Consent.CONSENT_SETTINGS));
 
             services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
             services.AddSingleton<IErisClient, ErisClient>();

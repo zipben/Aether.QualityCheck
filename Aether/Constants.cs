@@ -15,7 +15,7 @@
 
         public static class Consent
         {
-            public const string CONSENT_SETTINGS_NAME = "ConsentConfiguration";
+            public const string CONSENT_SETTINGS = "ConsentConfiguration";
         }
     }
 }

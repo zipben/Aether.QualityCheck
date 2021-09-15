@@ -28,7 +28,7 @@ namespace Aether.ExternalAccessClients
 
         public ConsentClient(IHttpClientWrapper httpClient, IOptionsMonitor<ServiceOAuthConfiguration> serviceOAuthConfiguration)
         {
-            _clientPlatformSettings = Guard.Against.Null(serviceOAuthConfiguration?.Get(Constants.Consent.CONSENT_SETTINGS_NAME), nameof(serviceOAuthConfiguration));
+            _clientPlatformSettings = Guard.Against.Null(serviceOAuthConfiguration?.Get(Constants.Consent.CONSENT_SETTINGS), nameof(serviceOAuthConfiguration));
 
             Guard.Against.Null(_clientPlatformSettings.Audience,        nameof(_clientPlatformSettings.Audience));
             Guard.Against.Null(_clientPlatformSettings.AuthorizerUrl,   nameof(_clientPlatformSettings.AuthorizerUrl));
