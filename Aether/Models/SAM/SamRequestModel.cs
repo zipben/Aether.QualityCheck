@@ -10,6 +10,8 @@ namespace Aether.Models.Sam
         public string RequestId {get; set;}
         public string CallBackUrl { get; set; }
         public string CallBackAudience { get; set; }
+        public bool IsTest { get; set; }
+        public int ResponseBatchSize { get; set; }
         public List<string> Identifiers { get; set; }
         public IdentifierType Type { get; set; }
     }
