@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Aether.Interfaces;
+﻿using Aether.Interfaces;
 using Aether.Models;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Aether.Middleware
 {
@@ -18,13 +18,28 @@ namespace Aether.Middleware
         
         private readonly RequestDelegate _next;
         private readonly IApiLogger _logger;
-        private readonly IEnumerable<IQualityCheck> _tests;
+        private readonly Type _typeFilter;
+
+        private IEnumerable<IQualityCheck> _tests;
 
         public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute)
         {
             _logger =   Guard.Against.Null(logger, nameof(logger));
             _next =     Guard.Against.Null(next, nameof(next));
             _tests =    Guard.Against.Null(tests, nameof(tests));
+
+            Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
+            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
+
+            _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");
+        }
+
+        public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute, Type typeFilter)
+        {
+            _logger =       Guard.Against.Null(logger, nameof(logger));
+            _next =         Guard.Against.Null(next, nameof(next));
+            _tests =        Guard.Against.Null(tests, nameof(tests));
+            _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
             
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
@@ -36,11 +51,13 @@ namespace Aether.Middleware
         {
             Guard.Against.Null(context?.Request?.Path.Value, nameof(context));
 
-            if (context.Request.Path.Value.Contains(_qualityTestRoute))
+            if (context.Request.Path.Value.ToLower().Contains(_qualityTestRoute.ToLower()))
             {
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
                 var testResults = new List<QualityCheckResponseModel>();
+
+                ApplyTypeFilter();
 
                 foreach (var test in _tests)
                 {
@@ -78,6 +95,24 @@ namespace Aether.Middleware
             else
             {
                 await _next(context);
+            }
+        }
+
+        private void ApplyTypeFilter()
+        {
+            if(_typeFilter != null)
+            {
+                List<IQualityCheck> filteredTests = new List<IQualityCheck>();
+
+                foreach(var test in _tests)
+                {
+                    var interfaces = test.GetType().GetInterfaces();
+
+                    if (interfaces.Any(i => i.GenericTypeArguments.Contains(_typeFilter)))
+                        filteredTests.Add(test);
+                }
+
+                _tests = filteredTests;
             }
         }
     }
