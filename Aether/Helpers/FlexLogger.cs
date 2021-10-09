@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Aether.Helpers
 {
-    class FlexLogger
+    internal class FlexLogger
     {
         
 
@@ -18,8 +18,10 @@ namespace Aether.Helpers
 
         public FlexLogger(IApiLogger ecsLogger, ServiceType serviceType)
         {
-            if(serviceType == ServiceType.ECS)
+            if (serviceType == ServiceType.ECS)
                 _ecsLogger = Guard.Against.Null(ecsLogger, nameof(ecsLogger), "ECS Logger Cannot be Null when using flex logger in ECS mode");
+            else
+                _ecsLogger = null;
         }
 
         ///<inheritdoc/>
