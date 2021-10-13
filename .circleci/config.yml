@@ -113,15 +113,15 @@ workflows:
     jobs:
 
       - sonar-scanner-and-unit-tests:
-            context:
-                "DSNonProd"
+          context:
+            "DSNonProd"
 
       - build-nuget-package:
-            requires: [ sonar-scanner-and-unit-tests ]
-            filters:
-                branches: { only: [master]}
+          requires: [ sonar-scanner-and-unit-tests ]
+          filters:
+            branches: { only: [master]}
 
       - publish-build-to-quget-gallery:
-            requires: [ build-nuget-package ]
-            filters:
-                branches: { only: [master]}
+          requires: [ build-nuget-package ]
+          filters:
+            branches: { only: [master]}
