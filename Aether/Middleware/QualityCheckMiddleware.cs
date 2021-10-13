@@ -57,7 +57,7 @@ namespace Aether.Middleware
 
                 var testResults = new List<QualityCheckResponseModel>();
 
-                ApplyTypeFilter();
+                _tests = ApplyTypeFilter();
 
                 foreach (var test in _tests)
                 {
@@ -98,13 +98,14 @@ namespace Aether.Middleware
             }
         }
 
-        private void ApplyTypeFilter()
+        private IEnumerable<IQualityCheck> ApplyTypeFilter()
         {
-            if(_typeFilter != null)
+
+            if (_typeFilter != null)
             {
                 List<IQualityCheck> filteredTests = new List<IQualityCheck>();
 
-                foreach(var test in _tests)
+                foreach (var test in _tests)
                 {
                     var interfaces = test.GetType().GetInterfaces();
 
@@ -112,8 +113,11 @@ namespace Aether.Middleware
                         filteredTests.Add(test);
                 }
 
-                _tests = filteredTests;
+                return filteredTests;
             }
+            else
+                return _tests;
+
         }
     }
 }
