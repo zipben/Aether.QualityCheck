@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using RockLib.Metrics;
+using SmokeAndMirrors.QualityChecks;
 using SmokeAndMirrors.TestDependencies;
 
 namespace SmokeAndMirrors
@@ -67,6 +68,7 @@ namespace SmokeAndMirrors
             }
 
             app.UseQualityCheckMiddleware();
+            app.UseQualityCheckMiddleware<DummyTypedQualityCheckPass>("/api/otherone");
 
             app.UseGrafanaControllerMiddleware("/api/heartbeat", "/api/Litigation", "/api/test/*");
 
