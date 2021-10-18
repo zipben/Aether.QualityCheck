@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Aether.Enums;
 using Aether.Models.Themis;
 
 namespace Aether.Interfaces.Themis
@@ -15,5 +16,7 @@ namespace Aether.Interfaces.Themis
         public DateTime? DeleteDate { get; set; }
         public EmailDraftModel EmailDraft { get; set; }
         public List<EmailDetailModel> Emails { get; set; }
+        public ResolutionStatus ResolutionStatus { get; set; }
+        public int IdentifierCount { get; set; }
     }
 }
