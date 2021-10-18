@@ -13,31 +13,39 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Net.Http;
+using Aether.Models.Configuration;
+using Aether.Extensions.Models.Configuration;
 
 namespace Aether.ExternalAccessClients
 {
     public class ConsentClient : IConsentClient
     {
         private readonly ConsentConfiguration _config;
+        private readonly ServiceOAuthConfiguration _clientPlatformSettings;
         private readonly IHttpClientWrapper _httpClient;
 
         private const string URL_PATH = "api/consent/";
 
-        public ConsentClient(IHttpClientWrapper httpClient, IOptions<ConsentConfiguration> clientConfiguration)
+        public ConsentClient(IHttpClientWrapper httpClient, IOptionsMonitor<ServiceOAuthConfiguration> serviceOAuthConfiguration)
         {
-            var clientConfig    = Guard.Against.Null(clientConfiguration, nameof(clientConfiguration));
-            _config             = Guard.Against.Null(clientConfig?.Value, nameof(clientConfig.Value));
+            _clientPlatformSettings = Guard.Against.Null(serviceOAuthConfiguration?.Get(Constants.Consent.CONSENT_SETTINGS), nameof(serviceOAuthConfiguration));
 
-            _httpClient         = Guard.Against.Null(httpClient, nameof(httpClient));
+            Guard.Against.Null(_clientPlatformSettings.Audience,        nameof(_clientPlatformSettings.Audience));
+            Guard.Against.Null(_clientPlatformSettings.AuthorizerUrl,   nameof(_clientPlatformSettings.AuthorizerUrl));
+            Guard.Against.Null(_clientPlatformSettings.BaseUrl,         nameof(_clientPlatformSettings.BaseUrl));
+            Guard.Against.Null(_clientPlatformSettings.ClientId,        nameof(_clientPlatformSettings.ClientId));
+            Guard.Against.Null(_clientPlatformSettings.ClientSecret,    nameof(_clientPlatformSettings.ClientSecret));
 
-            _httpClient.SetBaseURI(_config.BaseUrl);
+            _httpClient = Guard.Against.Null(httpClient, nameof(httpClient));
+
+            _httpClient.SetBaseURI(_clientPlatformSettings.BaseUrl);
         }
 
         public async Task<ConsentResponse> GetBatchConsentFromDps(IdentifierType clientIdentifierType, List<string> identifiers)
         {
             var endpointArgs = $"{URL_PATH}clients";
             HttpContent batchRequests = CreateBatchsAsync(clientIdentifierType, identifiers);
-            var consentDreResponse = await _httpClient.PostAsync(GenerateAuthParam(), endpointArgs, batchRequests);
+            var consentDreResponse = await _httpClient.PostAsync(_clientPlatformSettings.GetAuthParams(), endpointArgs, batchRequests);
 
             Guard.Against.UnsuccessfulHttpRequest(consentDreResponse);
 
@@ -61,8 +69,5 @@ namespace Aether.ExternalAccessClients
             var batchRequests = batch.GenerateHttpStringContent();
             return batchRequests;
         }
-
-        protected IAuthParams GenerateAuthParam() =>
-            new Auth0AuthParams(_config.ClientID, _config.ClientSecret, _config.Audience);
     }
 }

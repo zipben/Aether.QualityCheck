@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks
 {
-    public class DummyQualityCheckPass : IQualityCheck<DummyTypedQualityCheckPass>
+    public class DummyTypedQualityCheckPass : IQualityCheck<DummyTypedQualityCheckPass>
     {
         private readonly IYeOldDependencyTest _testDependency;
 
-        public DummyQualityCheckPass(IYeOldDependencyTest testDependency)
+        public DummyTypedQualityCheckPass(IYeOldDependencyTest testDependency)
         {
             _testDependency = testDependency;
         }

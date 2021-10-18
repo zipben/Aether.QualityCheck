@@ -1,10 +1,9 @@
 ﻿##Read Me
 
-NEW HOTNESS: Added the audit event publisher and the ability to send a caller id in the header
-of out new requests.
-
-added the ability to capture an audit event with an entire object in it
+NEW HOTNESS: Added a type filter the quality check middleware, allowing you to apply multiple instances of the middleware.
+This is usefule if you want to group your quality checks under discrete routes, or if your quality checks
+take forever to run, and you need to split them up into seperate web calls. 
 
 Enjoy your day
 
-60980d48-c19c-49da-a6f6-643ef969e760
+ed44e6cc-af2d-4e5a-9bb5-4ae85b9a9c14
