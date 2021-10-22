@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Aether.Attributes;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using RockLib.Metrics;
+using Microsoft.AspNetCore.Http;
+using Aether.Extensions;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Reflection;
 
 namespace Aether.Middleware
 {
@@ -52,6 +59,8 @@ namespace Aether.Middleware
             }
             else
             {
+            
+
                 Operation operation;
                 if (context.Request.QueryString.HasValue)
                 {
@@ -64,9 +73,15 @@ namespace Aether.Middleware
                 }
 
                 using var metric = _metricFactory.CreateWhitebox(operation);
+
                 try
                 {
+                    var body = await context.Request.PeekBodyAsync();
+
                     await _next(context);
+
+                    TryCaptureCustomMetrics(context, body);
+
                 }
                 catch (Exception)
                 {
@@ -75,6 +90,75 @@ namespace Aether.Middleware
                 }
             }
         }
+
+        private void TryCaptureCustomMetrics(HttpContext context, string body)
+        {
+            try
+            {
+                var endpoint = context.GetEndpoint();
+
+                var paramAttribute = endpoint?.Metadata.GetMetadata<ParamMetricAttribute>();
+                var bodyAttribute = endpoint?.Metadata.GetMetadata<BodyMetricAttribute>();
+
+                if (paramAttribute != null)
+                {
+                    CaptureCustomParamMetric(context, paramAttribute, endpoint.DisplayName);
+                }
+                else if (bodyAttribute != null && body.Exists())
+                {
+                    CaptureCustomBodyMetric(context, bodyAttribute, body, endpoint.DisplayName);
+                }
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(nameof(TryCaptureCustomMetrics), exception: e);
+            }
+        }
+
+        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body, string metricName)
+        {
+            var bodyObj = JsonConvert.DeserializeObject(body, bodyAttribute.BodyType);
+
+            Dictionary<string, string> paramValues = new Dictionary<string, string>();
+
+            PropertyInfo[] props = bodyAttribute.BodyType.GetProperties();
+
+            props = props.Where(p => bodyAttribute.Params.Contains(p.Name)).ToArray();
+
+            foreach(var prop in props)
+            {
+                paramValues[prop.Name] = prop.GetValue(bodyObj).ToString();
+            }
+
+            CaptureCustomMetric(paramValues, metricName);
+        }
+
+        private void CaptureCustomParamMetric(HttpContext context, ParamMetricAttribute paramAttribute, string metricName)
+        {
+            Dictionary<string, string> paramValues = new Dictionary<string, string>();
+
+            foreach(var param in paramAttribute.Params)
+            {
+                context.Request.Query.TryGetValue(param, out var qValue);
+                context.Request.RouteValues.TryGetValue(param, out var rValue);
+
+                if (qValue.ToString().Exists())
+                    paramValues[param] = qValue.ToString();
+                else if(rValue != null && rValue.ToString().Exists())
+                    paramValues[param] = rValue.ToString();
+            }
+
+            CaptureCustomMetric(paramValues, metricName);
+        }
+
+        private void CaptureCustomMetric(Dictionary<string, string> fields, string metricName)
+        {
+            foreach(var field in fields)
+            {
+                _metricFactory.CreateWhitebox(new Operation(MetricCategory.Other, $"{metricName}/{field.Key}={field.Value}"));
+            }
+        }
+
 
         private bool IsInFilter(HttpContext context)
         {
