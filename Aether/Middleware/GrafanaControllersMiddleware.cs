@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Aether.Attributes;
+﻿using Aether.Attributes;
+using Aether.Extensions;
+using Aether.Helpers;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using RockLib.Metrics;
-using Microsoft.AspNetCore.Http;
-using Aether.Extensions;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using RockLib.Metrics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
 
 namespace Aether.Middleware
 {
@@ -22,6 +22,7 @@ namespace Aether.Middleware
         private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
         private readonly IApiLogger _logger;
+        private readonly IHttpContextUtils _httpContextUtils;
         private readonly List<string> _filterList = new List<string>();
 
         /// <summary>
@@ -29,12 +30,13 @@ namespace Aether.Middleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList)
+        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList, IHttpContextUtils httpContextUtils)
         {
             _logger =           Guard.Against.Null(logger, nameof(logger));
             _next =             Guard.Against.Null(next, nameof(next));
             _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
             _filterList =       Guard.Against.Null(filterList, nameof(filterList));
+            _httpContextUtils = Guard.Against.Null(httpContextUtils, nameof(httpContextUtils));
 
             _logger.LogDebug("GrafanaControllersMiddleware initialized");
         }
@@ -76,7 +78,7 @@ namespace Aether.Middleware
 
                 try
                 {
-                    var body = await context.Request.PeekBodyAsync();
+                    var body = await _httpContextUtils.PeekRequestBodyAsync(context);
 
                     await _next(context);
 
@@ -95,7 +97,8 @@ namespace Aether.Middleware
         {
             try
             {
-                var endpoint = context.GetEndpoint();
+                var e = context.Features.Get<IEndpointFeature>();
+                var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
 
                 var paramAttribute = endpoint?.Metadata.GetMetadata<ParamMetricAttribute>();
                 var bodyAttribute = endpoint?.Metadata.GetMetadata<BodyMetricAttribute>();
@@ -140,12 +143,9 @@ namespace Aether.Middleware
             foreach(var param in paramAttribute.Params)
             {
                 context.Request.Query.TryGetValue(param, out var qValue);
-                context.Request.RouteValues.TryGetValue(param, out var rValue);
 
                 if (qValue.ToString().Exists())
                     paramValues[param] = qValue.ToString();
-                else if(rValue != null && rValue.ToString().Exists())
-                    paramValues[param] = rValue.ToString();
             }
 
             CaptureCustomMetric(paramValues, metricName);
