@@ -1,7 +1,9 @@
-﻿using Aether.Extensions;
+﻿using Aether.Attributes;
+using Aether.Extensions;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Interfaces.ExternalAccessClients;
+using Aether.Models.RightRequestWorkflow;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -68,17 +70,23 @@ namespace SmokeAndMirrors.Controllers
         }
 
         [HttpGet("Consent/{gcid}")]
+        [ParamMetric("gcid")]
         public async Task<IActionResult> Consent(string gcid)
         {
-            var response = await _consentClient.GetBatchConsentFromDps(Aether.Enums.IdentifierType.GCID, gcid.CreateList());
-
-            return new OkObjectResult(response);
+            return new OkObjectResult(1);
         }
 
         [HttpGet("Eris")]
         public async Task<IActionResult> Eris()
         {
             return new OkObjectResult(await _erisClient.GetAllPaths());
+        }
+
+        [HttpPost("Post")]
+        [BodyMetric(typeof(EnforcementRequest), nameof(EnforcementRequest.EnforcementType))]
+        public async Task<IActionResult> Post(EnforcementRequest request)
+        {
+            return new OkObjectResult(request);
         }
 
         [HttpGet("Again")]

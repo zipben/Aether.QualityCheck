@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using Aether.Attributes;
+using Aether.Extensions;
+using Aether.Helpers;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Newtonsoft.Json;
 using RockLib.Metrics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
 
 namespace Aether.Middleware
 {
@@ -15,6 +22,7 @@ namespace Aether.Middleware
         private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
         private readonly IApiLogger _logger;
+        private readonly IHttpContextUtils _httpContextUtils;
         private readonly List<string> _filterList = new List<string>();
 
         /// <summary>
@@ -22,12 +30,13 @@ namespace Aether.Middleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList)
+        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList, IHttpContextUtils httpContextUtils)
         {
             _logger =           Guard.Against.Null(logger, nameof(logger));
             _next =             Guard.Against.Null(next, nameof(next));
             _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
             _filterList =       Guard.Against.Null(filterList, nameof(filterList));
+            _httpContextUtils = Guard.Against.Null(httpContextUtils, nameof(httpContextUtils));
 
             _logger.LogDebug("GrafanaControllersMiddleware initialized");
         }
@@ -52,6 +61,8 @@ namespace Aether.Middleware
             }
             else
             {
+            
+
                 Operation operation;
                 if (context.Request.QueryString.HasValue)
                 {
@@ -64,9 +75,15 @@ namespace Aether.Middleware
                 }
 
                 using var metric = _metricFactory.CreateWhitebox(operation);
+
                 try
                 {
+                    var body = await _httpContextUtils.PeekRequestBodyAsync(context);
+
                     await _next(context);
+
+                    TryCaptureCustomMetrics(context, body);
+
                 }
                 catch (Exception)
                 {
@@ -75,6 +92,72 @@ namespace Aether.Middleware
                 }
             }
         }
+
+        private void TryCaptureCustomMetrics(HttpContext context, string body)
+        {
+            try
+            {
+                var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
+
+                var paramAttribute = endpoint?.Metadata.GetMetadata<ParamMetricAttribute>();
+                var bodyAttribute = endpoint?.Metadata.GetMetadata<BodyMetricAttribute>();
+
+                if (paramAttribute != null)
+                {
+                    CaptureCustomParamMetric(context, paramAttribute, endpoint.DisplayName);
+                }
+                else if (bodyAttribute != null && body.Exists())
+                {
+                    CaptureCustomBodyMetric(context, bodyAttribute, body, endpoint.DisplayName);
+                }
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(nameof(TryCaptureCustomMetrics), exception: e);
+            }
+        }
+
+        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body, string metricName)
+        {
+            var bodyObj = JsonConvert.DeserializeObject(body, bodyAttribute.BodyType);
+
+            Dictionary<string, string> paramValues = new Dictionary<string, string>();
+
+            PropertyInfo[] props = bodyAttribute.BodyType.GetProperties();
+
+            props = props.Where(p => bodyAttribute.Params.Contains(p.Name)).ToArray();
+
+            foreach(var prop in props)
+            {
+                paramValues[prop.Name] = prop.GetValue(bodyObj).ToString();
+            }
+
+            CaptureCustomMetric(paramValues, metricName);
+        }
+
+        private void CaptureCustomParamMetric(HttpContext context, ParamMetricAttribute paramAttribute, string metricName)
+        {
+            Dictionary<string, string> paramValues = new Dictionary<string, string>();
+
+            foreach(var param in paramAttribute.Params)
+            {
+                context.Request.Query.TryGetValue(param, out var qValue);
+
+                if (qValue.ToString().Exists())
+                    paramValues[param] = qValue.ToString();
+            }
+
+            CaptureCustomMetric(paramValues, metricName);
+        }
+
+        private void CaptureCustomMetric(Dictionary<string, string> fields, string metricName)
+        {
+            foreach(var field in fields)
+            {
+                _metricFactory.CreateWhitebox(new Operation(MetricCategory.Other, $"{metricName}/{field.Key}={field.Value}"));
+            }
+        }
+
 
         private bool IsInFilter(HttpContext context)
         {

@@ -1,4 +1,5 @@
-﻿using Aether.Middleware;
+﻿using Aether.Helpers;
+using Aether.Middleware;
 using APILogger.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,6 +21,7 @@ namespace Aether.Tests.Middleware
         private Mock<IApiLogger> _mockLogger;
         private Mock<IMetricFactory> _mockMetricFactory;
         private Mock<HttpContext> _mockHttpContext;
+        private Mock<IHttpContextUtils> _mockUtils;
 
         private string _testString = Guid.NewGuid().ToString();
 
@@ -30,8 +32,9 @@ namespace Aether.Tests.Middleware
             _mockLogger = new Mock<IApiLogger>();
             _mockHttpContext = new Mock<HttpContext>();
             _mockMetricFactory = new Mock<IMetricFactory>();
+            _mockUtils = new Mock<IHttpContextUtils>();
 
-            _target = new GrafanaControllersMiddleware(_mockLogger.Object, _mockMetricFactory.Object, _mockNext.Object, new List<string>() { "/api/heartbeat" });
+            _target = new GrafanaControllersMiddleware(_mockLogger.Object, _mockMetricFactory.Object, _mockNext.Object, new List<string>() { "/api/heartbeat" }, _mockUtils.Object);
 
             SetupMocks();
         }
@@ -59,7 +62,7 @@ namespace Aether.Tests.Middleware
         [TestMethod]
         public void ArgumentNullExceptionTest()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => _target = new GrafanaControllersMiddleware(null, null, null, null));
+            Assert.ThrowsException<ArgumentNullException>(() => _target = new GrafanaControllersMiddleware(null, null, null, null, null)) ;
         }
 
         [TestMethod]
