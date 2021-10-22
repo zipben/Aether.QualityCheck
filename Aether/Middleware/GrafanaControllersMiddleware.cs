@@ -97,7 +97,6 @@ namespace Aether.Middleware
         {
             try
             {
-                var e = context.Features.Get<IEndpointFeature>();
                 var endpoint = context.Features.Get<IEndpointFeature>()?.Endpoint;
 
                 var paramAttribute = endpoint?.Metadata.GetMetadata<ParamMetricAttribute>();

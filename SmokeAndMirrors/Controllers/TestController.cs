@@ -73,8 +73,6 @@ namespace SmokeAndMirrors.Controllers
         [ParamMetric("gcid")]
         public async Task<IActionResult> Consent(string gcid)
         {
-            //var response = await _consentClient.GetBatchConsentFromDps(Aether.Enums.IdentifierType.GCID, gcid.CreateList());
-
             return new OkObjectResult(1);
         }
 
