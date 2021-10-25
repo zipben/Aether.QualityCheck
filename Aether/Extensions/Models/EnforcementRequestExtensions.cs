@@ -14,6 +14,7 @@ namespace Aether.Extensions
                                            enforcementRequest.EnforcementRequestId,
                                            enforcementRequest.EnforcementType,
                                            enforcementRequest.HasSSN,
+                                           enforcementRequest.EnforcementRequestCreateDate,
                                            enforcementRequest.IsTestMessage,
                                        };
 
@@ -24,6 +25,6 @@ namespace Aether.Extensions
 
         public static void AddDiagnosticSystemNames(this EnforcementRequest enforcementRequest, IEnumerable<string> systemNames) =>
             enforcementRequest.DiagnosticFlags.AddRange(
-                systemNames.Select(name => OyaStaticValues.DiagnosticFlags.SYSTEM_NAME_PREFIX + name));
+                systemNames.Select(name => $"{OyaStaticValues.DiagnosticFlags.SYSTEM_NAME_PREFIX}{name}"));
     }
 }
