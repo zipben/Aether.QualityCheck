@@ -6,6 +6,7 @@ using Aether.Interfaces.ExternalAccessClients;
 using Aether.Models.RightRequestWorkflow;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SmokeAndMirrors.CustomExceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,6 +103,12 @@ namespace SmokeAndMirrors.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("Exception")]
+        public async Task<IActionResult> ThrowException()
+        {
+            throw new SmokeAndMirrorsException("TEST");
         }
     }
 }
