@@ -1,5 +1,5 @@
 ﻿using Aether.Attributes;
-using Aether.Extensions;
+using Aether.CustomExtceptions;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Interfaces.ExternalAccessClients;
@@ -102,6 +102,12 @@ namespace SmokeAndMirrors.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("Exception")]
+        public async Task<IActionResult> ThrowException()
+        {
+            throw new HttpStatusCodeException(System.Net.HttpStatusCode.NoContent, "AHHHHHH");
         }
     }
 }

@@ -68,10 +68,12 @@ namespace SmokeAndMirrors
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmokeAndMirrors v1"));
             }
 
-            app.UseQualityCheckMiddleware();
-            app.UseQualityCheckMiddleware<DummyTypedQualityCheckPass>("/api/otherone");
+            //app.UseQualityCheckMiddleware();
+            //app.UseQualityCheckMiddleware<DummyTypedQualityCheckPass>("/api/otherone");
 
-            app.UseGrafanaControllerMiddleware("/api/heartbeat", "/api/Litigation", "/api/test/*");
+            //app.UseGrafanaControllerMiddleware("/api/heartbeat", "/api/Litigation", "/api/test/*");
+
+            app.UseExceptionHandlingMiddleware();
 
             app.UseHttpsRedirection();
 
