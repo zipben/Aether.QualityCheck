@@ -74,22 +74,25 @@ namespace Aether.Middleware
                     operation = new Operation(MetricCategory.Http, context.Request.Path, context.Request.Method, "1.0");
                 }
 
-                using var metric = _metricFactory.CreateWhitebox(operation);
+                string body;
 
-                try
+                using (var metric = _metricFactory.CreateWhitebox(operation))
                 {
-                    var body = await _httpContextUtils.PeekRequestBodyAsync(context);
+                    try
+                    {
+                        //must happen before the delegate fires because the delegate consumes the body
+                        body = await _httpContextUtils.PeekRequestBodyAsync(context);
 
-                    await _next(context);
-
-                    TryCaptureCustomMetrics(context, body);
-
+                        await _next(context);
+                    }
+                    catch (Exception)
+                    {
+                        metric.Result = MetricResult.Failure;
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    metric.Result = MetricResult.Failure;
-                    throw;
-                }
+
+                TryCaptureCustomMetrics(context, body);                
             }
         }
 
@@ -104,11 +107,11 @@ namespace Aether.Middleware
 
                 if (paramAttribute != null)
                 {
-                    CaptureCustomParamMetric(context, paramAttribute, endpoint.DisplayName);
+                    CaptureCustomParamMetric(context, paramAttribute);
                 }
                 else if (bodyAttribute != null && body.Exists())
                 {
-                    CaptureCustomBodyMetric(context, bodyAttribute, body, endpoint.DisplayName);
+                    CaptureCustomBodyMetric(context, bodyAttribute, body);
                 }
             }
             catch(Exception e)
@@ -117,7 +120,7 @@ namespace Aether.Middleware
             }
         }
 
-        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body, string metricName)
+        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body)
         {
             var bodyObj = JsonConvert.DeserializeObject(body, bodyAttribute.BodyType);
 
@@ -132,10 +135,10 @@ namespace Aether.Middleware
                 paramValues[prop.Name] = prop.GetValue(bodyObj).ToString();
             }
 
-            CaptureCustomMetric(paramValues, metricName);
+            CaptureCustomMetric(paramValues, bodyAttribute.MetricName);
         }
 
-        private void CaptureCustomParamMetric(HttpContext context, ParamMetricAttribute paramAttribute, string metricName)
+        private void CaptureCustomParamMetric(HttpContext context, ParamMetricAttribute paramAttribute)
         {
             Dictionary<string, string> paramValues = new Dictionary<string, string>();
 
@@ -147,14 +150,14 @@ namespace Aether.Middleware
                     paramValues[param] = qValue.ToString();
             }
 
-            CaptureCustomMetric(paramValues, metricName);
+            CaptureCustomMetric(paramValues, paramAttribute.MetricName);
         }
 
-        private void CaptureCustomMetric(Dictionary<string, string> fields, string metricName)
+        private void CaptureCustomMetric(Dictionary<string, string> tags, string metricName)
         {
-            foreach(var field in fields)
+            using (var client = _metricFactory.Client)
             {
-                _metricFactory.CreateWhitebox(new Operation(MetricCategory.Other, $"{metricName}/{field.Key}={field.Value}"));
+                client.Write(metricName, new Dictionary<string, object>(), tags);
             }
         }
 

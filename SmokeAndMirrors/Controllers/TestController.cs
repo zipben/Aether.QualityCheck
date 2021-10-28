@@ -83,7 +83,7 @@ namespace SmokeAndMirrors.Controllers
         }
 
         [HttpPost("Post")]
-        [BodyMetric(typeof(EnforcementRequest), nameof(EnforcementRequest.EnforcementType))]
+        [BodyMetric("SubmitEnforcementRequestAsync", typeof(EnforcementRequest), nameof(EnforcementRequest.EnforcementType))]
         public async Task<IActionResult> Post(EnforcementRequest request)
         {
             return new OkObjectResult(request);
