@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Aether.Attributes;
+using Aether.CustomExtceptions;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +45,10 @@ namespace Aether.Middleware
             catch (ArgumentException ex)
             {
                 await HandleException(ex, context, HttpStatusCode.BadRequest, $"Invalid {ex.ParamName}: {ex.Message}");
+            }
+            catch(HttpStatusCodeException ex)
+            {
+                await HandleException(ex, context, ex.StatusCode, $"Error in the API: {ex.Message}");
             }
             catch (Exception ex)
             {
