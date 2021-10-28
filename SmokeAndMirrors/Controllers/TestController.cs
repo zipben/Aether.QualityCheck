@@ -1,12 +1,11 @@
 ﻿using Aether.Attributes;
-using Aether.Extensions;
+using Aether.CustomExtceptions;
 using Aether.ExternalAccessClients.Interfaces;
 using Aether.Helpers.Interfaces;
 using Aether.Interfaces.ExternalAccessClients;
 using Aether.Models.RightRequestWorkflow;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SmokeAndMirrors.CustomExceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,7 +107,7 @@ namespace SmokeAndMirrors.Controllers
         [HttpGet("Exception")]
         public async Task<IActionResult> ThrowException()
         {
-            throw new SmokeAndMirrorsException("TEST");
+            throw new HttpStatusCodeException(System.Net.HttpStatusCode.NoContent, "AHHHHHH");
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Aether.Attributes;
+using Aether.CustomExtceptions;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
@@ -45,22 +46,14 @@ namespace Aether.Middleware
             {
                 await HandleException(ex, context, HttpStatusCode.BadRequest, $"Invalid {ex.ParamName}: {ex.Message}");
             }
+            catch(HttpStatusCodeException ex)
+            {
+                await HandleException(ex, context, ex.StatusCode, $"Error in the API: {ex.Message}");
+            }
             catch (Exception ex)
             {
-                CustomExceptionReponseAttribute customAtr = CheckForCustomResponse(ex);
-
-                if(customAtr is null)
-                    await HandleException(ex, context, HttpStatusCode.InternalServerError, $"Error in the API: {ex.Message}");
-                else
-                    await HandleException(ex, context, customAtr.ReponseCode, ex.Message);
-
+                await HandleException(ex, context, HttpStatusCode.InternalServerError, $"Error in the API: {ex.Message}");
             }
-        }
-
-        private CustomExceptionReponseAttribute CheckForCustomResponse(Exception ex)
-        {
-            return Attribute.GetCustomAttribute(ex.GetType(), typeof(CustomExceptionReponseAttribute)) 
-                as CustomExceptionReponseAttribute;
         }
 
         private async Task HandleException(Exception ex, HttpContext context, HttpStatusCode statusCode, string logMessage)
