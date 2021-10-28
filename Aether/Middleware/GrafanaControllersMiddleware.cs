@@ -74,22 +74,25 @@ namespace Aether.Middleware
                     operation = new Operation(MetricCategory.Http, context.Request.Path, context.Request.Method, "1.0");
                 }
 
-                using var metric = _metricFactory.CreateWhitebox(operation);
+                string body;
 
-                try
+                using (var metric = _metricFactory.CreateWhitebox(operation))
                 {
-                    var body = await _httpContextUtils.PeekRequestBodyAsync(context);
+                    try
+                    {
+                        //must happen before the delegate fires because the delegate consumes the body
+                        body = await _httpContextUtils.PeekRequestBodyAsync(context);
 
-                    await _next(context);
-
-                    TryCaptureCustomMetrics(context, body);
-
+                        await _next(context);
+                    }
+                    catch (Exception)
+                    {
+                        metric.Result = MetricResult.Failure;
+                        throw;
+                    }
                 }
-                catch (Exception)
-                {
-                    metric.Result = MetricResult.Failure;
-                    throw;
-                }
+
+                TryCaptureCustomMetrics(context, body);                
             }
         }
 
@@ -150,14 +153,11 @@ namespace Aether.Middleware
             CaptureCustomMetric(paramValues, paramAttribute.MetricName);
         }
 
-        private void CaptureCustomMetric(Dictionary<string, string> fields, string metricName)
+        private void CaptureCustomMetric(Dictionary<string, string> tags, string metricName)
         {
             using (var client = _metricFactory.Client)
             {
-                foreach(var field in fields)
-                {
-                    client.Write($"{metricName}_{field.Key}", field.Value);
-                }
+                client.Write(metricName, new Dictionary<string, object>(), tags);
             }
         }
 
