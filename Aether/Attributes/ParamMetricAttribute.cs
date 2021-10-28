@@ -6,11 +6,13 @@ namespace Aether.Attributes
 {
     public class ParamMetricAttribute : Attribute
     {
+        public string MetricName { get; set; }
         public IEnumerable<string> Params { get; set; }
 
-        public ParamMetricAttribute(params string[] Params)
+        public ParamMetricAttribute(string metricName, params string[] par)
         {
-            this.Params = Params;
+            MetricName = metricName;
+            Params = par;
         }
     }
 }

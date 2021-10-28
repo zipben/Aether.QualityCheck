@@ -104,11 +104,11 @@ namespace Aether.Middleware
 
                 if (paramAttribute != null)
                 {
-                    CaptureCustomParamMetric(context, paramAttribute, endpoint.DisplayName);
+                    CaptureCustomParamMetric(context, paramAttribute);
                 }
                 else if (bodyAttribute != null && body.Exists())
                 {
-                    CaptureCustomBodyMetric(context, bodyAttribute, body, endpoint.DisplayName);
+                    CaptureCustomBodyMetric(context, bodyAttribute, body);
                 }
             }
             catch(Exception e)
@@ -117,7 +117,7 @@ namespace Aether.Middleware
             }
         }
 
-        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body, string metricName)
+        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body)
         {
             var bodyObj = JsonConvert.DeserializeObject(body, bodyAttribute.BodyType);
 
@@ -132,10 +132,10 @@ namespace Aether.Middleware
                 paramValues[prop.Name] = prop.GetValue(bodyObj).ToString();
             }
 
-            CaptureCustomMetric(paramValues, metricName);
+            CaptureCustomMetric(paramValues, bodyAttribute.MetricName);
         }
 
-        private void CaptureCustomParamMetric(HttpContext context, ParamMetricAttribute paramAttribute, string metricName)
+        private void CaptureCustomParamMetric(HttpContext context, ParamMetricAttribute paramAttribute)
         {
             Dictionary<string, string> paramValues = new Dictionary<string, string>();
 
@@ -147,14 +147,17 @@ namespace Aether.Middleware
                     paramValues[param] = qValue.ToString();
             }
 
-            CaptureCustomMetric(paramValues, metricName);
+            CaptureCustomMetric(paramValues, paramAttribute.MetricName);
         }
 
         private void CaptureCustomMetric(Dictionary<string, string> fields, string metricName)
         {
-            foreach(var field in fields)
+            using (var client = _metricFactory.Client)
             {
-                _metricFactory.CreateWhitebox(new Operation(MetricCategory.Other, $"{metricName}/{field.Key}={field.Value}"));
+                foreach(var field in fields)
+                {
+                    client.Write($"{metricName}_{field.Key}", field.Value);
+                }
             }
         }
 
