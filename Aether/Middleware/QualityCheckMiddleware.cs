@@ -12,39 +12,32 @@ using System.Threading.Tasks;
 
 namespace Aether.Middleware
 {
-    public class QualityCheckMiddleware
+    public class QualityCheckMiddleware : MiddlewareBase
     {
         private readonly string _qualityTestRoute;
         
-        private readonly RequestDelegate _next;
-        private readonly IApiLogger _logger;
+        private readonly IEnumerable<IQualityCheck> _tests;
         private readonly Type _typeFilter;
 
-        private IEnumerable<IQualityCheck> _tests;
-
-        public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute)
+        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute) : base(logger, next)
         {
-            _logger =   Guard.Against.Null(logger, nameof(logger));
-            _next =     Guard.Against.Null(next, nameof(next));
-            _tests =    Guard.Against.Null(tests, nameof(tests));
+            _tests = Guard.Against.Null(tests, nameof(tests));
 
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
-            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
+            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
 
-            _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");
+            _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
-        public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute, Type typeFilter)
+        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute, Type typeFilter) : base(logger, next)
         {
-            _logger =       Guard.Against.Null(logger, nameof(logger));
-            _next =         Guard.Against.Null(next, nameof(next));
             _tests =        Guard.Against.Null(tests, nameof(tests));
             _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
             
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
-            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
+            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
 
-            _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");
+            _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
         public async Task Invoke(HttpContext context)
@@ -57,9 +50,9 @@ namespace Aether.Middleware
 
                 var testResults = new List<QualityCheckResponseModel>();
 
-                _tests = ApplyTypeFilter();
+                var filteredTests = ApplyTypeFilter(_tests, _typeFilter);
 
-                foreach (var test in _tests)
+                foreach (var test in filteredTests)
                 {
                     QualityCheckResponseModel response = new QualityCheckResponseModel(null);
 
@@ -98,26 +91,24 @@ namespace Aether.Middleware
             }
         }
 
-        private IEnumerable<IQualityCheck> ApplyTypeFilter()
+        private static IEnumerable<IQualityCheck> ApplyTypeFilter(IEnumerable<IQualityCheck> tests, Type typeFilter)
         {
-
-            if (_typeFilter != null)
+            foreach (var test in tests)
             {
-                List<IQualityCheck> filteredTests = new List<IQualityCheck>();
-
-                foreach (var test in _tests)
+                if (typeFilter != null)
                 {
                     var interfaces = test.GetType().GetInterfaces();
 
-                    if (interfaces.Any(i => i.GenericTypeArguments.Contains(_typeFilter)))
-                        filteredTests.Add(test);
+                    if (interfaces.Any(i => i.GenericTypeArguments.Contains(typeFilter)))
+                    {
+                        yield return test;
+                    }
                 }
-
-                return filteredTests;
+                else
+                {
+                    yield return test;
+                }
             }
-            else
-                return _tests;
-
         }
     }
 }

@@ -47,7 +47,7 @@ namespace SmokeAndMirrors
             services.AddSingleton<ICreditV2Client, CreditV2Client>();
             services.AddSingleton<IConsentClient, ConsentClient>();
 
-            services.RegisterAuditEventPublisher("SmokeAndMirrors");
+            services.RegisterMoriaEventPublisher("SmokeAndMirrors");
 
             services.AddSingleton<IMetricFactory, MetricFactory>();
 

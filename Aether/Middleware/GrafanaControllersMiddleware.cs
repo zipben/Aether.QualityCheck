@@ -11,34 +11,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-
 
 namespace Aether.Middleware
 {
-    public class GrafanaControllersMiddleware
+    public class GrafanaControllersMiddleware : MiddlewareBase
     {
-        private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
-        private readonly IApiLogger _logger;
-        private readonly IHttpContextUtils _httpContextUtils;
         private readonly List<string> _filterList = new List<string>();
+        private readonly IHttpContextUtils _httpContextUtils;
 
         /// <summary>
         /// Constructor for GrafanaControllersMiddleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList, IHttpContextUtils httpContextUtils)
+        public GrafanaControllersMiddleware(IApiLogger logger, RequestDelegate next, IMetricFactory metricFactory, List<string> filterList, IHttpContextUtils httpContextUtils) : base(logger, next)
         {
-            _logger =           Guard.Against.Null(logger, nameof(logger));
-            _next =             Guard.Against.Null(next, nameof(next));
             _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
             _filterList =       Guard.Against.Null(filterList, nameof(filterList));
             _httpContextUtils = Guard.Against.Null(httpContextUtils, nameof(httpContextUtils));
 
-            _logger.LogDebug("GrafanaControllersMiddleware initialized");
+            _logger.LogDebug($"{nameof(GrafanaControllersMiddleware)} initialized");
         }
 
         /// <summary>
@@ -48,21 +42,12 @@ namespace Aether.Middleware
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            if (IsInFilter(context))
+            if (IsInFilter(context, _filterList))
             {
-                try
-                {
-                    await _next(context);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+                await _next(context);
             }
             else
             {
-            
-
                 Operation operation;
                 if (context.Request.QueryString.HasValue)
                 {
@@ -111,16 +96,16 @@ namespace Aether.Middleware
                 }
                 else if (bodyAttribute != null && body.Exists())
                 {
-                    CaptureCustomBodyMetric(context, bodyAttribute, body);
+                    CaptureCustomBodyMetric(bodyAttribute, body);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(nameof(TryCaptureCustomMetrics), exception: e);
             }
         }
 
-        private void CaptureCustomBodyMetric(HttpContext context, BodyMetricAttribute bodyAttribute, string body)
+        private void CaptureCustomBodyMetric(BodyMetricAttribute bodyAttribute, string body)
         {
             var bodyObj = JsonConvert.DeserializeObject(body, bodyAttribute.BodyType);
 
@@ -130,7 +115,7 @@ namespace Aether.Middleware
 
             props = props.Where(p => bodyAttribute.Params.Contains(p.Name)).ToArray();
 
-            foreach(var prop in props)
+            foreach (var prop in props)
             {
                 paramValues[prop.Name] = prop.GetValue(bodyObj).ToString();
             }
@@ -147,7 +132,9 @@ namespace Aether.Middleware
                 context.Request.Query.TryGetValue(param, out var qValue);
 
                 if (qValue.ToString().Exists())
+                {
                     paramValues[param] = qValue.ToString();
+                }
             }
 
             CaptureCustomMetric(paramValues, paramAttribute.MetricName);
@@ -155,24 +142,8 @@ namespace Aether.Middleware
 
         private void CaptureCustomMetric(Dictionary<string, string> tags, string metricName)
         {
-            using (var client = _metricFactory.Client)
-            {
-                client.Write(metricName, new Dictionary<string, object>(), tags);
-            }
-        }
-
-
-        private bool IsInFilter(HttpContext context)
-        {
-            foreach(var filter in _filterList)
-            {
-                Regex rgx = new Regex(filter);
-
-                if (rgx.IsMatch(context.Request.Path))
-                    return true;
-            }
-
-            return false;
+            using var client = _metricFactory.Client;
+            client.Write(metricName, new Dictionary<string, object>(), tags);
         }
     }
 }

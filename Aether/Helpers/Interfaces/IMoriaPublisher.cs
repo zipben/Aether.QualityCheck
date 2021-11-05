@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Aether.Helpers.Interfaces
 {
-    public interface IAuditEventPublisher
+    public interface IMoriaPublisher
     {
         Task CaptureAuditEvent(string eventName, string targetId, string eventInitiator, string originalValue, string newValue);
         Task CaptureAuditEvent<T>(string eventName, string targetId, string eventInitiator, T originalValue, T newValue);
@@ -12,5 +12,7 @@ namespace Aether.Helpers.Interfaces
 
         Task CaptureDeleteAuditEvent(string eventName, string targetId, string eventInitiator);
         Task CaptureDeleteAuditEvent(string eventName, string targetId, HttpRequest request);
+
+        Task CaptureMetricEvent(HttpRequest request);
     }
 }

@@ -30,7 +30,7 @@ namespace Aether.Middleware.Tests
             _mockNext = new Mock<RequestDelegate>();
             _mockHttpContext = new Mock<HttpContext>();
             _mockQualityChecks = new List<IQualityCheck>();
-            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockQualityChecks, _mockNext.Object, "/testendpoint");
+            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockNext.Object, _mockQualityChecks, "/testendpoint");
             Setup_Mocks();
         }
 

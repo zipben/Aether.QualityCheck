@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Aether.Interfaces.Moria
+﻿namespace Aether.Interfaces.Moria
 {
     public interface IAuditEvent
     {

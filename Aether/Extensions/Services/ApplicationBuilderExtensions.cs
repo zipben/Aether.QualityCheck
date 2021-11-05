@@ -25,6 +25,14 @@ namespace Aether.Extensions
             return builder.UseMiddleware<GrafanaControllersMiddleware>(filterLists.ToList(), new HttpContextUtils());
         }
 
+        public static IApplicationBuilder UseMoriaMetricsMiddleware(this IApplicationBuilder builder, params string[] filterLists)
+        {
+            if (!filterLists.Any())
+                filterLists = new string[] { "/api/heartbeat", "/api/QualityCheck" };
+
+            return builder.UseMiddleware<MoriaMetricsMiddleware>(filterLists.ToList());
+        }
+
         /// <summary>
         /// Registers the quality check middleware, creating a ghost endpoint at the provided route.  Hitting this endpoint will result in any registered IQualityChecks being run
         /// </summary>
@@ -36,9 +44,8 @@ namespace Aether.Extensions
         /// <returns></returns>
         public static IApplicationBuilder UseQualityCheckMiddleware<T>(this IApplicationBuilder builder, string route = "/api/QualityCheck")
         {
-            Guard.Against.InvalidInput(route, nameof(route), delegate (string s) { return s.ElementAt(0).Equals('/'); });
+            Guard.Against.InvalidInput(route, nameof(route), s => s.ElementAt(0).Equals('/'));
             return builder.UseMiddleware<QualityCheckMiddleware>(route, typeof(T));
-
         }
 
         /// <summary>
@@ -47,11 +54,10 @@ namespace Aether.Extensions
         /// <param name="builder"></param>
         /// <param name="route">Optional overload for quality check route.  Defaults to "/api/qualitycheck"</param>
         /// <returns></returns>
-        public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "/api/QualityCheck") {
-
-            Guard.Against.InvalidInput(route, nameof(route), delegate (string s) { return s.ElementAt(0).Equals('/'); });
+        public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "/api/QualityCheck")
+        {
+            Guard.Against.InvalidInput(route, nameof(route), s => s.ElementAt(0).Equals('/'));
             return builder.UseMiddleware<QualityCheckMiddleware>(route);
-
         }
 
         /// <summary>

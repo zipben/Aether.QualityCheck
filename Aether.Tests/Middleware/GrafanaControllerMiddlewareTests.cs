@@ -34,7 +34,7 @@ namespace Aether.Tests.Middleware
             _mockMetricFactory = new Mock<IMetricFactory>();
             _mockUtils = new Mock<IHttpContextUtils>();
 
-            _target = new GrafanaControllersMiddleware(_mockLogger.Object, _mockMetricFactory.Object, _mockNext.Object, new List<string>() { "/api/heartbeat" }, _mockUtils.Object);
+            _target = new GrafanaControllersMiddleware(_mockLogger.Object, _mockNext.Object, _mockMetricFactory.Object, new List<string>() { "/api/heartbeat" }, _mockUtils.Object);
 
             SetupMocks();
         }

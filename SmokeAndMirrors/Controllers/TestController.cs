@@ -23,12 +23,12 @@ namespace SmokeAndMirrors.Controllers
         };
 
         private readonly ILogger<TestController> _logger;
-        private readonly IAuditEventPublisher _eventPublisher;
+        private readonly IMoriaPublisher _eventPublisher;
         private readonly IErisClient _erisClient;
         private readonly ICreditV2Client _creditClient;
         private readonly IConsentClient _consentClient;
 
-        public TestController(ILogger<TestController> logger, IAuditEventPublisher eventPublisher, IErisClient erisClient, ICreditV2Client creditClient, IConsentClient consentClient)
+        public TestController(ILogger<TestController> logger, IMoriaPublisher eventPublisher, IErisClient erisClient, ICreditV2Client creditClient, IConsentClient consentClient)
         {
             _logger = logger;
             _eventPublisher = eventPublisher;
