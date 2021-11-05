@@ -7,5 +7,8 @@ namespace Aether.Extensions.Models.Configuration
     {
         public static IAuthParams GetAuthParams(this ServiceOAuthConfiguration config) =>
             new Auth0AuthParams(config.ClientId, config.ClientSecret, config.Audience, config.AuthorizerUrl);
+
+        public static IAuthParams GetAuthParams(this ServiceOAuthConfiguration config, string audience) =>
+            new Auth0AuthParams(config.ClientId, config.ClientSecret, audience, config.AuthorizerUrl);
     }
 }

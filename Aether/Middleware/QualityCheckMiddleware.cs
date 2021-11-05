@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Aether.Interfaces;
+﻿using Aether.Interfaces;
 using Aether.Models;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Aether.Middleware
 {
@@ -28,15 +28,30 @@ namespace Aether.Middleware
             _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
+        public QualityCheckMiddleware(IApiLogger logger, IEnumerable<IQualityCheck> tests, RequestDelegate next, string qualityTestRoute, Type typeFilter)
+        {
+            _logger =       Guard.Against.Null(logger, nameof(logger));
+            _next =         Guard.Against.Null(next, nameof(next));
+            _tests =        Guard.Against.Null(tests, nameof(tests));
+            _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
+            
+            Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
+            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), delegate (string s) { return s.ElementAt(0).Equals('/'); });
+
+            _logger.LogDebug($"Quality Check middleware initialized with {qualityTestRoute}");
+        }
+
         public async Task Invoke(HttpContext context)
         {
             Guard.Against.Null(context?.Request?.Path.Value, nameof(context));
 
-            if (context.Request.Path.Value.Contains(_qualityTestRoute))
+            if (context.Request.Path.Value.ToLower().Contains(_qualityTestRoute.ToLower()))
             {
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
                 var testResults = new List<QualityCheckResponseModel>();
+
+                _tests = ApplyTypeFilter();
 
                 foreach (var test in _tests)
                 {
@@ -75,6 +90,28 @@ namespace Aether.Middleware
             {
                 await _next(context);
             }
+        }
+
+        private IEnumerable<IQualityCheck> ApplyTypeFilter()
+        {
+
+            if (_typeFilter != null)
+            {
+                List<IQualityCheck> filteredTests = new List<IQualityCheck>();
+
+                foreach (var test in _tests)
+                {
+                    var interfaces = test.GetType().GetInterfaces();
+
+                    if (interfaces.Any(i => i.GenericTypeArguments.Contains(_typeFilter)))
+                        filteredTests.Add(test);
+                }
+
+                return filteredTests;
+            }
+            else
+                return _tests;
+
         }
     }
 }
