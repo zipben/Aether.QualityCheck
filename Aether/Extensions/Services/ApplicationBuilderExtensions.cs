@@ -1,4 +1,5 @@
-﻿using Aether.Middleware;
+﻿using Aether.Helpers;
+using Aether.Middleware;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Builder;
 using System.Diagnostics.CodeAnalysis;
@@ -21,7 +22,7 @@ namespace Aether.Extensions
             if (!filterLists.Any())
                 filterLists = new string[] { "/api/heartbeat" };
 
-            return builder.UseMiddleware<GrafanaControllersMiddleware>(filterLists.ToList());
+            return builder.UseMiddleware<GrafanaControllersMiddleware>(filterLists.ToList(), new HttpContextUtils());
         }
 
         public static IApplicationBuilder UseMoriaMetricsMiddleware(this IApplicationBuilder builder, params string[] filterLists)

@@ -1,10 +1,18 @@
 ﻿##Read Me
 
-NEW HOTNESS: Added the audit event publisher and the ability to send a caller id in the header
-of out new requests.
+NEW HOTNESS: added more granular custom grafana metrics via an endpoint attribute.
+[BodyMetric(typeof(EnforcementRequest), nameof(EnforcementRequest.EnforcementType))]
+this can be put on a controller action.  The prop you call out will be captured as part of a 
+custom metric by the grafana middleware
 
-added the ability to capture an audit event with an entire object in it
+[ParamMetric("gcid")]
+This works similarly to above, but allows you to capture query params as a metric, instead of 
+props from an post body
+
+This feature should not be used for values that are likely to be unique with each call, like ids
+as that would just generate a lot of noise.  This is for instances where you want to count requests 
+with a given param/prop like Right Requests coming into Oya
 
 Enjoy your day
 
-4848d46e-667b-41f4-8ab8-4d46c2c2c512
+b532717a-b26b-48d8-8374-3d7e5ec5778c
