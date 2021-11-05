@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
@@ -10,11 +8,9 @@ using RockLib.Metrics;
 
 namespace Aether.Middleware
 {
-    public class GrafanaControllersMiddleware
+    public class GrafanaControllersMiddleware : MiddlewareBase
     {
-        private readonly RequestDelegate _next;
         private readonly IMetricFactory _metricFactory;
-        private readonly IApiLogger _logger;
         private readonly List<string> _filterList = new List<string>();
 
         /// <summary>
@@ -22,14 +18,12 @@ namespace Aether.Middleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public GrafanaControllersMiddleware(IApiLogger logger, IMetricFactory metricFactory, RequestDelegate next, List<string> filterList)
+        public GrafanaControllersMiddleware(IApiLogger logger, RequestDelegate next, IMetricFactory metricFactory, List<string> filterList) : base(logger, next)
         {
-            _logger =           Guard.Against.Null(logger, nameof(logger));
-            _next =             Guard.Against.Null(next, nameof(next));
             _metricFactory =    Guard.Against.Null(metricFactory, nameof(metricFactory));
             _filterList =       Guard.Against.Null(filterList, nameof(filterList));
 
-            _logger.LogDebug("GrafanaControllersMiddleware initialized");
+            _logger.LogDebug($"{nameof(GrafanaControllersMiddleware)} initialized");
         }
 
         /// <summary>
@@ -39,7 +33,7 @@ namespace Aether.Middleware
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            if (IsInFilter(context))
+            if (IsInFilter(context, _filterList))
             {
                 try
                 {
@@ -74,19 +68,6 @@ namespace Aether.Middleware
                     throw;
                 }
             }
-        }
-
-        private bool IsInFilter(HttpContext context)
-        {
-            foreach(var filter in _filterList)
-            {
-                Regex rgx = new Regex(filter);
-
-                if (rgx.IsMatch(context.Request.Path))
-                    return true;
-            }
-
-            return false;
         }
     }
 }

@@ -4,19 +4,21 @@ using Aether.Helpers.Interfaces;
 using Aether.Models;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Aether.Helpers
 {
-    public class AuditEventPublisher : IAuditEventPublisher
+    public class MoriaPublisher : IMoriaPublisher
     {
         private readonly string _systemOfOrigin;
-        private readonly IAuditClient _client;
+        private readonly IMoriaClient _client;
 
-        public AuditEventPublisher(string systemOfOrigin, IAuditClient client)
+        public MoriaPublisher(string systemOfOrigin, IMoriaClient client)
         {
             _systemOfOrigin = Guard.Against.NullOrEmpty(systemOfOrigin, nameof(systemOfOrigin));
             _client         = Guard.Against.Null(client, nameof(client));
@@ -27,7 +29,7 @@ namespace Aether.Helpers
 
         public async Task CaptureAuditEvent(string eventName, string targetId, string eventInitiator, string originalValue, string newValue)
         {
-            var evnt = new AuditEvent()
+            var evnt = new AuditEvent
             {
                 SystemOfOrigin = _systemOfOrigin,
                 EventName = eventName,
@@ -50,14 +52,9 @@ namespace Aether.Helpers
             {
                 request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
 
-                string callInitiatorString = "";
-
-                if (callInitiator == StringValues.Empty)
-                    callInitiatorString = "No Provided Initiator";
-                else
-                    callInitiatorString = callInitiator;
-
-                var evnt = new AuditEvent()
+                string callInitiatorString = callInitiator == StringValues.Empty ? "No Provided Initiator"
+                                                                                 : callInitiator.ToString();
+                var evnt = new AuditEvent
                 {
                     SystemOfOrigin = _systemOfOrigin,
                     EventName = eventName,
@@ -70,7 +67,6 @@ namespace Aether.Helpers
 
                 await _client.CaptureAuditEvent(evnt);
             }
-
         }
 
         public async Task CaptureDeleteAuditEvent(string eventName, string targetId, string eventInitiator) =>
@@ -78,6 +74,26 @@ namespace Aether.Helpers
 
         public async Task CaptureDeleteAuditEvent(string eventName, string targetId, HttpRequest request) =>
             await CaptureAuditEvent(eventName, targetId, null, "DELETED", request);
-        
+
+        public async Task CaptureMetricEvent(HttpRequest request)
+        {
+            if (!request.IsTest())
+            {
+                request.Headers.TryGetValue(Constants.CALL_INITIATOR_HEADER_KEY, out var callInitiator);
+
+                string callInitiatorString = callInitiator == StringValues.Empty ? "N/A"
+                                                                                 : callInitiator.ToString();
+                var evnt = new MetricEvent
+                {
+                    CalledBy = callInitiatorString,
+                    CalledDate = DateTime.UtcNow,
+                    CalledFrom = _systemOfOrigin,
+                    Method = (HttpMethod) Enum.Parse(typeof(HttpMethod), request.Method, true),
+                    Url = request.GetEncodedPathAndQuery()
+                };
+
+                await _client.CaptureMetricEvent(evnt);
+            }
+        }
     }
 }

@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using APILogger.Interfaces;
-using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace Aether.Middleware
 {
-    public class ErrorHandlingMiddleware
+    public class ErrorHandlingMiddleware : MiddlewareBase
     {
-        private readonly RequestDelegate _next;
-        private readonly IApiLogger _logger;
-
         private static HashSet<string> SECURED_ENVIRONMENTS = new HashSet<string>() { "Production", "Beta" };
 
         /// <summary>
@@ -21,12 +17,9 @@ namespace Aether.Middleware
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="next"></param>
-        public ErrorHandlingMiddleware(IApiLogger logger, RequestDelegate next)
+        public ErrorHandlingMiddleware(IApiLogger logger, RequestDelegate next) : base(logger, next)
         {
-            _logger =   Guard.Against.Null(logger, nameof(logger));
-            _next =     Guard.Against.Null(next, nameof(next));
-
-            _logger.LogDebug("Exception handling middleware initialized");
+            _logger.LogDebug($"{nameof(ErrorHandlingMiddleware)} initialized");
         }
 
         /// <summary>

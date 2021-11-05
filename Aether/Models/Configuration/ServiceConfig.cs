@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Aether.Models.ErisClient
+﻿namespace Aether.Models.Configuration
 {
     public class ServiceConfig
     {

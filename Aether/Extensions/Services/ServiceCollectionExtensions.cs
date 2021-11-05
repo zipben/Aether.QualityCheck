@@ -71,16 +71,16 @@ namespace Aether.Extensions
                 services.Add(new ServiceDescriptor(typeof(IQualityCheck), type, ServiceLifetime.Singleton));
         }
 
-        public static void RegisterAuditEventPublisher(this IServiceCollection services, string systemOfOrigin)
+        public static void RegisterMoriaEventPublisher(this IServiceCollection services, string systemOfOrigin)
         {
-            var baseUrl = GetAuditBaseUrl();
-            var audience = GetAuditAudience();
+            var baseUrl = GetMoriaBaseUrl();
+            var audience = GetMoriaAudience();
 
             services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
             
-            services.AddSingleton<IAuditClient, AuditClient>();
+            services.AddSingleton<IMoriaClient, MoriaClient>();
 
-            services.AddSingleton<IAuditClient>(x =>
+            services.AddSingleton<IMoriaClient>(x =>
             {
                 var serviceConfig = services.BuildServiceProvider().GetRequiredService<IOptions<ServiceConfig>>();
 
@@ -88,7 +88,7 @@ namespace Aether.Extensions
                 Guard.Against.Null(serviceConfig.Value.ClientID, nameof(serviceConfig.Value.ClientID));
                 Guard.Against.Null(serviceConfig.Value.ClientSecret, nameof(serviceConfig.Value.ClientSecret));
 
-                AuditClientConfig config = new AuditClientConfig()
+                var config = new MoriaClientConfig()
                 {
                     Audience = audience,
                     BaseUrl = baseUrl,
@@ -96,36 +96,38 @@ namespace Aether.Extensions
                     ClientSecret = serviceConfig.Value.ClientSecret
                 };
 
-                return new AuditClient(services.BuildServiceProvider().GetRequiredService<IHttpClientWrapper>(), Options.Create(config));
+                return new MoriaClient(services.BuildServiceProvider().GetRequiredService<IHttpClientWrapper>(), Options.Create(config));
                 
             });
 
-            services.AddSingleton<IAuditEventPublisher>(x =>
+            services.AddSingleton<IMoriaPublisher>(x =>
             {
-                return new AuditEventPublisher(systemOfOrigin, services.BuildServiceProvider().GetRequiredService<IAuditClient>());
+                return new MoriaPublisher(systemOfOrigin, services.BuildServiceProvider().GetRequiredService<IMoriaClient>());
             });
         }
 
-        private static string GetAuditAudience() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToLower() switch
-        {
-            "development" => "urn:ql-api:moria_event_ingestor-209160:Test",
-            "test" => "urn:ql-api:moria_event_ingestor-209160:Test",
-            "beta" => "urn:ql-api:moria_event_ingestor-209160:Beta",
-            "prod" => "urn:ql-api:moria_event_ingestor-209160:Prod",
-            "production" => "urn:ql-api:moria_event_ingestor-209160:Prod",
-            _ => throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT", "ASPNETCORE_ENVIRONMENT must be defined in order to use the Audit Event Publication Service")
-        };
+        private static string GetMoriaAudience() => 
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToLower() switch
+            {
+                "development" => "urn:ql-api:moria_event_ingestor-209160:Test",
+                "test" => "urn:ql-api:moria_event_ingestor-209160:Test",
+                "beta" => "urn:ql-api:moria_event_ingestor-209160:Beta",
+                "prod" => "urn:ql-api:moria_event_ingestor-209160:Prod",
+                "production" => "urn:ql-api:moria_event_ingestor-209160:Prod",
+                _ => throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT", "ASPNETCORE_ENVIRONMENT must be defined in order to use the Audit Event Publication Service")
+            };
         
 
-        private static string GetAuditBaseUrl() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToLower() switch
-        {
-            "development" => "https://moria-event-ingestor.api.sqs.test.ds-np.foc.zone",
-            "test" => "https://moria-event-ingestor.api.sqs.test.ds-np.foc.zone",
-            "beta" => "https://moria-event-ingestor.api.sqs.beta.ds-np.foc.zone",
-            "prod" => "https://moria-event-ingestor.api.sqs.ds.foc.zone",
-            "production" => "https://moria-event-ingestor.api.sqs.ds.foc.zone",
-            _ => throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT", "ASPNETCORE_ENVIRONMENT must be defined in order to use the Audit Event Publication Service")
-        };
+        private static string GetMoriaBaseUrl() =>
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToLower() switch
+            {
+                "development" => "https://moria-event-ingestor.api.sqs.test.ds-np.foc.zone",
+                "test" => "https://moria-event-ingestor.api.sqs.test.ds-np.foc.zone",
+                "beta" => "https://moria-event-ingestor.api.sqs.beta.ds-np.foc.zone",
+                "prod" => "https://moria-event-ingestor.api.sqs.ds.foc.zone",
+                "production" => "https://moria-event-ingestor.api.sqs.ds.foc.zone",
+                _ => throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT", "ASPNETCORE_ENVIRONMENT must be defined in order to use the Audit Event Publication Service")
+            };
 
         public static void RegisterKafkaServices(this IServiceCollection services, IConfiguration configuration)
         {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Aether.Models.ErisClient
+﻿namespace Aether.Models.Configuration
 {
-    public class AuditClientConfig
+    public class MoriaClientConfig
     {
         public string BaseUrl { get; set; }
         public string Audience { get; set; }
