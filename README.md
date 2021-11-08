@@ -1,7 +1,5 @@
-﻿## Aether
+﻿## Aether.QualityChecks
 
-[![CircleCI](https://circleci.foc.zone/gh/DataServices/Aether.svg?style=shield)](https://[circleci.foc.zone/gh/DataServices/Aether](https://circleci.foc.zone/gh/DataServices/Aether))
-[![Quality Gate Status](https://sonarqube.rockfin.com/api/project_badges/measure?project=QL.207965&metric=alert_status)](https://sonarqube.rockfin.com/dashboard?id=QL.207965)
 
 ### Overview
 
