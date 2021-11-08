@@ -1,4 +1,4 @@
-﻿using Aether.Interfaces;
+﻿using Aether.QualityChecks.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;

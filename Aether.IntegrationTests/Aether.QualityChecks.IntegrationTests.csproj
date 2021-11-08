@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aether\Aether.csproj" />
+    <ProjectReference Include="..\Aether\Aether.QualityChecks.csproj" />
     <ProjectReference Include="..\SmokeAndMirrors\SmokeAndMirrors.csproj" />
   </ItemGroup>
 

@@ -1,12 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Aether.QualityChecks.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Microsoft.AspNetCore.Http;
-using Aether.Middleware;
+using System;
 
 namespace Aether.Extensions.Tests
 {

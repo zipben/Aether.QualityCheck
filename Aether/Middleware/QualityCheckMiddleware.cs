@@ -1,5 +1,5 @@
-﻿using Aether.Interfaces;
-using Aether.Models;
+﻿using Aether.QualityChecks.Interfaces;
+using Aether.QualityChecks.Models;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Aether.Middleware
+namespace Aether.QualityChecks.Middleware
 {
     public class QualityCheckMiddleware
     {

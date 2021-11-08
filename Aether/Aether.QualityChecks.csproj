@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>PBMC</Authors>
+    <Company>Rocket Mortgage</Company>
+    <PackageProjectUrl>https://git.rockfin.com/DataServices/Aether</PackageProjectUrl>
+    <Description>Shared library with common extensions, classes, etc.</Description>
+    <PackageIcon>Aether.png</PackageIcon>
+    <Copyright>Copyright 2021(c) Rocket Mortgage Corporation. All rights reserved.</Copyright>
+    <RepositoryUrl>https://git.rockfin.com/DataServices/Aether</RepositoryUrl>
+    <Product>DataServices.Aether</Product>
+    <PackageId>DataServices.Aether.QualityChecks</PackageId>
+    <Version>1.0.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove=".circleci\**" />
+    <EmbeddedResource Remove=".circleci\**" />
+    <None Remove=".circleci\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <!--<FrameworkReference Include="Microsoft.AspNetCore.App " />-->
+    <PackageReference Include="Ardalis.GuardClauses" Version="3.3.0" />
+    <PackageReference Include="ReadmeIncrementer" Version="2.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Rocklib.CCE.APILogger" Version="3.2.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\Aether.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -14,7 +14,7 @@ version: 2
 # Shared jobs and configuration
 ############################################################
 global-environment-vars: &global-env-vars
-  CORE_ID: '207965'
+  CORE_ID: '209929'
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
   NAME: 'Aether'
   SONAR_URL: 'https://sonarqube.rockfin.com'
@@ -62,7 +62,7 @@ jobs:
           name: Run Sonar Scanner
           command: |
               run-sonar begin
-              dotnet test ./Aether.Tests/Aether.Tests.csproj \
+              dotnet test ./Aether.QualityChecks.Tests/Aether.Tests.csproj \
                 --logger "trx" \
                 /p:CollectCoverage=true \
                 /p:CoverletOutputFormat=opencover
@@ -108,7 +108,7 @@ jobs:
           name: 'Updating Quget Gallery'
           command: |
             cd Aether/bin/Release
-            dotnet nuget push ./DataServices.Aether.*.nupkg -s https://qugetgal.rockfin.com -k $QUGET_KEY --skip-duplicate
+            dotnet nuget push ./DataServices.Aether.QualityChecks.*.nupkg -s https://qugetgal.rockfin.com -k $QUGET_KEY --skip-duplicate
 
 #############################################################
 # Define your workflow

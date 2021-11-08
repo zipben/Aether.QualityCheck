@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Aether.Models
+namespace Aether.QualityChecks.Models
 {
     public class QualityCheckResponseModel
     {

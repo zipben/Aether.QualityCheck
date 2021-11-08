@@ -1,8 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.Extensions;
+﻿using Aether.QualityChecks.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace Aether.Extensions.Tests

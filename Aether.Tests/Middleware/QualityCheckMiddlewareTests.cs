@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Aether.Middleware;
+﻿using Aether.QualityChecks.Interfaces;
+using Aether.QualityChecks.Middleware;
+using Aether.QualityChecks.Models;
+using APILogger.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using APILogger.Interfaces;
-using Moq;
-using Aether.Interfaces;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Aether.Middleware.Tests
 {
@@ -114,7 +114,7 @@ namespace Aether.Middleware.Tests
             qualityCheck.Setup(x => x.LogName)
                         .Returns("MockQualityCheck");
             qualityCheck.Setup(x => x.RunAsync())
-                        .ReturnsAsync(new Models.QualityCheckResponseModel("TestStep") { Steps = new List<Models.StepResponse>() { new Models.StepResponse() { StepPassed = input } } });
+                        .ReturnsAsync(new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse() { StepPassed = input } } });
             _mockQualityChecks.Add(qualityCheck.Object);
         }
     }

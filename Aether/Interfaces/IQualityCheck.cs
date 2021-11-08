@@ -1,8 +1,7 @@
-﻿using Aether.Models;
-using System;
+﻿using Aether.QualityChecks.Models;
 using System.Threading.Tasks;
 
-namespace Aether.Interfaces
+namespace Aether.QualityChecks.Interfaces
 {
     public interface IQualityCheck<T> : IQualityCheck { }
 

@@ -1,4 +1,5 @@
 using Aether.Extensions;
+using Aether.QualityChecks.Extensions;
 using APILogger.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using RockLib.Metrics;
 using SmokeAndMirrors.QualityChecks;
 using SmokeAndMirrors.TestDependencies;
 
@@ -27,8 +27,6 @@ namespace SmokeAndMirrors
             services.AddAPILogger();
             services.RegisterQualityChecks(typeof(Startup));
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
-
-            services.AddSingleton<IMetricFactory, MetricFactory>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

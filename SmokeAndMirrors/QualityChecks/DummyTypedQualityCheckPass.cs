@@ -1,9 +1,6 @@
-﻿using Aether.Interfaces;
-using Aether.Models;
+﻿using Aether.QualityChecks.Interfaces;
+using Aether.QualityChecks.Models;
 using SmokeAndMirrors.TestDependencies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether", "Aether\Aether.csproj", "{D7293EC4-996E-418F-838B-E2CBDC25672B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks", "Aether\Aether.QualityChecks.csproj", "{D7293EC4-996E-418F-838B-E2CBDC25672B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.Tests", "Aether.Tests\Aether.Tests.csproj", "{EC1D21AE-0AB0-483C-9A47-67ABEE0213AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks.Tests", "Aether.Tests\Aether.QualityChecks.Tests.csproj", "{EC1D21AE-0AB0-483C-9A47-67ABEE0213AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1153B307-B84E-4E5F-8428-68CBCD53B5E6}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.IntegrationTests", "Aether.IntegrationTests\Aether.IntegrationTests.csproj", "{EF6FCFA3-B5AE-4585-849D-7445A2CE75B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks.IntegrationTests", "Aether.IntegrationTests\Aether.QualityChecks.IntegrationTests.csproj", "{EF6FCFA3-B5AE-4585-849D-7445A2CE75B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmokeAndMirrors", "SmokeAndMirrors\SmokeAndMirrors.csproj", "{E1A82517-5DD9-4221-AF6E-75B0D8D7F63F}"
 EndProject

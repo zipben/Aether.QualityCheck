@@ -1,10 +1,7 @@
-﻿using Aether.Models;
+﻿using Aether.QualityChecks.Models;
 using Ardalis.GuardClauses;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Aether.Extensions
+namespace Aether.QualityChecks.Extensions
 {
     public static class QualityCheckHelperExtensions
     {

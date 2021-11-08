@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Aether.Models
+namespace Aether.QualityChecks.Models
 {
     public class StepResponse
     {

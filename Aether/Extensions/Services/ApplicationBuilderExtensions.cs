@@ -1,9 +1,9 @@
-﻿using Aether.Middleware;
+﻿using Aether.QualityChecks.Middleware;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Builder;
 using System.Linq;
 
-namespace Aether.Extensions
+namespace Aether.QualityChecks.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
