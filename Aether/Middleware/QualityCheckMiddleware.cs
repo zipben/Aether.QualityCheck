@@ -12,16 +12,20 @@ using System.Threading.Tasks;
 
 namespace Aether.Middleware
 {
-    public class QualityCheckMiddleware : MiddlewareBase
+    public class QualityCheckMiddleware
     {
         private readonly string _qualityTestRoute;
         
         private readonly IEnumerable<IQualityCheck> _tests;
         private readonly Type _typeFilter;
+        private readonly IApiLogger _logger;
+        private readonly RequestDelegate _next;
 
-        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute) : base(logger, next)
+        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute)
         {
             _tests = Guard.Against.Null(tests, nameof(tests));
+            _logger = Guard.Against.Null(logger, nameof(logger));
+            _next = next;
 
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
@@ -29,11 +33,13 @@ namespace Aether.Middleware
             _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
-        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute, Type typeFilter) : base(logger, next)
+        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute, Type typeFilter)
         {
             _tests =        Guard.Against.Null(tests, nameof(tests));
             _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
-            
+            _logger = Guard.Against.Null(logger, nameof(logger));
+            _next = next;
+
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
 

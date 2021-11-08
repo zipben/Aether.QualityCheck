@@ -20,24 +20,7 @@ namespace Aether.Extensions.Tests
         {
             _applicationBuilder = new Mock<IApplicationBuilder>();
 
-        }
-
-        [TestMethod()]
-        public void UseGrafanaControllerMiddlewareTest()
-        {
-            string[] parameters =  new string[1];
-            parameters[0] = "stuff";
-            var x = _applicationBuilder.Object.UseGrafanaControllerMiddleware(parameters);
-            Assert.IsNull(x);
-        }
-
-        [TestMethod()]
-        public void UseGrafanaControllerMiddlewareEmptyArrayTest()
-        {
-            string[] parameters = new string[0];
-            var x = _applicationBuilder.Object.UseGrafanaControllerMiddleware(parameters);
-            Assert.IsNull(x);
-        }
+        } 
 
         [TestMethod()]
         public void UseQualityCheckMiddlewareTest()

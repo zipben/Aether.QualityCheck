@@ -1,12 +1,4 @@
-using Aether;
-using Aether.Attributes;
 using Aether.Extensions;
-using Aether.ExternalAccessClients;
-using Aether.ExternalAccessClients.Interfaces;
-using Aether.Interfaces.ExternalAccessClients;
-using Aether.Models.Configuration;
-using Aether.Models.Configurations;
-using Aether.Models.ErisClient;
 using APILogger.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,19 +28,6 @@ namespace SmokeAndMirrors
             services.RegisterQualityChecks(typeof(Startup));
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
 
-            services.Configure<ServiceConfig>(Configuration.GetSection(nameof(ServiceConfig)));
-            services.Configure<ErisConfig>(Configuration.GetSection(nameof(ErisConfig)));
-            services.Configure<CreditV2Configuration>(Configuration.GetSection(nameof(CreditV2Configuration)));
-
-            services.Configure<ServiceOAuthConfiguration>(Constants.Consent.CONSENT_SETTINGS, Configuration.GetSection(Constants.Consent.CONSENT_SETTINGS));
-
-            services.AddHttpClient<IHttpClientWrapper, HttpClientWrapper>();
-            services.AddSingleton<IErisClient, ErisClient>();
-            services.AddSingleton<ICreditV2Client, CreditV2Client>();
-            services.AddSingleton<IConsentClient, ConsentClient>();
-
-            services.RegisterMoriaEventPublisher("SmokeAndMirrors");
-
             services.AddSingleton<IMetricFactory, MetricFactory>();
 
             services.AddControllers();
@@ -68,12 +47,8 @@ namespace SmokeAndMirrors
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmokeAndMirrors v1"));
             }
 
-            //app.UseQualityCheckMiddleware();
-            //app.UseQualityCheckMiddleware<DummyTypedQualityCheckPass>("/api/otherone");
-
-            //app.UseGrafanaControllerMiddleware("/api/heartbeat", "/api/Litigation", "/api/test/*");
-
-            app.UseExceptionHandlingMiddleware();
+            app.UseQualityCheckMiddleware();
+            app.UseQualityCheckMiddleware<DummyTypedQualityCheckPass>("/api/otherone");
 
             app.UseHttpsRedirection();
 
