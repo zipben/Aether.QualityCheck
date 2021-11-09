@@ -1,11 +1,13 @@
-﻿## Aether
+﻿## Aether.QualityChecks
 
-[![CircleCI](https://circleci.foc.zone/gh/DataServices/Aether.svg?style=shield)](https://[circleci.foc.zone/gh/DataServices/Aether](https://circleci.foc.zone/gh/DataServices/Aether))
-[![Quality Gate Status](https://sonarqube.rockfin.com/api/project_badges/measure?project=QL.207965&metric=alert_status)](https://sonarqube.rockfin.com/dashboard?id=QL.207965)
 
 ### Overview
 
-Aether is a shared library that PBMC uses to store utilities and models that are shared across multiple projects.
+Aether.QualityChecks is a shared library that contains the QualityCheck framework which PBMC and DPS use to drive our automated workflow tests.  The UseQualityChecks() extension configures an endpoint at /api/qualitycheck which runs all tests that impliment the IQualityCheck interface.  Custom URLS can be passed into the setup function.  
+
+The typed middleware allows teams to define multiple URLs routed to different sub groups of tests.
+
+Examples of all these use cases can be found in the SmokeAndMirrors test API
 
 ### Local Development
 If you are working on a feature that requires an update to Aether, you can point your nuget management service at the local Aether folder and develop against the build you are working on locally.  This can be particularly useful when you are developing a more complex tool for Aether that you have an immediate usecase for
