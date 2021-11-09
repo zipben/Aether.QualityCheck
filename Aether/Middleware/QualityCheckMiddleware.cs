@@ -1,4 +1,5 @@
-﻿using Aether.QualityChecks.Interfaces;
+﻿using Aether.QualityChecks.Helpers;
+using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
 using APILogger.Interfaces;
 using Ardalis.GuardClauses;
@@ -17,13 +18,15 @@ namespace Aether.QualityChecks.Middleware
         private readonly string _qualityTestRoute;
         
         private readonly IEnumerable<IQualityCheck> _tests;
+        private readonly IQualityCheckExecutionHandler _handler;
         private readonly Type _typeFilter;
         private readonly IApiLogger _logger;
         private readonly RequestDelegate _next;
 
-        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute)
+        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute)
         {
             _tests = Guard.Against.Null(tests, nameof(tests));
+            _handler = Guard.Against.Null(handler, nameof(handler));
             _logger = Guard.Against.Null(logger, nameof(logger));
             _next = next;
 
@@ -33,9 +36,10 @@ namespace Aether.QualityChecks.Middleware
             _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
-        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, string qualityTestRoute, Type typeFilter)
+        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute, Type typeFilter)
         {
             _tests =        Guard.Against.Null(tests, nameof(tests));
+            _handler = Guard.Against.Null(handler, nameof(handler));
             _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
             _logger = Guard.Against.Null(logger, nameof(logger));
             _next = next;
@@ -60,27 +64,8 @@ namespace Aether.QualityChecks.Middleware
 
                 foreach (var test in filteredTests)
                 {
-                    QualityCheckResponseModel response = new QualityCheckResponseModel(null);
-
-                    try
-                    {
-                        _logger.LogInfo($"running {test.LogName}");
-                        response = await test.RunAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(test.LogName, exception: ex);
-                    }
-                    finally
-                    {
-                        await test.TearDownAsync();
-
-                        string status = response.CheckPassed ? "Passed" : "Failed";
-
-                        _logger.LogInfo($"{test.LogName} status: {status}");
-
-                        testResults.Add(response);
-                    }
+                    QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test);
+                    testResults.Add(response);
                 }
 
                 _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Test Results", testResults);

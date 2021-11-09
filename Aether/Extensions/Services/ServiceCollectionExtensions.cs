@@ -1,4 +1,5 @@
-﻿using Aether.QualityChecks.Interfaces;
+﻿using Aether.QualityChecks.Helpers;
+using Aether.QualityChecks.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -12,6 +13,8 @@ namespace Aether.Extensions
     {
         public static void RegisterQualityChecks(this IServiceCollection services, Type sourceType)
         {
+            services.AddSingleton<IQualityCheckExecutionHandler, QualityCheckExecutionHandler>();
+
             Assembly[] assemblies = new[] { sourceType.Assembly };
 
             var typesFromAssemblies = assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.GetInterfaces().Contains(typeof(IQualityCheck))));

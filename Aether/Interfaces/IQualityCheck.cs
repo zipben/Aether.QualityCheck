@@ -8,7 +8,5 @@ namespace Aether.QualityChecks.Interfaces
     public interface IQualityCheck
     {
         string LogName { get; }
-        Task<QualityCheckResponseModel> RunAsync();
-        Task TearDownAsync();
     }
 }

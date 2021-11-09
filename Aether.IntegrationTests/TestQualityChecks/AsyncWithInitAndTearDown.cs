@@ -1,61 +1,73 @@
 ﻿using Aether.QualityChecks.Attributes;
+using Aether.QualityChecks.Helpers.Tests;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
-using SmokeAndMirrors.TestDependencies;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace SmokeAndMirrors.QualityChecks
+namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
 {
-    public class DummyQualityCheckFail : IQualityCheck
+    public class AsyncWithInitAndTearDown : IQualityCheck
     {
-        private readonly IYeOldDependencyTest _testDependency;
+        private readonly IStepExecutionTester _tester;
 
-        public DummyQualityCheckFail(IYeOldDependencyTest testDependency)
+        public AsyncWithInitAndTearDown(IStepExecutionTester tester)
         {
-            _testDependency = testDependency;
+            _tester = tester;
         }
 
-        public string LogName => nameof(DummyQualityCheckFail);
+        public string LogName => nameof(AsyncWithInitAndTearDown);
 
         [QualityCheckInitialize]
         public async Task Init()
         {
-            await _testDependency.FindGoldAsync(); 
+            _tester.Initialize();
         }
 
         [QualityCheckStep(1)]
         public async Task<StepResponse> Step1()
         {
-            await _testDependency.FindGoldAsync();
+            _tester.Step();
             return new StepResponse() { Name = nameof(Step1) };
         }
 
         [QualityCheckStep(2)]
         public async Task<StepResponse> Step2()
         {
-            await _testDependency.FindGoldAsync();
+            _tester.Step();
             return new StepResponse() { Name = nameof(Step2) };
         }
 
         [QualityCheckStep(3)]
         public async Task<StepResponse> Step3()
         {
-            await _testDependency.FindGoldAsync();
+            _tester.Step();
             return new StepResponse() { Name = nameof(Step3) };
         }
 
         [QualityCheckStep(4)]
         public async Task<StepResponse> Step4()
         {
-            await _testDependency.FindGoldAsync();
-            return new StepResponse() { Name = nameof(Step4), StepPassed = false };
+            _tester.Step();
+            return new StepResponse() { Name = nameof(Step4) };
         }
 
         [QualityCheckTearDown]
         public async Task TearDown()
         {
-            await _testDependency.DeleteGoldAsync();
+            _tester.Teardown();
         }
 
+        public Task<QualityCheckResponseModel> RunAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task TearDownAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
