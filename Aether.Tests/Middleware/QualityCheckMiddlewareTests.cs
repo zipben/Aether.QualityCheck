@@ -2,7 +2,6 @@
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Middleware;
 using Aether.QualityChecks.Models;
-using APILogger.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -17,7 +16,6 @@ namespace Aether.Middleware.Tests
     public class QualityCheckMiddlewareTests
     {
 
-        private Mock<IApiLogger> _mockLogger;
         private Mock<RequestDelegate> _mockNext;
         private Mock<HttpContext> _mockHttpContext;
         private Mock<IQualityCheckExecutionHandler> _mockHandler;
@@ -28,12 +26,11 @@ namespace Aether.Middleware.Tests
         [TestInitialize]
         public void Init()
         {
-            _mockLogger = new Mock<IApiLogger>();
             _mockNext = new Mock<RequestDelegate>();
             _mockHandler = new Mock<IQualityCheckExecutionHandler>();
             _mockHttpContext = new Mock<HttpContext>();
             _mockQualityChecks = new List<IQualityCheck>();
-            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockNext.Object, _mockQualityChecks, _mockHandler.Object, "/testendpoint");
+            _target = new QualityCheckMiddleware(_mockNext.Object, _mockQualityChecks, _mockHandler.Object, "/testendpoint");
             Setup_Mocks();
         }
 

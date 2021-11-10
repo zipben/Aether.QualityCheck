@@ -1,7 +1,6 @@
 ﻿using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
-using APILogger.Interfaces;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -20,34 +19,27 @@ namespace Aether.QualityChecks.Middleware
         private readonly IEnumerable<IQualityCheck> _tests;
         private readonly IQualityCheckExecutionHandler _handler;
         private readonly Type _typeFilter;
-        private readonly IApiLogger _logger;
         private readonly RequestDelegate _next;
 
-        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute)
+        public QualityCheckMiddleware(RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute)
         {
             _tests = Guard.Against.Null(tests, nameof(tests));
             _handler = Guard.Against.Null(handler, nameof(handler));
-            _logger = Guard.Against.Null(logger, nameof(logger));
             _next = next;
 
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
-
-            _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
-        public QualityCheckMiddleware(IApiLogger logger, RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute, Type typeFilter)
+        public QualityCheckMiddleware(RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute, Type typeFilter)
         {
             _tests =        Guard.Against.Null(tests, nameof(tests));
             _handler = Guard.Against.Null(handler, nameof(handler));
             _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
-            _logger = Guard.Against.Null(logger, nameof(logger));
             _next = next;
 
             Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
             _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
-
-            _logger.LogDebug($"{nameof(QualityCheckMiddleware)} initialized with {qualityTestRoute}");
         }
 
         public async Task Invoke(HttpContext context)
@@ -56,7 +48,6 @@ namespace Aether.QualityChecks.Middleware
 
             if (context.Request.Path.Value.ToLower().Contains(_qualityTestRoute.ToLower()))
             {
-                _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Running {_tests.Count()} tests");
 
                 var testResults = new List<QualityCheckResponseModel>();
 
@@ -67,8 +58,6 @@ namespace Aether.QualityChecks.Middleware
                     QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test);
                     testResults.Add(response);
                 }
-
-                _logger.LogDebug($"{nameof(QualityCheckMiddleware)} Test Results", testResults);
 
                 context.Response.StatusCode = testResults.All(t => t.CheckPassed) ? (int) HttpStatusCode.OK
                                                                                   : (int) HttpStatusCode.InternalServerError;
