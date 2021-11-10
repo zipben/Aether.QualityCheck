@@ -13,6 +13,8 @@ Dummy Quality Check with Failure [Example](https://git.rockfin.com/DataServices/
 
 Dummy Quality Check with all Passing Steps [Example](https://git.rockfin.com/DataServices/Aether.QualityChecks/blob/master/SmokeAndMirrors/QualityChecks/DummyQualityCheckPass.cs)
 
+Dummy Quality Check with all Passing Steps Using Data Attributes [Example](https://git.rockfin.com/DataServices/Aether.QualityChecks/blob/master/SmokeAndMirrors/QualityChecks/DummyQualityCheckPassWithDataSteps.cs)
+
 Dummy Typed Quality Check with all Passing Steps [Exmaple](https://git.rockfin.com/DataServices/Aether.QualityChecks/blob/master/SmokeAndMirrors/QualityChecks/DummyTypedQualityCheckPass.cs)
 
 Register Middleware [Example](https://git.rockfin.com/DataServices/Aether.QualityChecks/blob/6b5c8030ede1b58b7e007c2e71a48a6d8f676b4d/SmokeAndMirrors/Startup.cs#L48)
