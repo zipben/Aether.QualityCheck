@@ -1,4 +1,5 @@
 ﻿using Aether.QualityChecks.Attributes;
+using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
 using SmokeAndMirrors.TestDependencies;
@@ -24,31 +25,31 @@ namespace SmokeAndMirrors.QualityChecks
         }
 
         [QualityCheckStep(1)]
-        public async Task<StepResponse> Step1()
+        public async Task Step1()
         {
             await _testDependency.FindGoldAsync();
-            return new StepResponse() { Name = nameof(Step1), StepPassed = true };
+            Step.Proceed();
         }
 
         [QualityCheckStep(2)]
-        public async Task<StepResponse> Step2()
+        public async Task Step2()
         {
             await _testDependency.FindGoldAsync();
-            return new StepResponse() { Name = nameof(Step2), StepPassed = true };
+            Step.Proceed();
         }
 
         [QualityCheckStep(3)]
-        public async Task<StepResponse> Step3()
+        public async Task Step3()
         {
             await _testDependency.FindGoldAsync();
-            return new StepResponse() { Name = nameof(Step3), StepPassed = true };
+            Step.Proceed();
         }
 
         [QualityCheckStep(4)]
-        public async Task<StepResponse> Step4()
+        public async Task Step4()
         {
             await _testDependency.FindGoldAsync();
-            return new StepResponse() { Name = nameof(Step4), StepPassed = true };
+            Step.Proceed();
         }
 
         [QualityCheckTearDown]

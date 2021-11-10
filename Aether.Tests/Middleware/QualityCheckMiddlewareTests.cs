@@ -114,7 +114,7 @@ namespace Aether.Middleware.Tests
             qualityCheck.Setup(x => x.LogName)
                         .Returns("MockQualityCheck");
             _mockHandler.Setup(x => x.ExecuteQualityCheck(It.IsAny<IQualityCheck>()))
-                        .ReturnsAsync(new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse() { StepPassed = input } } });
+                        .ReturnsAsync(new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse("TestStep") { StepPassed = input } } });
             _mockQualityChecks.Add(qualityCheck.Object);
         }
     }

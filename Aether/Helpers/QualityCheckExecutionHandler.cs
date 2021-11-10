@@ -1,4 +1,5 @@
 ﻿using Aether.QualityChecks.Attributes;
+using Aether.QualityChecks.Exceptions;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
 using System;
@@ -51,51 +52,58 @@ namespace Aether.QualityChecks.Helpers
 
             foreach (var s in stepsWithOrder.OrderBy(s => s.Item1).Select(s => s.Item2))
             {
-                try
+                var dataAttributes = Attribute.GetCustomAttributes(s, typeof(QualityCheckDataAttribute)).Select(a => a as QualityCheckDataAttribute);
+
+                if(dataAttributes is null || !dataAttributes.Any())
                 {
+                    var sr = await InvokeStep(qc, s, null);
 
-                    var dataAttributes = Attribute.GetCustomAttributes(s, typeof(QualityCheckDataAttribute)).Select(a => a as QualityCheckDataAttribute);
-
-                    if(dataAttributes is null || !dataAttributes.Any())
-                    {
-                        var sr = await InvokeStep(qc, s, null);
-
-                        if (sr != null)
-                            response.Steps.Add(sr);
-                    }
-                    else
-                    {
-                        foreach(var da in dataAttributes)
-                        {
-                            var subSr = await InvokeStep(qc, s, da.Parameters);
-
-                            if (subSr != null)
-                                response.Steps.Add(subSr);
-                        }
-                    }
-
+                    if (sr != null)
+                        response.Steps.Add(sr);
                 }
-                catch(Exception e)
+                else
                 {
-                    StepResponse sr = new StepResponse();
-                    sr.Name = s.Name;
-                    sr.Exception = e;
-                    sr.Message = e.Message;
-                    sr.StepPassed = false;                    
-                }
+                    foreach(var da in dataAttributes)
+                    {
+                        var subSr = await InvokeStep(qc, s, da.Parameters);
 
+                        if (subSr != null)
+                            response.Steps.Add(subSr);
+                    }
+                }
             }
 
         }
 
         private static async Task<StepResponse> InvokeStep(IQualityCheck qc, MethodInfo s, object[] parameters)
         {
-            StepResponse sr;
+            StepResponse sr = new StepResponse(s.Name);
+            sr.StepPassed = true;
 
-            if (s.ReturnType == typeof(Task<StepResponse>))
-                sr = await (Task<StepResponse>)s.Invoke(qc, parameters);
-            else
-                sr = (StepResponse)s.Invoke(qc, parameters);
+            try
+            {
+                if (s.ReturnType == typeof(Task))
+                    await (Task)s.Invoke(qc, parameters);
+                else
+                    s.Invoke(qc, parameters);
+            }
+            catch(StepSuccessException success)
+            {
+                sr.StepPassed = true;
+                sr.Message = success.Message;
+            }
+            catch(StepFailedException failed)
+            {
+                sr.StepPassed = false;
+                sr.Message = failed.Message;
+                sr.Exception = failed.InnerException;
+            }
+            catch(Exception otherException)
+            {
+                sr.StepPassed = false;
+                sr.Message = otherException.Message;
+                sr.Exception = otherException;
+            }
 
             return sr;
         }
