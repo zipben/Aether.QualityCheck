@@ -39,10 +39,9 @@ namespace SmokeAndMirrors.QualityChecks
         }
 
         [QualityCheckStep(3)]
-        public async Task Step3()
+        public void Step3()
         {
-            await _testDependency.FindGoldAsync();
-            Step.Proceed();
+            Step.Warn("THIS IS A WARNING");
         }
 
         [QualityCheckStep(4)]

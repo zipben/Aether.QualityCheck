@@ -28,7 +28,7 @@ namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
         }
 
         [QualityCheckStep(1)]
-        public void  Step1()
+        public async Task Step1()
         {
             _tester.Step();
             Step.Proceed();
@@ -45,7 +45,7 @@ namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
         public void Step3()
         {
             _tester.Step();
-            Step.Proceed();
+            Step.Warn();
         }
 
         [QualityCheckStep(4)]

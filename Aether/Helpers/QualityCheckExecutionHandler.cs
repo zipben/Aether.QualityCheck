@@ -50,8 +50,13 @@ namespace Aether.QualityChecks.Helpers
                 stepsWithOrder.Add((atr.Order, stepMethod));
             }
 
+            bool testFailed = false;
+
             foreach (var s in stepsWithOrder.OrderBy(s => s.Item1).Select(s => s.Item2))
             {
+                if (testFailed)
+                    break;
+
                 var dataAttributes = Attribute.GetCustomAttributes(s, typeof(QualityCheckDataAttribute)).Select(a => a as QualityCheckDataAttribute);
 
                 if(dataAttributes is null || !dataAttributes.Any())
@@ -59,16 +64,26 @@ namespace Aether.QualityChecks.Helpers
                     var sr = await InvokeStep(qc, s, null);
 
                     if (sr != null)
+                    {
                         response.Steps.Add(sr);
+                        testFailed = !sr.StepPassed;
+                    }
                 }
                 else
                 {
                     foreach(var da in dataAttributes)
                     {
+                        if (testFailed)
+                            break;
+
                         var subSr = await InvokeStep(qc, s, da.Parameters);
 
                         if (subSr != null)
+                        {
                             response.Steps.Add(subSr);
+
+                            testFailed = !subSr.StepPassed;
+                        }
                     }
                 }
             }
@@ -87,22 +102,32 @@ namespace Aether.QualityChecks.Helpers
                 else
                     s.Invoke(qc, parameters);
             }
-            catch(StepSuccessException success)
+            catch(Exception e)
             {
-                sr.StepPassed = true;
-                sr.Message = success.Message;
-            }
-            catch(StepFailedException failed)
-            {
-                sr.StepPassed = false;
-                sr.Message = failed.Message;
-                sr.Exception = failed.InnerException;
-            }
-            catch(Exception otherException)
-            {
-                sr.StepPassed = false;
-                sr.Message = otherException.Message;
-                sr.Exception = otherException;
+                if(e is StepSuccessException || e.InnerException is StepSuccessException)
+                {
+                    sr.StepPassed = true;
+                    sr.Message = e is StepSuccessException ? e.Message : e.InnerException.Message;
+                }
+                else if(e is StepWarnException || e.InnerException is StepWarnException)
+                {
+                    sr.StepPassed = true;
+                    sr.Message = e is StepWarnException ? e.Message : e.InnerException.Message;
+                    sr.Exception = e is StepWarnException ? e.InnerException : e.InnerException.InnerException;
+                }
+                else if(e is StepFailedException || e.InnerException is StepFailedException)
+                {
+                    sr.StepPassed = false;
+                    sr.Message = e is StepFailedException ? e.Message : e.InnerException.Message;
+                    sr.Exception = e is StepFailedException ? e.InnerException : e.InnerException.InnerException;
+                }
+                else
+                {
+                    sr.StepPassed = false;
+                    sr.Message = e.Message;
+                    sr.Exception = e;
+                }
+
             }
 
             return sr;

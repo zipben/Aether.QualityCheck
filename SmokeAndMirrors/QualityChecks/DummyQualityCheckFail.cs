@@ -3,11 +3,12 @@ using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
 using SmokeAndMirrors.TestDependencies;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks
 {
-    public class DummyQualityCheckFail : IQualityCheck
+    public class DummyQualityCheckFail : IQualityCheck<DummyQualityCheckFail>
     {
         private readonly IYeOldDependencyTest _testDependency;
 
@@ -35,21 +36,21 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step2()
         {
             await _testDependency.FindGoldAsync();
-            Step.Proceed();
+            Step.Warn("its all burning down, but its fine", new HttpRequestException("you have bad internet"));
         }
 
         [QualityCheckStep(3)]
         public async Task Step3()
         {
             await _testDependency.FindGoldAsync();
-            Step.Proceed();
+            Step.Fail("And now its all borked");
         }
 
         [QualityCheckStep(4)]
         public async Task Step4()
         {
             await _testDependency.FindGoldAsync();
-            Step.Fail();
+            Step.Proceed("You shouldnt see me");
         }
 
         [QualityCheckTearDown]

@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Aether.QualityChecks.Exceptions
 {
-    public class StepFailedException : Exception 
+    public class StepWarnException : Exception 
     {
-        public StepFailedException(string message, Exception e) : base(message, e){ }
+        public StepWarnException(string message, Exception e) : base(message, e){ }
     }
 }

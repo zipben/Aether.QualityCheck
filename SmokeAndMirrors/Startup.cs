@@ -44,7 +44,7 @@ namespace SmokeAndMirrors
             }
 
             app.UseQualityCheckMiddleware();
-            app.UseQualityCheckMiddleware<DummyTypedQualityCheckPass>("/api/otherone");
+            app.UseQualityCheckMiddleware<DummyQualityCheckFail>("/api/fail");
 
             app.UseHttpsRedirection();
 

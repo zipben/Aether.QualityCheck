@@ -12,9 +12,14 @@ namespace Aether.QualityChecks.Helpers
             throw new StepSuccessException(message);
         }
 
-        public static void Fail(string message = "Step Failed")
+        public static void Fail(string message = "Step Failed", Exception e = null)
         {
-            throw new StepFailedException(message);
+            throw new StepFailedException(message, e);
+        }
+
+        public static void Warn(string message = "Warning", Exception e = null)
+        {
+            throw new StepWarnException(message, e);
         }
     }
 }
