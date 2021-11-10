@@ -54,7 +54,7 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step4()
         {
             await _testDependency.FindGoldAsync();
-            Step.Proceed();
+            Step.Warn();
         }
 
         [QualityCheckTearDown]
