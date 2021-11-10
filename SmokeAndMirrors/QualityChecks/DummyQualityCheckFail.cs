@@ -36,7 +36,7 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step2()
         {
             await _testDependency.FindGoldAsync();
-            Step.Warn("its all burning down, but its fine", new HttpRequestException("you have bad internet"));
+            Step.Warn("its all burning down, but its fine", null, new HttpRequestException("you have bad internet"));
         }
 
         [QualityCheckStep(3)]

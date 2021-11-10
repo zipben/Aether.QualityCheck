@@ -94,6 +94,7 @@ namespace Aether.QualityChecks.Helpers
         {
             StepResponse sr = new StepResponse(s.Name);
             sr.StepPassed = true;
+            sr.DataInput = parameters;
 
             try
             {
@@ -106,20 +107,31 @@ namespace Aether.QualityChecks.Helpers
             {
                 if(e is StepSuccessException || e.InnerException is StepSuccessException)
                 {
+                    StepSuccessException success = e is StepSuccessException ? e as StepSuccessException : e.InnerException as StepSuccessException;
+
                     sr.StepPassed = true;
-                    sr.Message = e is StepSuccessException ? e.Message : e.InnerException.Message;
+                    sr.Message = success.Message;
+                    sr.DataResponse = success.DataObject;
+                    
                 }
                 else if(e is StepWarnException || e.InnerException is StepWarnException)
                 {
+                    StepWarnException warning = e is StepWarnException ? e as StepWarnException : e.InnerException as StepWarnException;
+
                     sr.StepPassed = true;
-                    sr.Message = e is StepWarnException ? e.Message : e.InnerException.Message;
-                    sr.Exception = e is StepWarnException ? e.InnerException : e.InnerException.InnerException;
+                    sr.Message = warning.Message;
+                    sr.Exception = warning.InnerException;
+                    sr.DataResponse = warning.DataObject;
                 }
                 else if(e is StepFailedException || e.InnerException is StepFailedException)
                 {
+
+                    StepFailedException failure = e is StepFailedException ? e as StepFailedException : e.InnerException as StepFailedException;
+
                     sr.StepPassed = false;
-                    sr.Message = e is StepFailedException ? e.Message : e.InnerException.Message;
-                    sr.Exception = e is StepFailedException ? e.InnerException : e.InnerException.InnerException;
+                    sr.Message = failure.Message;
+                    sr.Exception = failure.InnerException;
+                    sr.DataResponse = failure.DataObject;
                 }
                 else
                 {

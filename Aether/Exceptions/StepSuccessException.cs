@@ -6,6 +6,11 @@ namespace Aether.QualityChecks.Exceptions
 {
     public class StepSuccessException : Exception 
     {
-        public StepSuccessException(string message) : base(message) { }
+        public object DataObject { get; set; }
+
+        public StepSuccessException(string message, object data = null) : base(message) 
+        {
+            DataObject = data;
+        }
     }
 }

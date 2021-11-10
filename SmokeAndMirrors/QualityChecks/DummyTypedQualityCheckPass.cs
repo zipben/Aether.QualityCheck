@@ -41,7 +41,7 @@ namespace SmokeAndMirrors.QualityChecks
         [QualityCheckStep(3)]
         public void Step3()
         {
-            Step.Warn("THIS IS A WARNING");
+            Step.Warn("THIS IS A WARNING", new { fun = "testing" });
         }
 
         [QualityCheckStep(4)]
