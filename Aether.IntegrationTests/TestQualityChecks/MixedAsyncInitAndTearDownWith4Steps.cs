@@ -1,4 +1,5 @@
 ﻿using Aether.QualityChecks.Attributes;
+using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Helpers.Tests;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
@@ -27,31 +28,31 @@ namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
         }
 
         [QualityCheckStep(1)]
-        public async Task<StepResponse> Step1()
+        public async Task Step1()
         {
             _tester.Step();
-            return new StepResponse() { Name = nameof(Step1) };
+            Step.Proceed();
         }
 
         [QualityCheckStep(2)]
-        public StepResponse Step2()
+        public void Step2()
         {
             _tester.Step();
-            return new StepResponse() { Name = nameof(Step2) };
+            Step.Proceed();
         }
 
         [QualityCheckStep(3)]
-        public async Task<StepResponse> Step3()
+        public async Task Step3()
         {
             _tester.Step();
-            return new StepResponse() { Name = nameof(Step3) };
+            Step.Proceed();
         }
 
         [QualityCheckStep(4)]
-        public StepResponse Step4()
+        public void Step4()
         {
             _tester.Step();
-            return new StepResponse() { Name = nameof(Step4) };
+            Step.Proceed();
         }
 
         [QualityCheckTearDown]
