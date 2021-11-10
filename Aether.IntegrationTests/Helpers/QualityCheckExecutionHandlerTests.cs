@@ -68,12 +68,32 @@ namespace Aether.QualityChecks.Helpers.Tests
             stepTester.Verify(s => s.Teardown(), Times.Once);
         }
 
+        [TestMethod()]
+        public async Task ExecuteQualityCheckTest_AsyncWithInitAndTearDownPlusDataSteps()
+        {
+            Mock<IStepExecutionTester> stepTester = new Mock<IStepExecutionTester>();
+            QualityCheckExecutionHandler handler = new QualityCheckExecutionHandler();
+            AsyncWithInitAndTearDownPlusDataSteps testQc = new AsyncWithInitAndTearDownPlusDataSteps(stepTester.Object);
+
+            var response = await handler.ExecuteQualityCheck(testQc);
+
+            stepTester.Verify(s => s.Initialize(), Times.Once);
+            stepTester.Verify(s => s.Step(), Times.Exactly(2));
+            stepTester.Verify(s => s.Step(1,2), Times.Once);
+            stepTester.Verify(s => s.Step(3,4), Times.Once);
+            stepTester.Verify(s => s.Step("hi", "there"), Times.Once);
+            stepTester.Verify(s => s.Step("bye", "now"), Times.Once);
+            stepTester.Verify(s => s.Teardown(), Times.Once);
+        }
+
     }
 
     public interface IStepExecutionTester
     {
         public void Initialize();
         public void Step();
+        public void Step(object param);
+        public void Step(object param1, object param2);
         public void Teardown();
     }
 }

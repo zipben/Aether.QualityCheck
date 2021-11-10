@@ -18,6 +18,17 @@ namespace Aether.QualityChecks.Attributes
         }
     }
 
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class QualityCheckDataAttribute : Attribute
+    {
+        public object[] Parameters { get; set; }
+
+        public QualityCheckDataAttribute(params object[] parameters)
+        {
+            Parameters = parameters;
+        }
+    }
+
     [AttributeUsage(AttributeTargets.Method)]
     public class QualityCheckTearDownAttribute : Attribute { }
 

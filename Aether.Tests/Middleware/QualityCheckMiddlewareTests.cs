@@ -1,4 +1,5 @@
-﻿using Aether.QualityChecks.Interfaces;
+﻿using Aether.QualityChecks.Helpers;
+using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Middleware;
 using Aether.QualityChecks.Models;
 using APILogger.Interfaces;
@@ -19,6 +20,7 @@ namespace Aether.Middleware.Tests
         private Mock<IApiLogger> _mockLogger;
         private Mock<RequestDelegate> _mockNext;
         private Mock<HttpContext> _mockHttpContext;
+        private Mock<IQualityCheckExecutionHandler> _mockHandler;
         private List<IQualityCheck> _mockQualityChecks;
         private QualityCheckMiddleware _target;
         private Mock<HttpRequest> _mockRequest;
@@ -28,9 +30,10 @@ namespace Aether.Middleware.Tests
         {
             _mockLogger = new Mock<IApiLogger>();
             _mockNext = new Mock<RequestDelegate>();
+            _mockHandler = new Mock<IQualityCheckExecutionHandler>();
             _mockHttpContext = new Mock<HttpContext>();
             _mockQualityChecks = new List<IQualityCheck>();
-            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockNext.Object, _mockQualityChecks, "/testendpoint");
+            _target = new QualityCheckMiddleware(_mockLogger.Object, _mockNext.Object, _mockQualityChecks, _mockHandler.Object, "/testendpoint");
             Setup_Mocks();
         }
 
@@ -63,7 +66,7 @@ namespace Aether.Middleware.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void QualityCheckMiddlewareTest_AllDependenciesNull_ThrowsArgumentNullException()
         {
-            QualityCheckMiddleware target = new QualityCheckMiddleware(null, null, null, null);
+            QualityCheckMiddleware target = new QualityCheckMiddleware(null, null, null, null, null);
         }
 
         [TestMethod()]
@@ -113,7 +116,7 @@ namespace Aether.Middleware.Tests
             var qualityCheck = new Mock<IQualityCheck>();
             qualityCheck.Setup(x => x.LogName)
                         .Returns("MockQualityCheck");
-            qualityCheck.Setup(x => x.RunAsync())
+            _mockHandler.Setup(x => x.ExecuteQualityCheck(It.IsAny<IQualityCheck>()))
                         .ReturnsAsync(new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse() { StepPassed = input } } });
             _mockQualityChecks.Add(qualityCheck.Object);
         }

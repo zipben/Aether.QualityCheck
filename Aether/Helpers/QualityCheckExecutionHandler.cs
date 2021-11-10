@@ -51,32 +51,65 @@ namespace Aether.QualityChecks.Helpers
 
             foreach (var s in stepsWithOrder.OrderBy(s => s.Item1).Select(s => s.Item2))
             {
-                StepResponse sr = null;
-
                 try
                 {
-                    if (s.ReturnType == typeof(Task<StepResponse>))
-                        sr = await (Task<StepResponse>)s.Invoke(qc, null);
+
+                    var dataAttributes = Attribute.GetCustomAttributes(s, typeof(QualityCheckDataAttribute)).Select(a => a as QualityCheckDataAttribute);
+
+                    if(dataAttributes is null || !dataAttributes.Any())
+                    {
+                        var sr = await InvokeStep(qc, s, null);
+
+                        if (sr != null)
+                            response.Steps.Add(sr);
+                    }
                     else
-                        sr = (StepResponse)s.Invoke(qc, null);
+                    {
+                        foreach(var da in dataAttributes)
+                        {
+                            var subSr = await InvokeStep(qc, s, da.Parameters);
+
+                            if (subSr != null)
+                                response.Steps.Add(subSr);
+                        }
+                    }
+
                 }
                 catch(Exception e)
                 {
-                    if (sr == null)
-                    {
-                        sr = new StepResponse();
-                        sr.Name = s.Name;
-                        sr.Exception = e;
-                        sr.Message = e.Message;
-                        sr.StepPassed = false;
-                    }
+                    StepResponse sr = new StepResponse();
+                    sr.Name = s.Name;
+                    sr.Exception = e;
+                    sr.Message = e.Message;
+                    sr.StepPassed = false;                    
                 }
 
-
-                if (sr != null)
-                    response.Steps.Add(sr);
             }
 
+        }
+
+        private static async Task<StepResponse> InvokeStep(IQualityCheck qc, MethodInfo s, object[] parameters)
+        {
+            StepResponse sr;
+
+            if (s.ReturnType == typeof(Task<StepResponse>))
+                sr = await (Task<StepResponse>)s.Invoke(qc, parameters);
+            else
+                sr = (StepResponse)s.Invoke(qc, parameters);
+
+            return sr;
+        }
+
+        private static async Task<StepResponse> InvokeStandardStep(IQualityCheck qc, MethodInfo s)
+        {
+            StepResponse sr;
+
+            if (s.ReturnType == typeof(Task<StepResponse>))
+                sr = await (Task<StepResponse>)s.Invoke(qc, null);
+            else
+                sr = (StepResponse)s.Invoke(qc, null);
+
+            return sr;
         }
 
         private async static Task ExecuteTeardown(IQualityCheck qc, MethodInfo[] methods)
