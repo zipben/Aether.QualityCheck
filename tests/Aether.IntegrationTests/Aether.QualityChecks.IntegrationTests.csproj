@@ -21,8 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aether\Aether.QualityChecks.csproj" />
-    <ProjectReference Include="..\SmokeAndMirrors\SmokeAndMirrors.csproj" />
+    <ProjectReference Include="..\..\examples\SampleAPI\SmokeAndMirrors\SmokeAndMirrors.csproj" />
+    <ProjectReference Include="..\..\src\Aether.QualityChecks\Aether.QualityChecks.csproj" />
   </ItemGroup>
 
 </Project>

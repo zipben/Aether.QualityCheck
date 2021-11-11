@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks", "Aether\Aether.QualityChecks.csproj", "{D7293EC4-996E-418F-838B-E2CBDC25672B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks", "src\Aether.QualityChecks\Aether.QualityChecks.csproj", "{D7293EC4-996E-418F-838B-E2CBDC25672B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks.Tests", "Aether.Tests\Aether.QualityChecks.Tests.csproj", "{EC1D21AE-0AB0-483C-9A47-67ABEE0213AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks.Tests", "tests\Aether.Tests\Aether.QualityChecks.Tests.csproj", "{EC1D21AE-0AB0-483C-9A47-67ABEE0213AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1153B307-B84E-4E5F-8428-68CBCD53B5E6}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,9 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks.IntegrationTests", "Aether.IntegrationTests\Aether.QualityChecks.IntegrationTests.csproj", "{EF6FCFA3-B5AE-4585-849D-7445A2CE75B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aether.QualityChecks.IntegrationTests", "tests\Aether.IntegrationTests\Aether.QualityChecks.IntegrationTests.csproj", "{EF6FCFA3-B5AE-4585-849D-7445A2CE75B4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmokeAndMirrors", "SmokeAndMirrors\SmokeAndMirrors.csproj", "{E1A82517-5DD9-4221-AF6E-75B0D8D7F63F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmokeAndMirrors", "examples\SampleAPI\SmokeAndMirrors\SmokeAndMirrors.csproj", "{E1A82517-5DD9-4221-AF6E-75B0D8D7F63F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9CF410B4-1CF4-4477-8A0F-221B9787ECEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{15259F44-3D15-44C4-9CF2-034098F37A32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{32996B2C-9E3F-4A43-AB48-2B170ABAD527}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleAPI", "SampleAPI", "{4792B7E0-664F-4160-92D4-124CAE64FB09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +52,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D7293EC4-996E-418F-838B-E2CBDC25672B} = {9CF410B4-1CF4-4477-8A0F-221B9787ECEC}
+		{EC1D21AE-0AB0-483C-9A47-67ABEE0213AA} = {15259F44-3D15-44C4-9CF2-034098F37A32}
+		{EF6FCFA3-B5AE-4585-849D-7445A2CE75B4} = {15259F44-3D15-44C4-9CF2-034098F37A32}
+		{E1A82517-5DD9-4221-AF6E-75B0D8D7F63F} = {4792B7E0-664F-4160-92D4-124CAE64FB09}
+		{4792B7E0-664F-4160-92D4-124CAE64FB09} = {32996B2C-9E3F-4A43-AB48-2B170ABAD527}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {677890ED-85D4-47F2-AD3B-41AC541D4C4D}
