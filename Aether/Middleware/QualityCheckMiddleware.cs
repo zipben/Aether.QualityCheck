@@ -14,61 +14,45 @@ namespace Aether.QualityChecks.Middleware
 {
     public class QualityCheckMiddleware
     {
-        private readonly string _qualityTestRoute;
-        
         private readonly IEnumerable<IQualityCheck> _tests;
         private readonly IQualityCheckExecutionHandler _handler;
         private readonly Type _typeFilter;
         private readonly RequestDelegate _next;
 
-        public QualityCheckMiddleware(RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute)
+        public QualityCheckMiddleware(RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler)
         {
             _tests = Guard.Against.Null(tests, nameof(tests));
             _handler = Guard.Against.Null(handler, nameof(handler));
             _next = next;
-
-            Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
-            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
         }
 
-        public QualityCheckMiddleware(RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, string qualityTestRoute, Type typeFilter)
+        public QualityCheckMiddleware(RequestDelegate next, IEnumerable<IQualityCheck> tests, IQualityCheckExecutionHandler handler, Type typeFilter)
         {
             _tests =        Guard.Against.Null(tests, nameof(tests));
             _handler = Guard.Against.Null(handler, nameof(handler));
             _typeFilter =   Guard.Against.Null(typeFilter, nameof(typeFilter));
             _next = next;
-
-            Guard.Against.NullOrWhiteSpace(qualityTestRoute, nameof(qualityTestRoute));
-            _qualityTestRoute = Guard.Against.InvalidInput(qualityTestRoute, nameof(qualityTestRoute), s => s.ElementAt(0).Equals('/'));
         }
 
         public async Task Invoke(HttpContext context)
         {
-            Guard.Against.Null(context?.Request?.Path.Value, nameof(context));
+            Guard.Against.Null(context, nameof(context));
 
-            if (context.Request.Path.Value.ToLower().Contains(_qualityTestRoute.ToLower()))
+            var testResults = new List<QualityCheckResponseModel>();
+
+            var filteredTests = ApplyTypeFilter(_tests, _typeFilter);
+
+            foreach (var test in filteredTests)
             {
-
-                var testResults = new List<QualityCheckResponseModel>();
-
-                var filteredTests = ApplyTypeFilter(_tests, _typeFilter);
-
-                foreach (var test in filteredTests)
-                {
-                    QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test);
-                    testResults.Add(response);
-                }
-
-                context.Response.StatusCode = testResults.All(t => t.CheckPassed) ? (int) HttpStatusCode.OK
-                                                                                  : (int) HttpStatusCode.InternalServerError;
-
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(JsonConvert.SerializeObject(testResults));
+                QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test);
+                testResults.Add(response);
             }
-            else
-            {
-                await _next(context);
-            }
+
+            context.Response.StatusCode = testResults.All(t => t.CheckPassed) ? (int) HttpStatusCode.OK
+                                                                                : (int) HttpStatusCode.InternalServerError;
+
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(JsonConvert.SerializeObject(testResults));
         }
 
         private static IEnumerable<IQualityCheck> ApplyTypeFilter(IEnumerable<IQualityCheck> tests, Type typeFilter)
