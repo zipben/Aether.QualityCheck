@@ -23,11 +23,27 @@ namespace Aether.QualityChecks.Helpers
 
             var methods = type.GetMethods();
 
-            await ExecuteInitialize(qc, methods);
+            try
+            {
+                try
+                {
+                    await ExecuteInitialize(qc, methods);
 
-            await ExecuteSteps(qc, methods);
+                    await ExecuteSteps(qc, methods);
+                }
+                finally
+                {
+                    await ExecuteTeardown(qc, methods);
+                }
 
-            await ExecuteTeardown(qc, methods);
+            }
+            catch(Exception e)
+            {
+                StepResponse criticalFailure = new StepResponse(nameof(ExecuteTeardown)) { Message = "Tear Down Failed Catastrophically", Exception = e };
+                response.Steps.Add(criticalFailure);
+            }
+
+
 
             return response;
         }
@@ -150,18 +166,6 @@ namespace Aether.QualityChecks.Helpers
                 }
 
             }
-
-            return sr;
-        }
-
-        private static async Task<StepResponse> InvokeStandardStep(IQualityCheck qc, MethodInfo s)
-        {
-            StepResponse sr;
-
-            if (s.ReturnType == typeof(Task<StepResponse>))
-                sr = await (Task<StepResponse>)s.Invoke(qc, null);
-            else
-                sr = (StepResponse)s.Invoke(qc, null);
 
             return sr;
         }
