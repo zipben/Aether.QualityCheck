@@ -35,7 +35,7 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step2()
         {
             await _testDependency.FindGoldAsync();
-            Step.Proceed();
+            Step.ProceedIf(() => { return true; }, successMessage: "I did it with a function");
         }
 
         [QualityCheckStep(3)]

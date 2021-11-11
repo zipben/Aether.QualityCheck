@@ -29,7 +29,7 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step1()
         {
             await _testDependency.FindGoldAsync();
-            Step.Proceed();
+            Step.ProceedIf(true);
         }
 
         [QualityCheckStep(2)]
@@ -43,7 +43,7 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step3()
         {
             await _testDependency.FindGoldAsync();
-            Step.Fail("And now its all borked");
+            Step.ProceedIf(false, failedMessage: "And now its all borked");
         }
 
         [QualityCheckStep(4)]
