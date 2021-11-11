@@ -18,8 +18,6 @@ namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
             _tester = tester;
         }
 
-        public string LogName => nameof(AsyncWithInitAndTearDown);
-
         [QualityCheckInitialize]
         public async Task Init()
         {

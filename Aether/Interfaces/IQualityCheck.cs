@@ -5,8 +5,5 @@ namespace Aether.QualityChecks.Interfaces
 {
     public interface IQualityCheck<T> : IQualityCheck { }
 
-    public interface IQualityCheck
-    {
-        string LogName { get; }
-    }
+    public interface IQualityCheck { }
 }

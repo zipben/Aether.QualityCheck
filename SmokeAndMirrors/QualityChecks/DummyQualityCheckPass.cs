@@ -16,8 +16,6 @@ namespace SmokeAndMirrors.QualityChecks
             _testDependency = testDependency;
         }
 
-        public string LogName => nameof(DummyQualityCheckPass);
-
         [QualityCheckInitialize]
         public async Task Init()
         {
