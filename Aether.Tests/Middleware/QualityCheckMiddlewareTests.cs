@@ -30,7 +30,7 @@ namespace Aether.Middleware.Tests
             _mockHandler = new Mock<IQualityCheckExecutionHandler>();
             _mockHttpContext = new Mock<HttpContext>();
             _mockQualityChecks = new List<IQualityCheck>();
-            _target = new QualityCheckMiddleware(_mockNext.Object, _mockQualityChecks, _mockHandler.Object, "/testendpoint");
+            _target = new QualityCheckMiddleware(_mockNext.Object, _mockQualityChecks, _mockHandler.Object);
             Setup_Mocks();
         }
 
@@ -63,7 +63,7 @@ namespace Aether.Middleware.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void QualityCheckMiddlewareTest_AllDependenciesNull_ThrowsArgumentNullException()
         {
-            QualityCheckMiddleware target = new QualityCheckMiddleware(null, null, null, null, null);
+            QualityCheckMiddleware target = new QualityCheckMiddleware(null, null, null, null);
         }
 
         [TestMethod()]

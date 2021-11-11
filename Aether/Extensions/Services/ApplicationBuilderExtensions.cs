@@ -1,6 +1,12 @@
-﻿using Aether.QualityChecks.Middleware;
+﻿using Aether.Extensions;
+using Aether.QualityChecks.Helpers;
+using Aether.QualityChecks.Interfaces;
+using Aether.QualityChecks.Middleware;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Aether.QualityChecks.Extensions
@@ -16,10 +22,37 @@ namespace Aether.QualityChecks.Extensions
         /// <param name="builder"></param>
         /// <param name="route">Optional overload for quality check route.  Defaults to "/api/qualitycheck"</param>
         /// <returns></returns>
-        public static IApplicationBuilder UseQualityCheckMiddleware<T>(this IApplicationBuilder builder, string route = "/api/qualitycheck")
+        public static void UseQualityCheckMiddleware<T>(this IApplicationBuilder app, string route = "/api/qualitycheck")
         {
-            Guard.Against.InvalidInput(route, nameof(route), s => s.ElementAt(0).Equals('/'));
-            return builder.UseMiddleware<QualityCheckMiddleware>(route, typeof(T));
+
+            PathString routePs = new PathString(route);
+
+            if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
+            {
+                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+            }
+
+            // NOTE: we explicitly don't use Map here because it's really common for multiple health
+            // check middleware to overlap in paths. Ex: `/health`, `/health/detailed` - this is order
+            // sensitive with Map, and it's really surprising to people.
+            //
+            // See:
+            // https://github.com/aspnet/Diagnostics/issues/511
+            // https://github.com/aspnet/Diagnostics/issues/512
+            // https://github.com/aspnet/Diagnostics/issues/514
+
+            Func<HttpContext, bool> predicate = c =>
+            {
+                return (// If you do provide a PathString, want to handle all of the special cases that
+                        // StartsWithSegments handles, but we also want it to have exact match semantics.
+                        //
+                        // Ex: /Foo/ == /Foo (true)
+                        // Ex: /Foo/Bar == /Foo (false)
+                        (c.Request.Path.StartsWithSegments(routePs, out var remaining) &&
+                        string.IsNullOrEmpty(remaining)));
+            };
+
+            app.MapWhen(predicate, b => b.UseMiddleware<QualityCheckMiddleware>(typeof(T)));
         }
 
         /// <summary>
@@ -28,10 +61,36 @@ namespace Aether.QualityChecks.Extensions
         /// <param name="builder"></param>
         /// <param name="route">Optional overload for quality check route.  Defaults to "/api/qualitycheck"</param>
         /// <returns></returns>
-        public static IApplicationBuilder UseQualityCheckMiddleware(this IApplicationBuilder builder, string route = "/api/qualitycheck")
+        public static void UseQualityCheckMiddleware(this IApplicationBuilder app, string route = "/api/qualitycheck")
         {
-            Guard.Against.InvalidInput(route, nameof(route), s => s.ElementAt(0).Equals('/'));
-            return builder.UseMiddleware<QualityCheckMiddleware>(route);
+            PathString routePs = new PathString(route);
+
+            if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
+            {
+                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+            }
+
+            // NOTE: we explicitly don't use Map here because it's really common for multiple health
+            // check middleware to overlap in paths. Ex: `/health`, `/health/detailed` - this is order
+            // sensitive with Map, and it's really surprising to people.
+            //
+            // See:
+            // https://github.com/aspnet/Diagnostics/issues/511
+            // https://github.com/aspnet/Diagnostics/issues/512
+            // https://github.com/aspnet/Diagnostics/issues/514
+
+            Func<HttpContext, bool> predicate = c =>
+            {
+                return (// If you do provide a PathString, want to handle all of the special cases that
+                        // StartsWithSegments handles, but we also want it to have exact match semantics.
+                        //
+                        // Ex: /Foo/ == /Foo (true)
+                        // Ex: /Foo/Bar == /Foo (false)
+                        (c.Request.Path.StartsWithSegments(routePs, out var remaining) &&
+                        string.IsNullOrEmpty(remaining)));
+            };
+
+            app.MapWhen(predicate, b => b.UseMiddleware<QualityCheckMiddleware>());
         }
     }
 }
