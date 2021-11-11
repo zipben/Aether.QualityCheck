@@ -32,8 +32,8 @@ namespace Aether.QualityChecks.Extensions
                 throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
             }
 
-            // NOTE: we explicitly don't use Map here because it's really common for multiple health
-            // check middleware to overlap in paths. Ex: `/health`, `/health/detailed` - this is order
+            // NOTE: we explicitly don't use Map here because it's really common for multiple quality
+            // check middleware to overlap in paths. Ex: `/quality`, `/quality/detailed` - this is order
             // sensitive with Map, and it's really surprising to people.
             //
             // See:
@@ -70,8 +70,8 @@ namespace Aether.QualityChecks.Extensions
                 throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
             }
 
-            // NOTE: we explicitly don't use Map here because it's really common for multiple health
-            // check middleware to overlap in paths. Ex: `/health`, `/health/detailed` - this is order
+            // NOTE: we explicitly don't use Map here because it's really common for multiple quality
+            // check middleware to overlap in paths. Ex: `/quality`, `/quality/detailed` - this is order
             // sensitive with Map, and it's really surprising to people.
             //
             // See:
