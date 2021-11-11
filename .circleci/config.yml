@@ -62,7 +62,7 @@ jobs:
           name: Run Sonar Scanner
           command: |
               run-sonar begin
-              dotnet test ./Aether.Tests/Aether.QualityChecks.Tests.csproj \
+              dotnet test ./tests/Aether.Tests/Aether.QualityChecks.Tests.csproj \
                 --logger "trx" \
                 /p:CollectCoverage=true \
                 /p:CoverletOutputFormat=opencover
