@@ -17,8 +17,6 @@ namespace SmokeAndMirrors.QualityChecks
             _testDependency = testDependency;
         }
 
-        public string LogName => nameof(DummyQualityCheckFail);
-
         [QualityCheckInitialize]
         public async Task Init()
         {
@@ -29,6 +27,7 @@ namespace SmokeAndMirrors.QualityChecks
         public async Task Step1()
         {
             await _testDependency.FindGoldAsync();
+
             Step.ProceedIf(true);
         }
 

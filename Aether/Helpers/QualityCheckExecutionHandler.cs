@@ -17,9 +17,11 @@ namespace Aether.QualityChecks.Helpers
 
         public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc)
         {
-            response = new QualityCheckResponseModel(qc.LogName);
+            var type = qc.GetType();
 
-            var methods = qc.GetType().GetMethods();
+            response = new QualityCheckResponseModel(type.Name);
+
+            var methods = type.GetMethods();
 
             await ExecuteInitialize(qc, methods);
 
