@@ -25,25 +25,22 @@ namespace Aether.QualityChecks.Helpers
 
             try
             {
-                try
-                {
-                    await ExecuteInitialize(qc, methods);
+                await ExecuteInitialize(qc, methods);
 
-                    await ExecuteSteps(qc, methods);
-                }
-                finally
+                await ExecuteSteps(qc, methods);
+            }
+            finally
+            {
+                try
                 {
                     await ExecuteTeardown(qc, methods);
                 }
-
+                catch(Exception e)
+                {
+                    StepResponse criticalFailure = new StepResponse(nameof(ExecuteTeardown)) { Message = "Tear Down Failed Catastrophically", Exception = e };
+                    response.Steps.Add(criticalFailure);
+                }
             }
-            catch(Exception e)
-            {
-                StepResponse criticalFailure = new StepResponse(nameof(ExecuteTeardown)) { Message = "Tear Down Failed Catastrophically", Exception = e };
-                response.Steps.Add(criticalFailure);
-            }
-
-
 
             return response;
         }
