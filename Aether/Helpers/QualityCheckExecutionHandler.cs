@@ -98,35 +98,42 @@ namespace Aether.QualityChecks.Helpers
 
             try
             {
-                if (s.ReturnType == typeof(Task))
-                    await (Task)s.Invoke(qc, parameters);
-                else
-                    s.Invoke(qc, parameters);
+                try
+                {
+                    if (s.ReturnType == typeof(Task))
+                        await (Task)s.Invoke(qc, parameters);
+                    else
+                        s.Invoke(qc, parameters);
+                }
+                catch(TargetInvocationException e)
+                {
+                    throw e.InnerException;
+                }
             }
             catch(Exception e)
             {
-                if(e is StepSuccessException || e.InnerException is StepSuccessException)
+                if(e is StepSuccessException)
                 {
-                    StepSuccessException success = e is StepSuccessException ? e as StepSuccessException : e.InnerException as StepSuccessException;
+                    StepSuccessException success = e as StepSuccessException;
 
                     sr.StepPassed = true;
                     sr.Message = success.Message;
                     sr.DataResponse = success.DataObject;
                     
                 }
-                else if(e is StepWarnException || e.InnerException is StepWarnException)
+                else if(e is StepWarnException)
                 {
-                    StepWarnException warning = e is StepWarnException ? e as StepWarnException : e.InnerException as StepWarnException;
+                    StepWarnException warning = e as StepWarnException;
 
                     sr.StepPassed = true;
                     sr.Message = warning.Message;
                     sr.Exception = warning.InnerException;
                     sr.DataResponse = warning.DataObject;
                 }
-                else if(e is StepFailedException || e.InnerException is StepFailedException)
+                else if(e is StepFailedException)
                 {
 
-                    StepFailedException failure = e is StepFailedException ? e as StepFailedException : e.InnerException as StepFailedException;
+                    StepFailedException failure = e as StepFailedException;
 
                     sr.StepPassed = false;
                     sr.Message = failure.Message;
