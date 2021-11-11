@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aether\Aether.QualityChecks.csproj" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
+    <ProjectReference Include="..\..\src\Aether.QualityChecks\Aether.QualityChecks.csproj" />
   </ItemGroup>
 
 </Project>
