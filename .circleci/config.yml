@@ -107,7 +107,7 @@ jobs:
       - run: 
           name: 'Updating Quget Gallery'
           command: |
-            cd Aether/bin/Release
+            cd src/Aether.QualityChecks/bin/Release
             dotnet nuget push ./DataServices.Aether.QualityChecks.*.nupkg -s https://qugetgal.rockfin.com -k $QUGET_KEY --skip-duplicate
 
 #############################################################
