@@ -83,7 +83,7 @@ jobs:
       - run:
           name: Restore packages
           command: |
-            cd Aether 
+            cd src/Aether.QualityChecks 
             dotnet restore
       - save_cache:
           paths:
