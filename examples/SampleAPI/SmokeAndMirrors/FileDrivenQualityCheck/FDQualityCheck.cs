@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks
 {
-    [QualityCheckFileDriven]
     public class DummyFDQualityCheckPass : IQualityCheck
     {
         private readonly IYeOldDependencyTest _testDependency;

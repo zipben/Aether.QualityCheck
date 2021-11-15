@@ -17,7 +17,7 @@ namespace Aether.QualityChecks.Helpers
     {
         private QualityCheckResponseModel response;
 
-        public async Task<QualityCheckResponseModel> ExecuteQualityCheck<T>(T qc, HttpRequest request)
+        public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc, HttpRequest request)
         {
             var type = qc.GetType();
 
@@ -71,7 +71,7 @@ namespace Aether.QualityChecks.Helpers
             return request.Method.Equals("POST");
         }
 
-        private static async Task ExecuteInitialize(object qc, MethodInfo[] methods)
+        private static async Task ExecuteInitialize(IQualityCheck qc, MethodInfo[] methods)
         {
             var initMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckInitializeAttribute), true).Any()).ToList();
 
@@ -79,7 +79,7 @@ namespace Aether.QualityChecks.Helpers
 
         }
 
-        private static async Task<string> ExecuteInitializeWithFile(object qc, MethodInfo[] methods, HttpRequest request = null)
+        private static async Task<string> ExecuteInitializeWithFile(IQualityCheck qc, MethodInfo[] methods, HttpRequest request = null)
         {
             var initMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckInitializeAttribute), true).Any()).ToList();
 
@@ -123,7 +123,7 @@ namespace Aether.QualityChecks.Helpers
             }
         }
 
-        private async Task ExecuteSteps(object qc, MethodInfo[] methods)
+        private async Task ExecuteSteps(IQualityCheck qc, MethodInfo[] methods)
         {
             var stepMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckStepAttribute), true).Any());
             List<(int, MethodInfo)> stepsWithOrder = new List<(int, MethodInfo)>();
@@ -175,7 +175,7 @@ namespace Aether.QualityChecks.Helpers
 
         }
 
-        private static async Task<StepResponse> InvokeStep(object qc, MethodInfo s, object[] parameters)
+        private static async Task<StepResponse> InvokeStep(IQualityCheck qc, MethodInfo s, object[] parameters)
         {
             StepResponse sr = new StepResponse(s.Name);
             sr.StepPassed = true;
@@ -237,14 +237,14 @@ namespace Aether.QualityChecks.Helpers
             return sr;
         }
 
-        private async static Task ExecuteTeardown(object qc, MethodInfo[] methods)
+        private async static Task ExecuteTeardown(IQualityCheck qc, MethodInfo[] methods)
         {
             var teardownMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckTearDownAttribute), true).Any()).ToList();
 
             await ExecuteMethodInfos(qc, teardownMethodsInfo);
         }
 
-        public static async Task ExecuteMethodInfos(object qc, List<MethodInfo> methods, object[] parameters = null)
+        public static async Task ExecuteMethodInfos(IQualityCheck qc, List<MethodInfo> methods, object[] parameters = null)
         {
             foreach (var s in methods)
             {

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks
 {
-    [QualityCheckFileDriven]
     public class SimpleQualityCheck : IQualityCheck
     {
         private List<Person> _people;

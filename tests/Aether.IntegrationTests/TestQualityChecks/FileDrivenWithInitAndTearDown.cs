@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
 {
-    [QualityCheckFileDriven]
     public class FileDrivenWithInitAndTearDown : IQualityCheck
     {
         private readonly IStepExecutionTester _tester;
@@ -23,7 +22,6 @@ namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
         [QualityCheckInitialize("TESTFILE.csv")]
         public async Task Init(byte[] fileContent)
         {
-
             _tester.Initialize();
         }
 

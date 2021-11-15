@@ -4,10 +4,6 @@ using System.Text;
 
 namespace Aether.QualityChecks.Attributes
 {
-    
-    [AttributeUsage(AttributeTargets.Class)]
-    public class QualityCheckFileDrivenAttribute : Attribute { }
-
     [AttributeUsage(AttributeTargets.Method)]
     public class QualityCheckInitializeAttribute : Attribute 
     {

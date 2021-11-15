@@ -63,17 +63,32 @@ namespace Aether.QualityChecks.Middleware
         {
             foreach (var test in tests)
             {
-                var fileDriven = test.GetType().GetCustomAttributes().Any(a => a.GetType() == typeof(QualityCheckFileDrivenAttribute));
+                MethodInfo[] methods = test.GetType().GetMethods();
 
-                if (fileDriven && request.Method.Equals("POST"))
+                if (request.Method.Equals("POST") && HasFileDrivenInit(methods))
                 {
                     yield return test;
                 }
-                else if(!fileDriven && request.Method.Equals("GET"))
+                else if(request.Method.Equals("GET") && !HasFileDrivenInit(methods))
                 {
                     yield return test;
                 }
             }
+        }
+
+        private bool HasFileDrivenInit(MethodInfo[] methods)
+        {
+            bool hasFileDrivenInit = false;
+
+            foreach(var method in methods)
+            {
+                var dataAttributes = Attribute.GetCustomAttributes(method, typeof(QualityCheckInitializeAttribute)).Select(a => a as QualityCheckInitializeAttribute);
+
+                if (dataAttributes.Any(da => da.FileName != null))
+                    hasFileDrivenInit = true;
+            }
+
+            return hasFileDrivenInit;
         }
 
         private static IEnumerable<IQualityCheck> ApplyTypeFilter(IEnumerable<IQualityCheck> tests, Type typeFilter)

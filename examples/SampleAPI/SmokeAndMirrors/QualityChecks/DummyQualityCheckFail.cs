@@ -17,12 +17,6 @@ namespace SmokeAndMirrors.QualityChecks
             _testDependency = testDependency;
         }
 
-        [QualityCheckInitialize]
-        public async Task Init()
-        {
-            await _testDependency.FindGoldAsync(); 
-        }
-
         [QualityCheckStep(1)]
         public async Task Step1()
         {
