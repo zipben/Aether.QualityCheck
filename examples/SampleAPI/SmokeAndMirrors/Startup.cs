@@ -24,7 +24,6 @@ namespace SmokeAndMirrors
         public void ConfigureServices(IServiceCollection services)
         {
             services.RegisterQualityChecks<Startup>();
-            services.RegisterFileDrivenQualityChecks<Startup>();
 
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
 
@@ -46,7 +45,6 @@ namespace SmokeAndMirrors
             }
 
             app.UseQualityCheckMiddleware();
-            app.UseFileDrivenQualityCheckMiddleware("DRETest.csv", "/api/fd");
             app.UseQualityCheckMiddleware<DummyQualityCheckFail>("/api/fail");
 
             app.UseHttpsRedirection();

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks
 {
-    public class SimpleQualityCheck : IFileDrivenQualityCheck
+    [QualityCheckFileDriven]
+    public class SimpleQualityCheck : IQualityCheck
     {
         private List<Person> _people;
 
@@ -18,7 +19,8 @@ namespace SmokeAndMirrors.QualityChecks
             _testDependency = testDependency;
         }
 
-        public async Task LoadFile(byte[] fileContents)
+        [QualityCheckInitialize("TestFile.csv")]
+        public async Task Init(byte[] fileContents)
         {
             _people = CsvHelper.LoadFromFile<Person>(fileContents);
         }

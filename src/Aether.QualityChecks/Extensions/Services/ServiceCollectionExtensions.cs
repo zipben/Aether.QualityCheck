@@ -29,23 +29,5 @@ namespace Aether.Extensions
             foreach (var type in typesFromAssemblies)
                 services.Add(new ServiceDescriptor(typeof(IQualityCheck), type, ServiceLifetime.Singleton));
         }
-
-        /// <summary>
-        /// Register all classes that impliment the IFileDrivenQualityCheck interface.  Any new tests will be registered automatically
-        /// </summary>
-        /// <typeparam name="T">A type the shares the same assembly as the quality checks you are registering
-        /// The convention is to use Startup</typeparam>
-        /// <param name="services"></param>
-        public static void RegisterFileDrivenQualityChecks<T>(this IServiceCollection services)
-        {
-            services.TryAddSingleton<IQualityCheckExecutionHandler, QualityCheckExecutionHandler>();
-
-            Assembly[] assemblies = new[] { typeof(T).Assembly };
-
-            var typesFromAssemblies = assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.GetInterfaces().Contains(typeof(IFileDrivenQualityCheck))));
-
-            foreach (var type in typesFromAssemblies)
-                services.Add(new ServiceDescriptor(typeof(IFileDrivenQualityCheck), type, ServiceLifetime.Singleton));
-        }
     }
 }
