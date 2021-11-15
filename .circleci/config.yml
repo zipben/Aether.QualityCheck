@@ -92,7 +92,7 @@ jobs:
       - run:
           name: 'Build Nuget Package'
           command: |
-            cd Aether
+            cd src/Aether.QualityChecks
             versionNum="${CIRCLE_TAG:1}"
             echo versionNum
             dotnet build -c Release \
