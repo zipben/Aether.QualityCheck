@@ -47,6 +47,7 @@ namespace Aether.Middleware.Tests
 
             _mockRequest = new Mock<HttpRequest>();
             _mockRequest.SetupAllProperties();
+            _mockRequest.Setup(r => r.Method).Returns("GET");
             _mockRequest.Setup(x => x.Path)
                         .Returns(new PathString("/testendpoint"));
 
