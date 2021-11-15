@@ -6,6 +6,6 @@ namespace Aether.QualityChecks.Helpers
 {
     public interface IQualityCheckExecutionHandler
     {
-        Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc);
+        Task<QualityCheckResponseModel> ExecuteQualityCheck<T>(T qc);
     }
 }

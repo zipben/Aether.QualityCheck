@@ -23,7 +23,9 @@ namespace SmokeAndMirrors
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.RegisterQualityChecks(typeof(Startup));
+            services.RegisterQualityChecks<Startup>();
+            services.RegisterFileDrivenQualityChecks<Startup>();
+
             services.AddSingleton<IYeOldDependencyTest, YeOldDependencyTest>();
 
             services.AddControllers();
@@ -44,6 +46,7 @@ namespace SmokeAndMirrors
             }
 
             app.UseQualityCheckMiddleware();
+            app.UseFileDrivenQualityCheckMiddleware("DRETest.csv", "/api/fd");
             app.UseQualityCheckMiddleware<DummyQualityCheckFail>("/api/fail");
 
             app.UseHttpsRedirection();
