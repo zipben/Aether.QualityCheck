@@ -47,6 +47,7 @@ namespace Aether.Middleware.Tests
 
             _mockRequest = new Mock<HttpRequest>();
             _mockRequest.SetupAllProperties();
+            _mockRequest.Setup(r => r.Method).Returns("GET");
             _mockRequest.Setup(x => x.Path)
                         .Returns(new PathString("/testendpoint"));
 
@@ -111,7 +112,7 @@ namespace Aether.Middleware.Tests
         public void QualityCheckSetup(bool input)
         {
             var qualityCheck = new Mock<IQualityCheck>();
-            _mockHandler.Setup(x => x.ExecuteQualityCheck(It.IsAny<IQualityCheck>()))
+            _mockHandler.Setup(x => x.ExecuteQualityCheck(It.IsAny<IQualityCheck>(), It.IsAny<HttpRequest>()))
                         .ReturnsAsync(new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse("TestStep") { StepPassed = input } } });
             _mockQualityChecks.Add(qualityCheck.Object);
         }

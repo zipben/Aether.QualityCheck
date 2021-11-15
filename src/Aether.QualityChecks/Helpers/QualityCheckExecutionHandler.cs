@@ -2,8 +2,10 @@
 using Aether.QualityChecks.Exceptions;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,7 +17,7 @@ namespace Aether.QualityChecks.Helpers
     {
         private QualityCheckResponseModel response;
 
-        public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc)
+        public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc, HttpRequest request)
         {
             var type = qc.GetType();
 
@@ -25,7 +27,26 @@ namespace Aether.QualityChecks.Helpers
 
             try
             {
-                await ExecuteInitialize(qc, methods);
+                if (IsFileDriven(request))
+                {
+                    string errorMessage = await ExecuteInitializeWithFile(qc, methods, request);
+
+                    if(errorMessage != null)
+                    {
+                        StepResponse criticalFailure = new StepResponse(nameof(ExecuteInitializeWithFile)) 
+                        { Message = errorMessage};
+
+                        response.Steps.Add(criticalFailure);
+
+                        return response;
+                    }
+
+                }
+                else
+                {
+                    await ExecuteInitialize(qc, methods);
+                }
+
 
                 await ExecuteSteps(qc, methods);
             }
@@ -45,12 +66,61 @@ namespace Aether.QualityChecks.Helpers
             return response;
         }
 
+        private bool IsFileDriven(HttpRequest request)
+        {
+            return request.Method.Equals("POST");
+        }
+
         private static async Task ExecuteInitialize(IQualityCheck qc, MethodInfo[] methods)
         {
             var initMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckInitializeAttribute), true).Any()).ToList();
 
             await ExecuteMethodInfos(qc, initMethodsInfo);
 
+        }
+
+        private static async Task<string> ExecuteInitializeWithFile(IQualityCheck qc, MethodInfo[] methods, HttpRequest request = null)
+        {
+            var initMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckInitializeAttribute), true).Any()).ToList();
+
+            List<(string, MethodInfo)> initsWithFileName = new List<(string, MethodInfo)>();
+
+            foreach (var stepMethod in initMethodsInfo)
+            {
+                var atr = Attribute.GetCustomAttribute(stepMethod, typeof(QualityCheckInitializeAttribute)) as QualityCheckInitializeAttribute;
+
+                initsWithFileName.Add((atr.FileName, stepMethod));
+            }
+
+            foreach(var initWithFileName in initsWithFileName)
+            {
+                IFormFile fileMatch = request.Form.Files.FirstOrDefault(f => f.FileName.Equals(initWithFileName.Item1));
+
+                if (fileMatch != null)
+                {
+                    byte[] fileContent = await ExtractFileContent(fileMatch);
+
+                    if(fileContent != null)
+                    {
+                        await ExecuteMethodInfos(qc, initMethodsInfo, new List<object>() { fileContent }.ToArray());
+                    }
+                }
+                else
+                {
+                    return $"Unable to find a file in request that matches {initWithFileName.Item1}";
+                }
+            }
+
+            return null;
+        }
+
+        private static async Task<byte[]> ExtractFileContent(IFormFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream);
+                return memoryStream.ToArray();
+            }
         }
 
         private async Task ExecuteSteps(IQualityCheck qc, MethodInfo[] methods)
@@ -174,14 +244,14 @@ namespace Aether.QualityChecks.Helpers
             await ExecuteMethodInfos(qc, teardownMethodsInfo);
         }
 
-        public static async Task ExecuteMethodInfos(IQualityCheck qc, List<MethodInfo> methods)
+        public static async Task ExecuteMethodInfos(IQualityCheck qc, List<MethodInfo> methods, object[] parameters = null)
         {
             foreach (var s in methods)
             {
                 if (s.ReturnType == typeof(Task))
-                    await (Task)s.Invoke(qc, null);
+                    await (Task)s.Invoke(qc, parameters);
                 else
-                    s.Invoke(qc, null);
+                    s.Invoke(qc, parameters);
             }
         }
     }

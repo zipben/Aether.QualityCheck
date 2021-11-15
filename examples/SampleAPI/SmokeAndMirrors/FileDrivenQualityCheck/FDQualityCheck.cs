@@ -3,47 +3,55 @@ using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
 using SmokeAndMirrors.TestDependencies;
-using System.Net.Http;
+using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SmokeAndMirrors.QualityChecks
 {
-    public class DummyQualityCheckFail : IQualityCheck<DummyQualityCheckFail>
+    public class DummyFDQualityCheckPass : IQualityCheck
     {
         private readonly IYeOldDependencyTest _testDependency;
 
-        public DummyQualityCheckFail(IYeOldDependencyTest testDependency)
+        public DummyFDQualityCheckPass(IYeOldDependencyTest testDependency)
         {
             _testDependency = testDependency;
+        }
+
+        [QualityCheckInitialize("DRETest.csv")]
+        public async Task Init(byte[] fileContents)
+        {
+            string str = Encoding.Default.GetString(fileContents);
+
+            Console.Write(str);
         }
 
         [QualityCheckStep(1)]
         public async Task Step1()
         {
             await _testDependency.FindGoldAsync();
-
-            Step.ProceedIf(true);
+            Step.Proceed();
         }
 
         [QualityCheckStep(2)]
         public async Task Step2()
         {
             await _testDependency.FindGoldAsync();
-            Step.Warn("its all burning down, but its fine", null, new HttpRequestException("you have bad internet"));
+            Step.ProceedIf(() => { return true; }, successMessage: "I did it with a function");
         }
 
         [QualityCheckStep(3)]
         public async Task Step3()
         {
             await _testDependency.FindGoldAsync();
-            Step.ProceedIf(false, failedMessage: "And now its all borked");
+            Step.Proceed();
         }
 
         [QualityCheckStep(4)]
         public async Task Step4()
         {
             await _testDependency.FindGoldAsync();
-            Step.Proceed("You shouldnt see me");
+            Step.Proceed();
         }
 
         [QualityCheckTearDown]

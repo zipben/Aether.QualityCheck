@@ -5,7 +5,15 @@ using System.Text;
 namespace Aether.QualityChecks.Attributes
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class QualityCheckInitializeAttribute : Attribute { }
+    public class QualityCheckInitializeAttribute : Attribute 
+    {
+        public string FileName { get; set; }
+
+        public QualityCheckInitializeAttribute(string fileName = null)
+        {
+            FileName = fileName;
+        }
+    }
 
     [AttributeUsage(AttributeTargets.Method)]
     public class QualityCheckStepAttribute : Attribute 

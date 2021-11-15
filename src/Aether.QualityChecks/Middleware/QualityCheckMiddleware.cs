@@ -1,4 +1,5 @@
-﻿using Aether.QualityChecks.Helpers;
+﻿using Aether.QualityChecks.Attributes;
+using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
 using Ardalis.GuardClauses;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Aether.QualityChecks.Middleware
@@ -42,9 +44,11 @@ namespace Aether.QualityChecks.Middleware
 
             var filteredTests = ApplyTypeFilter(_tests, _typeFilter);
 
+            filteredTests = ApplyFileDrivenFilter(_tests, context.Request);
+
             foreach (var test in filteredTests)
             {
-                QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test);
+                QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test, context.Request);
                 testResults.Add(response);
             }
 
@@ -53,6 +57,38 @@ namespace Aether.QualityChecks.Middleware
 
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(testResults));
+        }
+
+        private IEnumerable<IQualityCheck> ApplyFileDrivenFilter(IEnumerable<IQualityCheck> tests, HttpRequest request)
+        {
+            foreach (var test in tests)
+            {
+                MethodInfo[] methods = test.GetType().GetMethods();
+
+                if (request.Method.Equals("POST") && HasFileDrivenInit(methods))
+                {
+                    yield return test;
+                }
+                else if(request.Method.Equals("GET") && !HasFileDrivenInit(methods))
+                {
+                    yield return test;
+                }
+            }
+        }
+
+        private bool HasFileDrivenInit(MethodInfo[] methods)
+        {
+            bool hasFileDrivenInit = false;
+
+            foreach(var method in methods)
+            {
+                var dataAttributes = Attribute.GetCustomAttributes(method, typeof(QualityCheckInitializeAttribute)).Select(a => a as QualityCheckInitializeAttribute);
+
+                if (dataAttributes.Any(da => da.FileName != null))
+                    hasFileDrivenInit = true;
+            }
+
+            return hasFileDrivenInit;
         }
 
         private static IEnumerable<IQualityCheck> ApplyTypeFilter(IEnumerable<IQualityCheck> tests, Type typeFilter)

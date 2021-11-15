@@ -6,12 +6,24 @@ using System.Text;
 using Aether.QualityChecks.IntegrationTests.TestQualityChecks;
 using System.Threading.Tasks;
 using Moq;
+using Microsoft.AspNetCore.Http;
 
 namespace Aether.QualityChecks.Helpers.Tests
 {
     [TestClass()]
     public class QualityCheckExecutionHandlerTests
     {
+        Mock<HttpRequest> _postRequest;
+        Mock<HttpRequest> _getRequest;
+
+        [TestInitialize]
+        public void Init() 
+        {
+            _getRequest = new Mock<HttpRequest>();
+            _getRequest.Setup(g => g.Method).Returns("GET");
+        }
+
+
         [TestMethod()]
         public async Task ExecuteQualityCheckTest_AsyncWithInitAndTearDown()
         {
@@ -19,7 +31,7 @@ namespace Aether.QualityChecks.Helpers.Tests
             QualityCheckExecutionHandler handler = new QualityCheckExecutionHandler();
             AsyncWithInitAndTearDown testQc = new AsyncWithInitAndTearDown(stepTester.Object);
 
-            var response = await handler.ExecuteQualityCheck(testQc);
+            var response = await handler.ExecuteQualityCheck(testQc, _getRequest.Object);
 
             stepTester.Verify(s => s.Initialize(), Times.Once);
             stepTester.Verify(s => s.Step(), Times.Exactly(4));
@@ -33,7 +45,7 @@ namespace Aether.QualityChecks.Helpers.Tests
             QualityCheckExecutionHandler handler = new QualityCheckExecutionHandler();
             InitAndTearDownWith4Steps testQc = new InitAndTearDownWith4Steps(stepTester.Object);
 
-            var response = await handler.ExecuteQualityCheck(testQc);
+            var response = await handler.ExecuteQualityCheck(testQc, _getRequest.Object);
 
             stepTester.Verify(s => s.Initialize(), Times.Once);
             stepTester.Verify(s => s.Step(), Times.Exactly(4));
@@ -47,7 +59,7 @@ namespace Aether.QualityChecks.Helpers.Tests
             QualityCheckExecutionHandler handler = new QualityCheckExecutionHandler();
             MixedAsyncInitAndTearDownWith4Steps testQc = new MixedAsyncInitAndTearDownWith4Steps(stepTester.Object);
 
-            var response = await handler.ExecuteQualityCheck(testQc);
+            var response = await handler.ExecuteQualityCheck(testQc, _getRequest.Object);
 
             stepTester.Verify(s => s.Initialize(), Times.Once);
             stepTester.Verify(s => s.Step(), Times.Exactly(4));
@@ -61,7 +73,7 @@ namespace Aether.QualityChecks.Helpers.Tests
             QualityCheckExecutionHandler handler = new QualityCheckExecutionHandler();
             AsyncWithNoSteps testQc = new AsyncWithNoSteps(stepTester.Object);
 
-            var response = await handler.ExecuteQualityCheck(testQc);
+            var response = await handler.ExecuteQualityCheck(testQc, _getRequest.Object);
 
             stepTester.Verify(s => s.Initialize(), Times.Once);
             stepTester.Verify(s => s.Step(), Times.Never);
@@ -75,7 +87,7 @@ namespace Aether.QualityChecks.Helpers.Tests
             QualityCheckExecutionHandler handler = new QualityCheckExecutionHandler();
             AsyncWithInitAndTearDownPlusDataSteps testQc = new AsyncWithInitAndTearDownPlusDataSteps(stepTester.Object);
 
-            var response = await handler.ExecuteQualityCheck(testQc);
+            var response = await handler.ExecuteQualityCheck(testQc, _getRequest.Object);
 
             stepTester.Verify(s => s.Initialize(), Times.Once);
             stepTester.Verify(s => s.Step(), Times.Exactly(2));
