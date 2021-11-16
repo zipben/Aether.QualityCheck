@@ -18,7 +18,7 @@ namespace SmokeAndMirrors.QualityChecks
             _testDependency = testDependency;
         }
 
-        [QualityCheckInitialize("DRETest.csv")]
+        [QualityCheckInitialize("DRETest")]
         public async Task Init(byte[] fileContents)
         {
             string str = Encoding.Default.GetString(fileContents);

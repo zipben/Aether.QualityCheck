@@ -94,7 +94,7 @@ namespace Aether.QualityChecks.Helpers
 
             foreach(var initWithFileName in initsWithFileName)
             {
-                IFormFile fileMatch = request.Form.Files.FirstOrDefault(f => f.FileName.Equals(initWithFileName.Item1));
+                IFormFile fileMatch = request.Form.Files.FirstOrDefault(f => f.Name.Equals(initWithFileName.Item1));
 
                 if (fileMatch != null)
                 {
