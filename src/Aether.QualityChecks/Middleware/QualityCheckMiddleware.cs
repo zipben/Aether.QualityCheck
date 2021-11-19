@@ -44,7 +44,7 @@ namespace Aether.QualityChecks.Middleware
 
             var filteredTests = ApplyTypeFilter(_tests, _typeFilter);
 
-            filteredTests = ApplyFileDrivenFilter(_tests, context.Request);
+            filteredTests = ApplyFileDrivenFilter(filteredTests, context.Request);
 
             foreach (var test in filteredTests)
             {

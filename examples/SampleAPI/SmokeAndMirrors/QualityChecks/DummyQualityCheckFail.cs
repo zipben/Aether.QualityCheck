@@ -1,7 +1,6 @@
 ﻿using Aether.QualityChecks.Attributes;
 using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
-using Aether.QualityChecks.Models;
 using SmokeAndMirrors.TestDependencies;
 using System.Net.Http;
 using System.Threading.Tasks;
