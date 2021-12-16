@@ -2,6 +2,7 @@
 using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Middleware;
+using Aether.QualityChecks.TestRunner;
 using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +31,11 @@ namespace Aether.QualityChecks.Extensions
             if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
             {
                 throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+            }
+
+            if (app.ApplicationServices.GetService(typeof(IQualityCheckRunner)) == null)
+            {
+                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckRunner)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
             }
 
             // NOTE: we explicitly don't use Map here because it's really common for multiple quality
@@ -68,6 +74,11 @@ namespace Aether.QualityChecks.Extensions
             if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
             {
                 throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+            }
+
+            if (app.ApplicationServices.GetService(typeof(IQualityCheckRunner)) == null)
+            {
+                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckRunner)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
             }
 
             // NOTE: we explicitly don't use Map here because it's really common for multiple quality

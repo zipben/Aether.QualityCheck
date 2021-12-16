@@ -1,5 +1,6 @@
 ﻿using Aether.QualityChecks.Helpers;
 using Aether.QualityChecks.Interfaces;
+using Aether.QualityChecks.TestRunner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -21,6 +22,7 @@ namespace Aether.Extensions
         public static void RegisterQualityChecks<T>(this IServiceCollection services)
         {
             services.TryAddSingleton<IQualityCheckExecutionHandler, QualityCheckExecutionHandler>();
+            services.TryAddSingleton<IQualityCheckRunner, QualityCheckRunner>();
 
             Assembly[] assemblies = new[] { typeof(T).Assembly };
 

@@ -17,7 +17,7 @@ namespace Aether.QualityChecks.Helpers
     {
         private QualityCheckResponseModel response;
 
-        public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc, HttpRequest request)
+        public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc, HttpRequest request = null)
         {
             var type = qc.GetType();
 
@@ -68,7 +68,7 @@ namespace Aether.QualityChecks.Helpers
 
         private bool IsFileDriven(HttpRequest request)
         {
-            return request.Method.Equals("POST");
+            return request != null && request.Method.Equals("POST");
         }
 
         private static async Task ExecuteInitialize(IQualityCheck qc, MethodInfo[] methods)
