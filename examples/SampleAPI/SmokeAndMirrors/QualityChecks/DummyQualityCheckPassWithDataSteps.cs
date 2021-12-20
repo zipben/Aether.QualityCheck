@@ -17,7 +17,10 @@ namespace SmokeAndMirrors.QualityChecks
         }
 
         [QualityCheckInitialize]
-        public async Task Init()
+        [QualityCheckInitializeData("test", "this", "out")]
+        [QualityCheckInitializeData("it", "I", "believe")]
+        [QualityCheckInitializeData("you", "can", "do")]
+        public async Task Init(string s, string s2, string s3)
         {
             await _testDependency.FindGoldAsync(); 
         }

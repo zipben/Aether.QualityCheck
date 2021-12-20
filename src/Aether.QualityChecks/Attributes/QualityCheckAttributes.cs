@@ -4,16 +4,18 @@ using System.Text;
 
 namespace Aether.QualityChecks.Attributes
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class QualityCheckInitializeAttribute : Attribute 
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class QualityCheckInitializeDataAttribute : Attribute 
     {
-        public string FileName { get; set; }
-
-        public QualityCheckInitializeAttribute(string fileName = null)
+        public object[] Seeds { get; set; }
+        public QualityCheckInitializeDataAttribute(params object[] seeds)
         {
-            FileName = fileName;
+            Seeds = seeds;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Method)]
+    public class QualityCheckInitializeAttribute : Attribute { }
 
     [AttributeUsage(AttributeTargets.Method)]
     public class QualityCheckStepAttribute : Attribute 

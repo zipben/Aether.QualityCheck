@@ -44,12 +44,9 @@ namespace Aether.QualityChecks.Middleware
 
             var filteredTests = ApplyTypeFilter(_tests, _typeFilter);
 
-            filteredTests = ApplyFileDrivenFilter(filteredTests, context.Request);
-
             foreach (var test in filteredTests)
             {
-                QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test, context.Request);
-                testResults.Add(response);
+                testResults.AddRange(await _handler.ExecuteQualityCheck(test));
             }
 
             context.Response.StatusCode = testResults.All(t => t.CheckPassed) ? (int) HttpStatusCode.OK
@@ -58,39 +55,7 @@ namespace Aether.QualityChecks.Middleware
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonConvert.SerializeObject(testResults));
         }
-
-        private IEnumerable<IQualityCheck> ApplyFileDrivenFilter(IEnumerable<IQualityCheck> tests, HttpRequest request)
-        {
-            foreach (var test in tests)
-            {
-                MethodInfo[] methods = test.GetType().GetMethods();
-
-                if (request.Method.Equals("POST") && HasFileDrivenInit(methods))
-                {
-                    yield return test;
-                }
-                else if(request.Method.Equals("GET") && !HasFileDrivenInit(methods))
-                {
-                    yield return test;
-                }
-            }
-        }
-
-        private bool HasFileDrivenInit(MethodInfo[] methods)
-        {
-            bool hasFileDrivenInit = false;
-
-            foreach(var method in methods)
-            {
-                var dataAttributes = Attribute.GetCustomAttributes(method, typeof(QualityCheckInitializeAttribute)).Select(a => a as QualityCheckInitializeAttribute);
-
-                if (dataAttributes.Any(da => da.FileName != null))
-                    hasFileDrivenInit = true;
-            }
-
-            return hasFileDrivenInit;
-        }
-
+       
         private static IEnumerable<IQualityCheck> ApplyTypeFilter(IEnumerable<IQualityCheck> tests, Type typeFilter)
         {
             foreach (var test in tests)

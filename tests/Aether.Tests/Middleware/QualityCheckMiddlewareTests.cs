@@ -112,8 +112,9 @@ namespace Aether.Middleware.Tests
         public void QualityCheckSetup(bool input)
         {
             var qualityCheck = new Mock<IQualityCheck>();
-            _mockHandler.Setup(x => x.ExecuteQualityCheck(It.IsAny<IQualityCheck>(), It.IsAny<HttpRequest>()))
-                        .ReturnsAsync(new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse("TestStep") { StepPassed = input } } });
+            _mockHandler.Setup(x => x.ExecuteQualityCheck(It.IsAny<IQualityCheck>()))
+                        .ReturnsAsync(new List<QualityCheckResponseModel>() {
+                new QualityCheckResponseModel("TestStep") { Steps = new List<StepResponse>() { new StepResponse("TestStep") { StepPassed = input } } }});
             _mockQualityChecks.Add(qualityCheck.Object);
         }
     }

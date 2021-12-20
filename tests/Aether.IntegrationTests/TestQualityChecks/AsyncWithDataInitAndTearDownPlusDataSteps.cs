@@ -10,19 +10,21 @@ using System.Threading.Tasks;
 
 namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
 {
-    public class InitAndTearDown : IQualityCheck
+    public class AsyncWithDataInitAndTearDownPlusDataSteps : IQualityCheck
     {
         private readonly IStepExecutionTester _tester;
 
-        public InitAndTearDown(IStepExecutionTester tester)
+        public AsyncWithDataInitAndTearDownPlusDataSteps(IStepExecutionTester tester)
         {
             _tester = tester;
         }
 
         [QualityCheckInitialize]
-        public async Task Init()
+        [QualityCheckInitializeData(1, 2, 3)]
+        [QualityCheckInitializeData(3, 4, 5)]
+        public async Task Init(int val1, int val2, int val3)
         {
-            _tester.Initialize();
+            _tester.InitializeWithData(val1, val2, val3);
         }
 
         [QualityCheckStep(1)]
@@ -32,17 +34,21 @@ namespace Aether.QualityChecks.IntegrationTests.TestQualityChecks
             Step.Proceed();
         }
 
+        [QualityCheckData(1, 2)]
+        [QualityCheckData(3, 4)]
         [QualityCheckStep(2)]
-        public async Task Step2()
+        public async Task Step2(int param1, int param2)
         {
-            _tester.Step();
+            _tester.Step(param1, param2);
             Step.Proceed();
         }
 
+        [QualityCheckData("hi", "there")]
+        [QualityCheckData("bye", "now")]
         [QualityCheckStep(3)]
-        public async Task Step3()
+        public async Task Step3(string param1, string param2)
         {
-            _tester.Step();
+            _tester.Step(param1, param2);
             Step.Proceed();
         }
 

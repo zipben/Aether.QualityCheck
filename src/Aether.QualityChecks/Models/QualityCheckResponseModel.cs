@@ -7,6 +7,8 @@ namespace Aether.QualityChecks.Models
     {
         public string Name { get; set; }
 
+        public object[] InitializeData { get; set; }
+
         public bool CheckPassed 
         {
             get

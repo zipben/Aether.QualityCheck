@@ -18,12 +18,10 @@ namespace SmokeAndMirrors.QualityChecks
             _testDependency = testDependency;
         }
 
-        [QualityCheckInitialize("DRETest")]
-        public async Task Init(byte[] fileContents)
+        [QualityCheckInitialize]
+        public async Task Init()
         {
-            string str = Encoding.Default.GetString(fileContents);
-
-            Console.Write(str);
+            
         }
 
         [QualityCheckStep(1)]

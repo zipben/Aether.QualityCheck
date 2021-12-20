@@ -44,43 +44,12 @@ namespace Aether.QualityChecks.TestRunner
 
             List<IQualityCheck> filteredTests = ApplyTypeFilter(_tests, filter).ToList();
 
-            filteredTests = ApplyFileDrivenFilter(filteredTests).ToList();
-
             foreach (var test in filteredTests)
             {
-                QualityCheckResponseModel response = await _handler.ExecuteQualityCheck(test);
-                testResults.Add(response);
+                testResults.AddRange(await _handler.ExecuteQualityCheck(test));
             }
 
             return testResults;
-        }
-
-        private IEnumerable<IQualityCheck> ApplyFileDrivenFilter(IEnumerable<IQualityCheck> tests)
-        {
-            foreach (var test in tests)
-            {
-                MethodInfo[] methods = test.GetType().GetMethods();
-
-                if (!HasFileDrivenInit(methods))
-                {
-                    yield return test;
-                }
-            }
-        }
-
-        private bool HasFileDrivenInit(MethodInfo[] methods)
-        {
-            bool hasFileDrivenInit = false;
-
-            foreach (var method in methods)
-            {
-                var dataAttributes = Attribute.GetCustomAttributes(method, typeof(QualityCheckInitializeAttribute)).Select(a => a as QualityCheckInitializeAttribute);
-
-                if (dataAttributes.Any(da => da.FileName != null))
-                    hasFileDrivenInit = true;
-            }
-
-            return hasFileDrivenInit;
         }
 
         private IEnumerable<IQualityCheck> ApplyTypeFilter(IEnumerable<IQualityCheck> tests, Type typeFilter)

@@ -1,129 +1,83 @@
 ﻿using Aether.QualityChecks.Attributes;
 using Aether.QualityChecks.Exceptions;
+using Aether.QualityChecks.Extensions.MethodExtensions;
 using Aether.QualityChecks.Interfaces;
 using Aether.QualityChecks.Models;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Aether.QualityChecks.Helpers
 {
     public class QualityCheckExecutionHandler : IQualityCheckExecutionHandler
     {
-        private QualityCheckResponseModel response;
+        private LinkedList<QualityCheckResponseModel> responses;
 
-        public async Task<QualityCheckResponseModel> ExecuteQualityCheck(IQualityCheck qc, HttpRequest request = null)
+        public async Task<List<QualityCheckResponseModel>> ExecuteQualityCheck(IQualityCheck qc)
         {
             var type = qc.GetType();
 
-            response = new QualityCheckResponseModel(type.Name);
+            responses = new LinkedList<QualityCheckResponseModel>();
 
             var methods = type.GetMethods();
 
+            IEnumerable<QualityCheckInitializeDataAttribute> initDataMethods = null;
+            MethodInfo initMethod = type.GetMethodWithAttribute<QualityCheckInitializeAttribute>();
+
+            if (initMethod != null)
+                initDataMethods = initMethod.GetAttribute<QualityCheckInitializeDataAttribute>();
+
+            IEnumerable<MethodInfo> stepMethods = type.GetMethodsWithAttribute<QualityCheckStepAttribute>();
+            MethodInfo teardownMethod = type.GetMethodWithAttribute<QualityCheckTearDownAttribute>();
+
+            if (initDataMethods != null && initDataMethods.Any())
+            {
+                foreach(var initDataMethod in initDataMethods)
+                {
+                    responses.AddLast(new QualityCheckResponseModel(type.Name) { InitializeData = initDataMethod.Seeds });
+                    await TryExecuteQC(qc, initMethod, stepMethods, teardownMethod, initDataMethod.Seeds);
+                }
+            }
+            else
+            {
+                responses.AddLast(new QualityCheckResponseModel(type.Name));
+                await TryExecuteQC(qc, initMethod, stepMethods, teardownMethod);
+            }
+
+
+            return responses.ToList();
+        }
+
+        private async Task TryExecuteQC(IQualityCheck qc, MethodInfo initMethod, IEnumerable<MethodInfo> stepMethods, MethodInfo teardownMethod, object[] initData = null)
+        {
             try
             {
-                if (IsFileDriven(request))
-                {
-                    string errorMessage = await ExecuteInitializeWithFile(qc, methods, request);
+                await ExecuteSingleMethodInfo(qc, initMethod, initData);
 
-                    if(errorMessage != null)
-                    {
-                        StepResponse criticalFailure = new StepResponse(nameof(ExecuteInitializeWithFile)) 
-                        { Message = errorMessage};
-
-                        response.Steps.Add(criticalFailure);
-
-                        return response;
-                    }
-
-                }
-                else
-                {
-                    await ExecuteInitialize(qc, methods);
-                }
-
-
-                await ExecuteSteps(qc, methods);
+                await ExecuteSteps(qc, stepMethods);
+            }
+            catch(TargetParameterCountException e)
+            {
+                StepResponse paramFailure = new StepResponse("Param Failure") { Message = "One or more of your methods has a mistmatch between their Data Attributes, and the params provided to the method"};
+                responses.Last.Value.Steps.Add(paramFailure);
             }
             finally
             {
                 try
                 {
-                    await ExecuteTeardown(qc, methods);
+                    await ExecuteSingleMethodInfo(qc, teardownMethod);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    StepResponse criticalFailure = new StepResponse(nameof(ExecuteTeardown)) { Message = "Tear Down Failed Catastrophically", Exception = e };
-                    response.Steps.Add(criticalFailure);
+                    StepResponse criticalFailure = new StepResponse(nameof(ExecuteSingleMethodInfo) + "-TearDown") { Message = "Tear Down Failed Catastrophically", Exception = e };
+                    responses.Last.Value.Steps.Add(criticalFailure);
                 }
             }
-
-            return response;
         }
 
-        private bool IsFileDriven(HttpRequest request)
-        {
-            return request != null && request.Method.Equals("POST");
-        }
-
-        private static async Task ExecuteInitialize(IQualityCheck qc, MethodInfo[] methods)
-        {
-            var initMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckInitializeAttribute), true).Any()).ToList();
-
-            await ExecuteMethodInfos(qc, initMethodsInfo);
-
-        }
-
-        private static async Task<string> ExecuteInitializeWithFile(IQualityCheck qc, MethodInfo[] methods, HttpRequest request = null)
-        {
-            var initMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckInitializeAttribute), true).Any()).ToList();
-
-            List<(string, MethodInfo)> initsWithFileName = new List<(string, MethodInfo)>();
-
-            foreach (var stepMethod in initMethodsInfo)
-            {
-                var atr = Attribute.GetCustomAttribute(stepMethod, typeof(QualityCheckInitializeAttribute)) as QualityCheckInitializeAttribute;
-
-                initsWithFileName.Add((atr.FileName, stepMethod));
-            }
-
-            foreach(var initWithFileName in initsWithFileName)
-            {
-                IFormFile fileMatch = request.Form.Files.FirstOrDefault(f => f.Name.Equals(initWithFileName.Item1));
-
-                if (fileMatch != null)
-                {
-                    byte[] fileContent = await ExtractFileContent(fileMatch);
-
-                    if(fileContent != null)
-                    {
-                        await ExecuteMethodInfos(qc, initMethodsInfo, new List<object>() { fileContent }.ToArray());
-                    }
-                }
-                else
-                {
-                    return $"Unable to find a file in request that matches {initWithFileName.Item1}";
-                }
-            }
-
-            return null;
-        }
-
-        private static async Task<byte[]> ExtractFileContent(IFormFile file)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
-
-        private async Task ExecuteSteps(IQualityCheck qc, MethodInfo[] methods)
+        private async Task ExecuteSteps(IQualityCheck qc, IEnumerable<MethodInfo> methods)
         {
             var stepMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckStepAttribute), true).Any());
             List<(int, MethodInfo)> stepsWithOrder = new List<(int, MethodInfo)>();
@@ -142,7 +96,7 @@ namespace Aether.QualityChecks.Helpers
                 if (testFailed)
                     break;
 
-                var dataAttributes = Attribute.GetCustomAttributes(s, typeof(QualityCheckDataAttribute)).Select(a => a as QualityCheckDataAttribute);
+                var dataAttributes = s.GetAttribute<QualityCheckDataAttribute>();
 
                 if(dataAttributes is null || !dataAttributes.Any())
                 {
@@ -150,7 +104,7 @@ namespace Aether.QualityChecks.Helpers
 
                     if (sr != null)
                     {
-                        response.Steps.Add(sr);
+                        responses.Last.Value.Steps.Add(sr);
                         testFailed = !sr.StepPassed;
                     }
                 }
@@ -165,7 +119,7 @@ namespace Aether.QualityChecks.Helpers
 
                         if (subSr != null)
                         {
-                            response.Steps.Add(subSr);
+                            responses.Last.Value.Steps.Add(subSr);
 
                             testFailed = !subSr.StepPassed;
                         }
@@ -237,21 +191,22 @@ namespace Aether.QualityChecks.Helpers
             return sr;
         }
 
-        private async static Task ExecuteTeardown(IQualityCheck qc, MethodInfo[] methods)
+        public static async Task ExecuteMethodInfos(IQualityCheck qc, IEnumerable<MethodInfo> methods, object[] parameters = null)
         {
-            var teardownMethodsInfo = methods.Where(m => m.GetCustomAttributes(typeof(QualityCheckTearDownAttribute), true).Any()).ToList();
-
-            await ExecuteMethodInfos(qc, teardownMethodsInfo);
+            foreach (var method in methods)
+            {
+                await ExecuteSingleMethodInfo(qc, method, parameters);
+            }
         }
 
-        public static async Task ExecuteMethodInfos(IQualityCheck qc, List<MethodInfo> methods, object[] parameters = null)
+        private static async Task ExecuteSingleMethodInfo(IQualityCheck qc, MethodInfo method, object[] parameters = null)
         {
-            foreach (var s in methods)
+            if (method != null)
             {
-                if (s.ReturnType == typeof(Task))
-                    await (Task)s.Invoke(qc, parameters);
+                if (method.ReturnType == typeof(Task))
+                    await (Task)method.Invoke(qc, parameters);
                 else
-                    s.Invoke(qc, parameters);
+                    method.Invoke(qc, parameters);
             }
         }
     }
