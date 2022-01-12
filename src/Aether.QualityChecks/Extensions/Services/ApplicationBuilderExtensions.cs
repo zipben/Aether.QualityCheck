@@ -23,20 +23,24 @@ namespace Aether.QualityChecks.Extensions
         /// <param name="builder"></param>
         /// <param name="route">Optional overload for quality check route.  Defaults to "/api/qualitycheck"</param>
         /// <returns></returns>
-        public static void UseQualityCheckMiddleware<T>(this IApplicationBuilder app, string route = "/api/qualitycheck")
+        public static void UseQualityCheckMiddleware<T>(this IApplicationBuilder app, string route = "/api/qualitycheck", bool bypassDependencyValidation = false)
         {
 
             PathString routePs = new PathString(route);
 
-            if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
+            if (!bypassDependencyValidation) 
             {
-                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+                if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
+                {
+                    throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+                }
+
+                if (app.ApplicationServices.GetService(typeof(IQualityCheckRunner)) == null)
+                {
+                    throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckRunner)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+                }
             }
 
-            if (app.ApplicationServices.GetService(typeof(IQualityCheckRunner)) == null)
-            {
-                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckRunner)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
-            }
 
             // NOTE: we explicitly don't use Map here because it's really common for multiple quality
             // check middleware to overlap in paths. Ex: `/quality`, `/quality/detailed` - this is order
@@ -67,18 +71,21 @@ namespace Aether.QualityChecks.Extensions
         /// <param name="builder"></param>
         /// <param name="route">Optional overload for quality check route.  Defaults to "/api/qualitycheck"</param>
         /// <returns></returns>
-        public static void UseQualityCheckMiddleware(this IApplicationBuilder app, string route = "/api/qualitycheck")
+        public static void UseQualityCheckMiddleware(this IApplicationBuilder app, string route = "/api/qualitycheck", bool bypassDependencyValidation = false)
         {
             PathString routePs = new PathString(route);
 
-            if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
+            if (!bypassDependencyValidation)
             {
-                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
-            }
+                if (app.ApplicationServices.GetService(typeof(IQualityCheckExecutionHandler)) == null)
+                {
+                    throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckExecutionHandler)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+                }
 
-            if (app.ApplicationServices.GetService(typeof(IQualityCheckRunner)) == null)
-            {
-                throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckRunner)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+                if (app.ApplicationServices.GetService(typeof(IQualityCheckRunner)) == null)
+                {
+                    throw new InvalidOperationException($"Unable to Find {nameof(IQualityCheckRunner)} - Consider using the {nameof(ServiceCollectionExtensions.RegisterQualityChecks)} extension method");
+                }
             }
 
             // NOTE: we explicitly don't use Map here because it's really common for multiple quality
