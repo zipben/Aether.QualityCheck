@@ -21,8 +21,8 @@ namespace Aether.Extensions
         /// <param name="services"></param>
         public static void RegisterQualityChecks<T>(this IServiceCollection services, ServiceLifetime lifeTime = ServiceLifetime.Singleton)
         {
-            services.TryAddSingleton<IQualityCheckExecutionHandler, QualityCheckExecutionHandler>();
-            services.TryAddSingleton<IQualityCheckRunner, QualityCheckRunner>();
+            services.Add(new ServiceDescriptor(typeof(IQualityCheckRunner), typeof(QualityCheckRunner), lifeTime));
+            services.Add(new ServiceDescriptor(typeof(IQualityCheckExecutionHandler), typeof(QualityCheckExecutionHandler), lifeTime));
 
             Assembly[] assemblies = new[] { typeof(T).Assembly };
 
