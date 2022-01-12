@@ -19,7 +19,7 @@ namespace Aether.Extensions
         /// <typeparam name="T">A type the shares the same assembly as the quality checks you are registering
         /// The convention is to use Startup</typeparam>
         /// <param name="services"></param>
-        public static void RegisterQualityChecks<T>(this IServiceCollection services)
+        public static void RegisterQualityChecks<T>(this IServiceCollection services, ServiceLifetime lifeTime = ServiceLifetime.Singleton)
         {
             services.TryAddSingleton<IQualityCheckExecutionHandler, QualityCheckExecutionHandler>();
             services.TryAddSingleton<IQualityCheckRunner, QualityCheckRunner>();
@@ -29,7 +29,7 @@ namespace Aether.Extensions
             var typesFromAssemblies = assemblies.SelectMany(a => a.DefinedTypes.Where(x => x.GetInterfaces().Contains(typeof(IQualityCheck))));
 
             foreach (var type in typesFromAssemblies)
-                services.Add(new ServiceDescriptor(typeof(IQualityCheck), type, ServiceLifetime.Singleton));
+                services.Add(new ServiceDescriptor(typeof(IQualityCheck), type, lifeTime));
         }
     }
 }
